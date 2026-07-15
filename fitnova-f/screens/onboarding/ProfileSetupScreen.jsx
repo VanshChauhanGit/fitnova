@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   View,
@@ -24,6 +25,8 @@ export default function ProfileSetupScreen() {
   const completeProfile = useAuthStore((state) => state.completeProfile);
 
   const loading = useAuthStore((state) => state.loading);
+
+  const navigation = useNavigation();
 
   const [age, setAge] = useState('');
 

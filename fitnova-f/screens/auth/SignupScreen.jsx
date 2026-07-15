@@ -4,6 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } fro
 
 import useAuthStore from '../../store/authStore';
 
+import { Ionicons } from '@expo/vector-icons';
+
 import {
   validateEmail,
   validatePassword,
@@ -25,6 +27,9 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState('');
 
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSignup = async () => {
     // Empty validation
@@ -102,23 +107,43 @@ export default function SignupScreen({ navigation }) {
         className="mb-4 rounded-2xl bg-[#112b0a] p-4 text-white"
       />
 
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#999"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        className="mb-4 rounded-2xl bg-[#112b0a] p-4 text-white"
-      />
+      <View className="mb-4 flex-row items-center rounded-2xl bg-[#112b0a] px-4">
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor="#999"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          className="flex-1 py-4 text-white"
+        />
 
-      <TextInput
-        placeholder="Confirm Password"
-        placeholderTextColor="#999"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        className="mb-6 rounded-2xl bg-[#112b0a] p-4 text-white"
-      />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+            size={22}
+            color="#999"
+          />
+        </TouchableOpacity>
+      </View>
+
+      <View className="mb-6 flex-row items-center rounded-2xl bg-[#112b0a] px-4">
+        <TextInput
+          placeholder="Confirm Password"
+          placeholderTextColor="#999"
+          secureTextEntry={!showConfirmPassword}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          className="flex-1 py-4 text-white"
+        />
+
+        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+          <Ionicons
+            name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
+            size={22}
+            color="#999"
+          />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity
         onPress={handleSignup}

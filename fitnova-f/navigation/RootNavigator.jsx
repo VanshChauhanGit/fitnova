@@ -27,7 +27,7 @@ export default function RootNavigator() {
   }
 
   // IF PROFILE NOT COMPLETED
-  if (!user.age || user.goals?.length === 0) {
+  if (!user?.age || !user?.goals || user.goals.length === 0) {
     return (
       <NavigationContainer>
         <ProfileSetupScreen />

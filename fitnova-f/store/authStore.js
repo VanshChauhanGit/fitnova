@@ -22,11 +22,15 @@ const useAuthStore = create((set) => ({
         password,
       });
 
+      console.log(res.data);
+
       await AsyncStorage.setItem('token', res.data.token);
 
+      const { token, ...user } = res.data;
+
       set({
-        user: res.data,
-        token: res.data.token,
+        user,
+        token,
         loading: false,
       });
 
@@ -55,9 +59,11 @@ const useAuthStore = create((set) => ({
 
       await AsyncStorage.setItem('token', res.data.token);
 
+      const { token, ...user } = res.data;
+
       set({
-        user: res.data,
-        token: res.data.token,
+        user,
+        token,
         loading: false,
       });
 
@@ -116,8 +122,10 @@ const useAuthStore = create((set) => ({
         },
       });
 
+      console.log(res.data);
+
       set({
-        user: res.data.user,
+        user: res.data,
       });
 
       return {
