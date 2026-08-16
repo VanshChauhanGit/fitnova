@@ -146,6 +146,18 @@ export const setActiveWorkoutPlan = async (req, res) => {
   }
 };
 
+// @desc    Deactivate all workout plans for user
+// @route   PATCH /api/workout-plans/deactivate-all
+// @access  Private
+export const deactivateAllWorkoutPlans = async (req, res) => {
+  try {
+    await WorkoutPlan.updateMany({ user: req.user._id }, { isActive: false });
+    res.status(200).json({ message: "All workout plans deactivated" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Log completion of a plan day & advance cycle
 // @route   PATCH /api/workout-plans/:id/log-day
 // @access  Private

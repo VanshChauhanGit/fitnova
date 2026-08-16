@@ -1,7 +1,7 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import SplashScreen from '../screens/auth/SplashScreen';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import ProfileSetupScreen from '../screens/onboarding/ProfileSetupScreen';
@@ -11,23 +11,28 @@ const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
   const user = useAuthStore((state) => state.user);
+  const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const loadUser = useAuthStore((state) => state.loadUser);
 
   useEffect(() => {
     loadUser();
   }, []);
 
-  return (
-    <NavigationContainer>
-      {!user ? (
-        <AuthNavigator />
-      ) : !user?.age || !user?.goals || user.goals.length === 0 ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
-        </Stack.Navigator>
-      ) : (
-        <AppNavigator />
-      )}
-    </NavigationContainer>
-  );
+  if (isAuthLoading) {
+    return <SplashScreen />;
+  }
+
+  if (!user) {
+    return <AuthNavigator />;
+  }
+
+  if (!user?.age || !user?.goals || user.goals.length === 0) {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
+      </Stack.Navigator>
+    );
+  }
+
+  return <AppNavigator />;
 }

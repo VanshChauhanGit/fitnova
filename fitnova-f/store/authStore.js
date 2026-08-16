@@ -10,6 +10,8 @@ const useAuthStore = create((set) => ({
 
   loading: false,
 
+  isAuthLoading: true,
+
   // REGISTER
   register: async (name, username, email, password) => {
     try {
@@ -32,6 +34,7 @@ const useAuthStore = create((set) => ({
         user,
         token,
         loading: false,
+        isAuthLoading: false,
       });
 
       return {
@@ -71,6 +74,7 @@ const useAuthStore = create((set) => ({
           user: meRes.data,
           token,
           loading: false,
+          isAuthLoading: false,
         });
       } catch (_meErr) {
         const { token: tkn, ...user } = res.data;
@@ -78,6 +82,7 @@ const useAuthStore = create((set) => ({
           user,
           token: tkn,
           loading: false,
+          isAuthLoading: false,
         });
       }
 
@@ -97,9 +102,13 @@ const useAuthStore = create((set) => ({
   // LOAD USER
   loadUser: async () => {
     try {
+      set({ isAuthLoading: true });
       const token = await AsyncStorage.getItem('token');
 
-      if (!token) return;
+      if (!token) {
+        set({ isAuthLoading: false, user: null, token: null });
+        return;
+      }
 
       const res = await API.get('/auth/me', {
         headers: {
@@ -110,13 +119,15 @@ const useAuthStore = create((set) => ({
       set({
         user: res.data,
         token,
+        isAuthLoading: false,
       });
     } catch (error) {
       if (error.response?.status === 401) {
         await AsyncStorage.removeItem('token');
-        set({ user: null, token: null });
+        set({ user: null, token: null, isAuthLoading: false });
       } else {
         console.log('loadUser error:', error.response?.data || error.message);
+        set({ isAuthLoading: false });
       }
     }
   },

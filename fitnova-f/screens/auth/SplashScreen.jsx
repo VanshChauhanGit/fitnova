@@ -4,11 +4,13 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function SplashScreen({ navigation }) {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('Welcome');
-    }, 2000);
+    if (navigation && navigation.replace) {
+      const timer = setTimeout(() => {
+        navigation.replace('Welcome');
+      }, 1500);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [navigation]);
 
   return (
