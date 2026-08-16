@@ -35,18 +35,6 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
     exportPlanToPDF(plan, user?.name || 'Athlete');
   };
 
-  const handleToggleActive = async () => {
-    const planId = plan.id || plan._id;
-    const res = await useWorkoutPlanStore.getState().toggleActivePlan(planId);
-    if (res.success) {
-      if (res.isActive) {
-        Alert.alert('Plan Activated', `"${plan.name}" is now set as your active tracking plan.`);
-      } else {
-        Alert.alert('Plan Deactivated', `"${plan.name}" was deactivated.`);
-      }
-    }
-  };
-
   const handleDelete = () => {
     Alert.alert(
       'Delete Workout Plan',
@@ -109,25 +97,17 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
               </Text>
             </View>
 
-            <TouchableOpacity
-              onPress={handleToggleActive}
-              className={`flex-row items-center rounded-full px-3.5 py-1 border ${
-                isActive
-                  ? 'bg-emerald-500/20 border-emerald-500/40'
-                  : 'bg-slate-800 border-slate-700'
-              }`}>
-              <Ionicons
-                name={isActive ? 'checkmark-circle' : 'ellipse-outline'}
-                size={14}
-                color={isActive ? '#10B981' : '#94A3B8'}
-              />
-              <Text
-                className={`ml-1 text-xs font-extrabold ${
-                  isActive ? 'text-emerald-400' : 'text-slate-300'
-                }`}>
-                {isActive ? 'ACTIVE PLAN (Tap to Deactivate)' : 'Set Active'}
-              </Text>
-            </TouchableOpacity>
+            {isActive ? (
+              <View className="flex-row items-center rounded-full bg-emerald-500/20 px-3.5 py-1 border border-emerald-500/40">
+                <Ionicons name="checkmark-circle" size={14} color="#10B981" />
+                <Text className="ml-1 text-xs font-extrabold text-emerald-400">ACTIVE PLAN</Text>
+              </View>
+            ) : (
+              <View className="flex-row items-center rounded-full bg-slate-800/80 px-3.5 py-1 border border-slate-700">
+                <Ionicons name="ellipse-outline" size={12} color="#94A3B8" />
+                <Text className="ml-1 text-xs font-bold text-slate-400">Inactive</Text>
+              </View>
+            )}
           </View>
 
           <Text className="mt-4 text-2xl font-black text-white">{plan.name}</Text>

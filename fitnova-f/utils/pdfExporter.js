@@ -21,13 +21,18 @@ export const exportPlanToPDF = async (plan, userName = 'FitNova Athlete') => {
 
     const htmlContent = generatePlanHTML(plan, userName);
 
-    // Create clean file name from Plan Name
-    const sanitizedPlanName = (plan.name || 'FitNova_Workout_Plan')
+    // Create filename format: planName-username.pdf
+    const sanitizedPlanName = (plan.name || 'Workout_Plan')
       .replace(/[^a-zA-Z0-9_\-\s]/g, '')
       .trim()
       .replace(/\s+/g, '_');
 
-    const pdfFileName = `${sanitizedPlanName}.pdf`;
+    const sanitizedUserName = (userName || 'Athlete')
+      .replace(/[^a-zA-Z0-9_\-\s]/g, '')
+      .trim()
+      .replace(/\s+/g, '_');
+
+    const pdfFileName = `${sanitizedPlanName}-${sanitizedUserName}.pdf`;
 
     if (printModule && printModule.printToFileAsync) {
       const { uri } = await printModule.printToFileAsync({
@@ -37,7 +42,7 @@ export const exportPlanToPDF = async (plan, userName = 'FitNova Athlete') => {
 
       let targetUri = uri;
 
-      // Rename file to plan name if fileSystem is available
+      // Rename file to planName-username.pdf if fileSystem is available
       if (fileSystemModule && fileSystemModule.cacheDirectory && fileSystemModule.moveAsync) {
         try {
           const namedUri = `${fileSystemModule.cacheDirectory}${pdfFileName}`;
@@ -55,10 +60,10 @@ export const exportPlanToPDF = async (plan, userName = 'FitNova Athlete') => {
         await sharingModule.shareAsync(targetUri, {
           UTI: 'com.adobe.pdf',
           mimeType: 'application/pdf',
-          dialogTitle: `${plan.name} - FitNova PDF`,
+          dialogTitle: `${pdfFileName}`,
         });
       } else {
-        Alert.alert('PDF Exported', `"${plan.name}" PDF saved to device.`);
+        Alert.alert('PDF Exported', `"${pdfFileName}" saved to device.`);
       }
     } else {
       // Fallback native plain text share if print unavailable
@@ -75,28 +80,33 @@ export const exportPlanToPDF = async (plan, userName = 'FitNova Athlete') => {
 };
 
 const generatePlanHTML = (plan, userName) => {
-  const daysHTML = plan.days
+  const daysHTML = (plan.days || [])
     .map((day) => {
       if (day.isRestDay) {
         return `
           <div class="day-card rest-day">
             <div class="day-header">
-              <span class="day-badge">Day ${day.dayNumber}</span>
-              <h2>${day.title}</h2>
+              <div class="day-title-wrap">
+                <span class="day-number-badge">Day ${day.dayNumber}</span>
+                <h3 class="day-name">${day.title}</h3>
+              </div>
             </div>
-            <p class="rest-text">😴 Active Recovery & Rest Day - Take time to stretch, hydrate, and recover.</p>
+            <p class="rest-msg">😴 Active Recovery & Rest Day — Hydrate, stretch, and rebuild.</p>
           </div>
         `;
       }
 
-      const exercisesRows = day.exercises
+      const exercisesRows = (day.exercises || [])
         .map(
           (ex, idx) => `
         <tr>
-          <td><strong>${idx + 1}. ${ex.name}</strong><br/><span class="subtext">${ex.bodyPart || 'General'}</span></td>
-          <td class="text-center">${ex.sets} sets</td>
-          <td class="text-center">${ex.reps} reps</td>
-          <td class="text-center">${ex.restTime || 60}s</td>
+          <td>
+            <div class="ex-name">${idx + 1}. ${ex.name}</div>
+            <div class="ex-sub">${ex.bodyPart || ex.targetMuscle || 'General'}</div>
+          </td>
+          <td class="center badge-cell">${ex.sets} sets</td>
+          <td class="center">${ex.reps} reps</td>
+          <td class="center">${ex.restTime || 60}s</td>
           <td>${ex.notes || '-'}</td>
         </tr>
       `
@@ -104,24 +114,26 @@ const generatePlanHTML = (plan, userName) => {
         .join('');
 
       const muscleTags = (day.targetMuscles || [])
-        .map((m) => `<span class="tag">${m}</span>`)
+        .map((m) => `<span class="muscle-tag">${m}</span>`)
         .join(' ');
 
       return `
         <div class="day-card">
           <div class="day-header">
-            <span class="day-badge">Day ${day.dayNumber}</span>
-            <h2>${day.title}</h2>
+            <div class="day-title-wrap">
+              <span class="day-number-badge">Day ${day.dayNumber}</span>
+              <h3 class="day-name">${day.title}</h3>
+            </div>
+            ${muscleTags ? `<div class="muscles-wrap">${muscleTags}</div>` : ''}
           </div>
-          ${muscleTags ? `<div class="tags-container">${muscleTags}</div>` : ''}
           <table>
             <thead>
               <tr>
-                <th>Exercise</th>
-                <th class="text-center">Sets</th>
-                <th class="text-center">Reps</th>
-                <th class="text-center">Rest</th>
-                <th>Notes / Form Cues</th>
+                <th style="width: 35%;">Exercise</th>
+                <th class="center" style="width: 15%;">Sets</th>
+                <th class="center" style="width: 15%;">Reps</th>
+                <th class="center" style="width: 15%;">Rest</th>
+                <th style="width: 20%;">Form Notes</th>
               </tr>
             </thead>
             <tbody>
@@ -138,157 +150,233 @@ const generatePlanHTML = (plan, userName) => {
     <html>
       <head>
         <meta charset="utf-8" />
-        <title>${plan.name} - FitNova Workout Plan</title>
+        <title>${plan.name} - ${userName}</title>
         <style>
+          @page {
+            size: A4;
+            margin: 12mm 14mm;
+          }
+          * {
+            box-sizing: border-box;
+          }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #0B0E14;
             color: #F8FAFC;
-            padding: 32px;
+            padding: 0;
             margin: 0;
+            font-size: 12px;
+            line-height: 1.4;
           }
-          .header {
+          .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #10B981;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
           }
-          .brand {
-            font-size: 28px;
+          .brand-title {
+            font-size: 22px;
             font-weight: 900;
             color: #10B981;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
           }
-          .user-info {
-            font-size: 14px;
+          .user-badge {
+            background: #1E293B;
+            border: 1px solid #334155;
             color: #94A3B8;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+          }
+          .user-badge strong {
+            color: #10B981;
+          }
+          .plan-header {
+            margin-bottom: 14px;
           }
           .plan-title {
-            font-size: 32px;
+            font-size: 22px;
             font-weight: 800;
-            margin: 0 0 8px 0;
             color: #FFFFFF;
+            margin: 0 0 4px 0;
           }
           .plan-desc {
-            font-size: 15px;
+            font-size: 12px;
             color: #94A3B8;
-            margin-bottom: 20px;
+            margin: 0 0 10px 0;
+          }
+          .meta-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
           }
           .meta-pill {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
             color: #10B981;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 700;
-            margin-right: 10px;
           }
+          .meta-pill.cyan {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #38BDF8;
+          }
+          
+          .days-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+          
           .day-card {
             background-color: #151B26;
             border: 1px solid #1E293B;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
+            border-radius: 12px;
+            padding: 12px 14px;
             page-break-inside: avoid;
           }
+          
           .day-card.rest-day {
-            border-style: dashed;
-            background-color: #0F172A;
+            background: #0F172A;
+            border: 1px dashed #334155;
+            padding: 8px 12px;
           }
+          
           .day-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
           }
-          .day-badge {
+          
+          .day-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          
+          .day-number-badge {
             background: #10B981;
             color: #0B0E14;
-            font-weight: 800;
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            margin-right: 12px;
+            font-weight: 900;
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 6px;
             text-transform: uppercase;
           }
-          .day-header h2 {
-            font-size: 20px;
-            margin: 0;
+          
+          .day-name {
+            font-size: 15px;
+            font-weight: 700;
             color: #F8FAFC;
+            margin: 0;
           }
-          .tags-container {
-            margin-bottom: 14px;
+          
+          .muscles-wrap {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
           }
-          .tag {
+          
+          .muscle-tag {
             background: #1E293B;
             color: #38BDF8;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 6px;
-            margin-right: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
           }
-          .rest-text {
+          
+          .rest-msg {
             color: #94A3B8;
-            font-style: italic;
-            margin: 8px 0 0 0;
+            font-size: 11px;
+            margin: 0;
           }
+          
           table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
+            margin-top: 4px;
           }
+          
           th {
             background-color: #0B0E14;
             color: #94A3B8;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 10px;
+            padding: 6px 8px;
             text-align: left;
             border-bottom: 1px solid #334155;
           }
+          
           td {
-            padding: 10px;
-            font-size: 14px;
+            padding: 6px 8px;
+            font-size: 11px;
             border-bottom: 1px solid #1E293B;
             color: #E2E8F0;
+            vertical-align: middle;
           }
-          .subtext {
-            font-size: 11px;
+          
+          tr:last-child td {
+            border-bottom: none;
+          }
+          
+          .ex-name {
+            font-weight: 700;
+            color: #FFFFFF;
+          }
+          .ex-sub {
+            font-size: 10px;
             color: #64748B;
           }
-          .text-center {
+          
+          .badge-cell {
+            font-weight: 700;
+            color: #10B981;
+          }
+          .center {
             text-align: center;
           }
+          
           .footer {
-            margin-top: 40px;
+            margin-top: 16px;
             text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             color: #64748B;
             border-top: 1px solid #1E293B;
-            padding-top: 16px;
+            padding-top: 8px;
           }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="brand">⚡ FITNOVA</div>
-          <div class="user-info">Prepared for: <strong>${userName}</strong></div>
-        </div>
-        <h1 class="plan-title">${plan.name}</h1>
-        <p class="plan-desc">${plan.description || 'Custom hypertrophy & strength routine built with FitNova.'}</p>
-        <div style="margin-bottom: 24px;">
-          <span class="meta-pill">🎯 ${plan.goal || 'Build Muscle'}</span>
-          <span class="meta-pill">🗓️ ${plan.splitDays || plan.days.length}-Day Program</span>
+        <div class="header-container">
+          <div class="brand-title">⚡ FITNOVA</div>
+          <div class="user-badge">Athlete: <strong>${userName}</strong></div>
         </div>
 
-        ${daysHTML}
+        <div class="plan-header">
+          <h1 class="plan-title">${plan.name}</h1>
+          ${plan.description ? `<p class="plan-desc">${plan.description}</p>` : ''}
+          <div class="meta-bar">
+            <span class="meta-pill">🎯 ${plan.goal || 'Build Muscle'}</span>
+            <span class="meta-pill cyan">🗓️ ${plan.splitDays || plan.days?.length || 6}-Day Program</span>
+          </div>
+        </div>
+
+        <div class="days-grid">
+          ${daysHTML}
+        </div>
 
         <div class="footer">
-          Generated with FitNova Workout Engine • Stay consistent, push hard, build muscle! 🔥
+          Generated with FitNova Workout Engine • Train Smarter, Live Better ⚡
         </div>
       </body>
     </html>
@@ -297,14 +385,14 @@ const generatePlanHTML = (plan, userName) => {
 
 const generatePlainTextPlan = (plan) => {
   let text = `⚡ FITNOVA WORKOUT PLAN: ${plan.name}\n`;
-  text += `Goal: ${plan.goal || 'Build Muscle'} | Split: ${plan.splitDays || plan.days.length} Days\n\n`;
+  text += `Goal: ${plan.goal || 'Build Muscle'} | Split: ${plan.splitDays || plan.days?.length} Days\n\n`;
 
-  plan.days.forEach((day) => {
+  (plan.days || []).forEach((day) => {
     text += `--- Day ${day.dayNumber}: ${day.title} ---\n`;
     if (day.isRestDay) {
       text += `Rest & Recovery Day\n\n`;
     } else {
-      day.exercises.forEach((ex, idx) => {
+      (day.exercises || []).forEach((ex, idx) => {
         text += `${idx + 1}. ${ex.name} - ${ex.sets} sets x ${ex.reps} reps (${ex.restTime || 60}s rest)\n`;
       });
       text += `\n`;

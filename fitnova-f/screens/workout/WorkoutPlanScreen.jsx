@@ -21,29 +21,23 @@ export default function WorkoutPlansScreen({ navigation }) {
     exportPlanToPDF(plan, user?.name || 'Athlete');
   };
 
-  const handleToggleActive = async (planId) => {
-    const res = await useWorkoutPlanStore.getState().toggleActivePlan(planId);
-    if (res.success) {
-      if (res.isActive) {
-        Alert.alert('Plan Activated', 'Your active tracking plan has been updated.');
-      } else {
-        Alert.alert('Plan Deactivated', 'No plan is currently active.');
-      }
-    }
-  };
-
   const handleDelete = (plan) => {
     const planId = plan.id || plan._id;
     Alert.alert(
       'Delete Plan',
-      `Delete "${plan.name}"?`,
+      `Are you sure you want to delete "${plan.name}"?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            await deletePlan(planId);
+            const res = await deletePlan(planId);
+            if (res.success) {
+              Alert.alert('Plan Deleted', `"${plan.name}" has been removed.`);
+            } else {
+              Alert.alert('Error', res.message || 'Failed to delete plan.');
+            }
           },
         },
       ]
@@ -150,25 +144,17 @@ export default function WorkoutPlansScreen({ navigation }) {
                           </View>
                         </View>
 
-                        <TouchableOpacity
-                          onPress={() => handleToggleActive(p.id || p._id)}
-                          className={`flex-row items-center rounded-full px-3 py-1 border ${
-                            isPlanActive
-                              ? 'bg-emerald-500/20 border-emerald-500/40'
-                              : 'bg-slate-800 border-slate-700'
-                          }`}>
-                          <Ionicons
-                            name={isPlanActive ? 'checkmark-circle' : 'ellipse-outline'}
-                            size={14}
-                            color={isPlanActive ? '#10B981' : '#94A3B8'}
-                          />
-                          <Text
-                            className={`ml-1 text-xs font-bold ${
-                              isPlanActive ? 'text-emerald-400' : 'text-slate-300'
-                            }`}>
-                            {isPlanActive ? 'ACTIVE (Deactivate)' : 'Set Active'}
-                          </Text>
-                        </TouchableOpacity>
+                        {isPlanActive ? (
+                          <View className="flex-row items-center rounded-full bg-emerald-500/20 px-3 py-1 border border-emerald-500/40">
+                            <Ionicons name="checkmark-circle" size={14} color="#10B981" />
+                            <Text className="ml-1 text-xs font-extrabold text-emerald-400">ACTIVE</Text>
+                          </View>
+                        ) : (
+                          <View className="flex-row items-center rounded-full bg-slate-800/80 px-3 py-1 border border-slate-700">
+                            <Ionicons name="ellipse-outline" size={12} color="#94A3B8" />
+                            <Text className="ml-1 text-xs font-bold text-slate-400">Inactive</Text>
+                          </View>
+                        )}
                       </View>
 
                       <Text className="mt-3 text-xl font-black text-white">{p.name}</Text>

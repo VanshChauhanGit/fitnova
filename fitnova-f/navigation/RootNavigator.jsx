@@ -18,21 +18,17 @@ export default function RootNavigator() {
     loadUser();
   }, []);
 
-  if (isAuthLoading) {
-    return <SplashScreen />;
-  }
-
-  if (!user) {
-    return <AuthNavigator />;
-  }
-
-  if (!user?.age || !user?.goals || user.goals.length === 0) {
-    return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isAuthLoading ? (
+        <Stack.Screen name="Splash" component={SplashScreen} />
+      ) : !user ? (
+        <Stack.Screen name="Auth" component={AuthNavigator} />
+      ) : !user?.age || !user?.goals || user.goals.length === 0 ? (
         <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
-      </Stack.Navigator>
-    );
-  }
-
-  return <AppNavigator />;
+      ) : (
+        <Stack.Screen name="App" component={AppNavigator} />
+      )}
+    </Stack.Navigator>
+  );
 }

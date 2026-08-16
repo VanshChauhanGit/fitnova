@@ -1,18 +1,7 @@
 import { View, Text, ActivityIndicator } from 'react-native';
-import { useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function SplashScreen({ navigation }) {
-  useEffect(() => {
-    if (navigation && navigation.replace) {
-      const timer = setTimeout(() => {
-        navigation.replace('Welcome');
-      }, 1500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [navigation]);
-
+export default function SplashScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-[#0B0E14] px-6">
       {/* GLOWING EMBLEM LOGO */}

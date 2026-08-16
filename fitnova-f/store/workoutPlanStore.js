@@ -190,18 +190,14 @@ const useWorkoutPlanStore = create((set, get) => ({
           }));
 
           if (rawApiPlans.length > 0) {
-            const activeIdx = rawApiPlans.findIndex((p) => p.isActive);
-            const targetActiveIdx = activeIdx >= 0 ? activeIdx : 0;
-
-            const apiPlans = rawApiPlans.map((p, idx) => ({
-              ...p,
-              isActive: idx === targetActiveIdx,
-            }));
-
-            const active = apiPlans[targetActiveIdx];
-            set({ plans: apiPlans, activePlan: active });
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(apiPlans));
-            if (active) await AsyncStorage.setItem(ACTIVE_ID_KEY, active.id || active._id);
+            const activePlan = rawApiPlans.find((p) => p.isActive) || null;
+            set({ plans: rawApiPlans, activePlan });
+            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(rawApiPlans));
+            if (activePlan) {
+              await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
+            } else {
+              await AsyncStorage.removeItem(ACTIVE_ID_KEY);
+            }
             loadedFromApi = true;
           } else {
             set({ plans: [], activePlan: null });
@@ -223,16 +219,8 @@ const useWorkoutPlanStore = create((set, get) => ({
         }
 
         if (localPlans && localPlans.length > 0) {
-          const activeIdx = localPlans.findIndex((p) => p.isActive || p.id === storedActiveId);
-          const targetActiveIdx = activeIdx >= 0 ? activeIdx : 0;
-
-          const sanitizedLocal = localPlans.map((p, idx) => ({
-            ...p,
-            isActive: idx === targetActiveIdx,
-          }));
-
-          const active = sanitizedLocal[targetActiveIdx];
-          set({ plans: sanitizedLocal, activePlan: active });
+          const activePlan = localPlans.find((p) => p.isActive || p.id === storedActiveId) || null;
+          set({ plans: localPlans, activePlan });
         } else {
           set({ plans: [], activePlan: null });
         }
@@ -329,11 +317,15 @@ const useWorkoutPlanStore = create((set, get) => ({
         }));
       }
 
-      const activePlan = updatedPlans.find((p) => p.isActive) || updatedPlans[0];
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
 
       set({ plans: updatedPlans, activePlan });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id);
+      if (activePlan) {
+        await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id);
+      } else {
+        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
+      }
 
       // Backend API call
       const token = await AsyncStorage.getItem('token');
@@ -378,24 +370,38 @@ const useWorkoutPlanStore = create((set, get) => ({
         return p;
       });
 
-      if (updatedFields.isActive) {
+      if (updatedFields.isActive === true) {
         updatedPlans = updatedPlans.map((p) => ({
           ...p,
           isActive: p.id === planId || p._id === planId,
         }));
+      } else if (updatedFields.isActive === false) {
+        updatedPlans = updatedPlans.map((p) => {
+          if (p.id === planId || p._id === planId) {
+            return { ...p, isActive: false };
+          }
+          return p;
+        });
       }
 
-      const activePlan = updatedPlans.find((p) => p.isActive) || updatedPlans[0];
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
 
       set({ plans: updatedPlans, activePlan });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
+      if (activePlan) {
+        await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
+      } else {
+        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
+      }
 
       // API sync
       const token = await AsyncStorage.getItem('token');
-      if (token) {
+      const realId = planId;
+      const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
+
+      if (token && isMongoId) {
         try {
-          await API.put(`/workout-plans/${planId}`, updatedFields, {
+          await API.put(`/workout-plans/${realId}`, updatedFields, {
             headers: { Authorization: `Bearer ${token}` },
           });
         } catch (e) {
@@ -417,23 +423,32 @@ const useWorkoutPlanStore = create((set, get) => ({
       const currentPlans = get().plans;
       const filtered = currentPlans.filter((p) => p.id !== planId && p._id !== planId);
 
-      if (filtered.length === 0) {
-        return { success: false, message: 'Cannot delete the last remaining workout plan.' };
-      }
-
       let activePlan = get().activePlan;
-      if (activePlan?.id === planId || activePlan?._id === planId) {
-        filtered[0].isActive = true;
-        activePlan = filtered[0];
+      const isDeletingActive = activePlan?.id === planId || activePlan?._id === planId;
+
+      if (filtered.length > 0) {
+        if (isDeletingActive) {
+          filtered[0].isActive = true;
+          activePlan = filtered[0];
+        } else {
+          activePlan = filtered.find((p) => p.isActive) || filtered[0];
+        }
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+        if (activePlan) {
+          await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
+        }
+      } else {
+        activePlan = null;
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
       }
 
       set({ plans: filtered, activePlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-      await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
 
       // API sync
       const token = await AsyncStorage.getItem('token');
-      if (token) {
+      const isMongoId = typeof planId === 'string' && /^[0-9a-fA-F]{24}$/.test(planId);
+      if (token && isMongoId) {
         try {
           await API.delete(`/workout-plans/${planId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -468,9 +483,12 @@ const useWorkoutPlanStore = create((set, get) => ({
 
       // API sync
       const token = await AsyncStorage.getItem('token');
-      if (token) {
+      const realId = activePlan?._id || activePlan?.id || planId;
+      const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
+
+      if (token && isMongoId) {
         try {
-          await API.patch(`/workout-plans/${planId}/activate`, {}, {
+          await API.patch(`/workout-plans/${realId}/activate`, {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
         } catch (e) {
@@ -516,14 +534,17 @@ const useWorkoutPlanStore = create((set, get) => ({
 
       // API sync
       const token = await AsyncStorage.getItem('token');
+      const realId = targetPlan?._id || targetPlan?.id || planId;
+      const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
+
       if (token) {
         try {
           if (isCurrentlyActive) {
             await API.patch('/workout-plans/deactivate-all', {}, {
               headers: { Authorization: `Bearer ${token}` },
             });
-          } else {
-            await API.patch(`/workout-plans/${planId}/activate`, {}, {
+          } else if (isMongoId) {
+            await API.patch(`/workout-plans/${realId}/activate`, {}, {
               headers: { Authorization: `Bearer ${token}` },
             });
           }
