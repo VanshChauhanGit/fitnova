@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import workoutRoutes from "./routes/workoutRoutes.js";
+import workoutPlanRoutes from "./routes/workoutPlanRoutes.js";
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/workouts", workoutRoutes);
+app.use("/api/workout-plans", workoutPlanRoutes);
 
 export default app;
