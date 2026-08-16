@@ -36,19 +36,19 @@ export const updateProfile = async (req, res) => {
     }
 
     // VALIDATIONS
-    if (age <= 13 || age >= 100) {
+    if (age < 13 || age > 100) {
       return res.status(400).json({
         message: "Invalid age",
       });
     }
 
-    if (height <= 100 || height >= 250) {
+    if (height < 100 || height > 250) {
       return res.status(400).json({
         message: "Invalid height",
       });
     }
 
-    if (weight <= 30 || weight >= 250) {
+    if (weight < 30 || weight > 250) {
       return res.status(400).json({
         message: "Invalid weight",
       });
@@ -67,8 +67,8 @@ export const updateProfile = async (req, res) => {
     }
 
     // UPDATE USER
-    user.name = name;
-    user.username = username;
+    if (name) user.name = name;
+    if (username) user.username = username;
     user.age = age;
     user.gender = gender;
     user.height = height;

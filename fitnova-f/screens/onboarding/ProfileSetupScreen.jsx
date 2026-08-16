@@ -65,16 +65,19 @@ export default function ProfileSetupScreen() {
       return Alert.alert('Too Many Goals', 'You can select up to 2 goals only');
     }
 
-    const res = await completeProfile({
-      name: user.name,
-      username: user.username,
+    const profileData = {
       age: Number(age),
       gender,
       height: Number(height),
       weight: Number(weight),
       goals,
       activityLevel,
-    });
+    };
+
+    if (user?.name) profileData.name = user.name;
+    if (user?.username) profileData.username = user.username;
+
+    const res = await completeProfile(profileData);
 
     if (!res.success) {
       return Alert.alert('Error', res.message || 'Something went wrong');

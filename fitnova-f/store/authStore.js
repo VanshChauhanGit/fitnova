@@ -98,7 +98,12 @@ const useAuthStore = create((set) => ({
         token,
       });
     } catch (error) {
-      console.log(error);
+      if (error.response?.status === 401) {
+        await AsyncStorage.removeItem('token');
+        set({ user: null, token: null });
+      } else {
+        console.log('loadUser error:', error.response?.data || error.message);
+      }
     }
   },
 
