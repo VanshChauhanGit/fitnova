@@ -110,6 +110,13 @@ export const loginUser = async (req, res) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      age: user.age,
+      gender: user.gender,
+      height: user.height,
+      weight: user.weight,
+      activityLevel: user.activityLevel,
+      goals: user.goals,
+      profileImage: user.profileImage,
       token: generateToken(user._id),
     });
   } catch (error) {

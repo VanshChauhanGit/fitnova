@@ -102,41 +102,49 @@ export default function ProfileSetupScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-[#071e00] px-6 pt-16">
-      <Text className="text-lg text-[#3efe18]">Setup Profile</Text>
+    <ScrollView className="flex-1 bg-[#0B0E14] px-6 pt-16">
+      <View className="mb-2 inline-flex self-start rounded-full bg-[#10B981]/10 px-4 py-1.5 border border-[#10B981]/20">
+        <Text className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
+          Step 1 of 1 • Setup Profile
+        </Text>
+      </View>
 
-      <Text className="mt-2 text-4xl font-bold text-white">Tell us about yourself</Text>
+      <Text className="mt-2 text-3xl font-black text-white">Tell us about yourself</Text>
+      <Text className="mt-1 text-sm font-medium text-slate-400">
+        Help us personalize your workouts and targets
+      </Text>
 
       {/* AGE */}
-      <View className="mt-10">
-        <Text className="mb-3 text-lg text-white">Age</Text>
-
+      <View className="mt-8">
+        <Text className="mb-2 text-sm font-semibold text-slate-300">Age</Text>
         <TextInput
           keyboardType="numeric"
           value={age}
           maxLength={3}
           onChangeText={setAge}
-          placeholder="Enter your age"
-          placeholderTextColor="#888"
-          className="rounded-2xl bg-[#112b0a] p-5 text-white"
+          placeholder="Enter your age (e.g. 24)"
+          placeholderTextColor="#64748B"
+          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
         />
       </View>
 
       {/* GENDER */}
-      <View className="mt-8">
-        <Text className="mb-3 text-lg text-white">Gender</Text>
-
+      <View className="mt-6">
+        <Text className="mb-2 text-sm font-semibold text-slate-300">Gender</Text>
         <View className="flex-row justify-between">
           {['Male', 'Female'].map((item) => (
             <TouchableOpacity
               key={item}
+              activeOpacity={0.8}
               onPress={() => setGender(item)}
-              className={`w-[48%] rounded-2xl p-5 ${
-                gender === item ? 'bg-[#3efe18]' : 'bg-[#112b0a]'
+              className={`w-[48%] rounded-2xl border p-4.5 ${
+                gender === item
+                  ? 'border-[#10B981] bg-[#10B981]'
+                  : 'border-slate-800 bg-[#151B26]'
               }`}>
               <Text
                 className={`text-center font-bold ${
-                  gender === item ? 'text-black' : 'text-white'
+                  gender === item ? 'text-[#0B0E14]' : 'text-white'
                 }`}>
                 {item}
               </Text>
@@ -146,41 +154,38 @@ export default function ProfileSetupScreen() {
       </View>
 
       {/* HEIGHT */}
-      <View className="mt-8">
-        <Text className="mb-3 text-lg text-white">Height (cm)</Text>
-
+      <View className="mt-6">
+        <Text className="mb-2 text-sm font-semibold text-slate-300">Height (cm)</Text>
         <TextInput
           keyboardType="numeric"
           value={height}
           maxLength={3}
           onChangeText={setHeight}
-          placeholder="Enter your height"
-          placeholderTextColor="#888"
-          className="rounded-2xl bg-[#112b0a] p-5 text-white"
+          placeholder="Enter height in cm (e.g. 175)"
+          placeholderTextColor="#64748B"
+          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
         />
       </View>
 
       {/* WEIGHT */}
-      <View className="mt-8">
-        <Text className="mb-3 text-lg text-white">Weight (kg)</Text>
-
+      <View className="mt-6">
+        <Text className="mb-2 text-sm font-semibold text-slate-300">Weight (kg)</Text>
         <TextInput
           keyboardType="numeric"
           maxLength={3}
           value={weight}
           onChangeText={setWeight}
-          placeholder="Enter your weight"
-          placeholderTextColor="#888"
-          className="rounded-2xl bg-[#112b0a] p-5 text-white"
+          placeholder="Enter weight in kg (e.g. 70)"
+          placeholderTextColor="#64748B"
+          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
         />
       </View>
 
       {/* GOALS */}
-      <View className="mt-8">
-        <View className="mb-4 flex-row items-center justify-between">
-          <Text className="text-lg text-white">Fitness Goals</Text>
-
-          <Text className="text-[#3efe18]">{goals.length}/2</Text>
+      <View className="mt-6">
+        <View className="mb-3 flex-row items-center justify-between">
+          <Text className="text-sm font-semibold text-slate-300">Fitness Goals</Text>
+          <Text className="text-xs font-bold text-[#10B981]">{goals.length}/2 selected</Text>
         </View>
 
         <View className="flex-row flex-wrap justify-between">
@@ -190,11 +195,17 @@ export default function ProfileSetupScreen() {
             return (
               <TouchableOpacity
                 key={item}
+                activeOpacity={0.8}
                 onPress={() => toggleGoal(item)}
-                className={`mb-4 w-[48%] rounded-2xl border p-5 ${
-                  selected ? 'border-[#3efe18] bg-[#3efe18]' : 'border-[#1f3b16] bg-[#112b0a]'
+                className={`mb-3.5 w-[48%] rounded-2xl border p-4.5 ${
+                  selected
+                    ? 'border-[#10B981] bg-[#10B981]'
+                    : 'border-slate-800 bg-[#151B26]'
                 }`}>
-                <Text className={`text-center font-bold ${selected ? 'text-black' : 'text-white'}`}>
+                <Text
+                  className={`text-center font-bold ${
+                    selected ? 'text-[#0B0E14]' : 'text-white'
+                  }`}>
                   {item}
                 </Text>
               </TouchableOpacity>
@@ -205,19 +216,22 @@ export default function ProfileSetupScreen() {
 
       {/* LEVEL */}
       <View className="mt-4">
-        <Text className="mb-4 text-lg text-white">Activity Level</Text>
+        <Text className="mb-3 text-sm font-semibold text-slate-300">Activity Level</Text>
 
         <View className="flex-row justify-between">
           {activityLevels.map((item) => (
             <TouchableOpacity
               key={item}
+              activeOpacity={0.8}
               onPress={() => setActivityLevel(item)}
-              className={`w-[31.5%] rounded-2xl px-2 py-5 ${
-                activityLevel === item ? 'bg-[#3efe18]' : 'bg-[#112b0a]'
+              className={`w-[31%] rounded-2xl border px-2 py-4 ${
+                activityLevel === item
+                  ? 'border-[#10B981] bg-[#10B981]'
+                  : 'border-slate-800 bg-[#151B26]'
               }`}>
               <Text
-                className={`text-center font-bold ${
-                  activityLevel === item ? 'text-black' : 'text-white'
+                className={`text-center text-xs font-bold ${
+                  activityLevel === item ? 'text-[#0B0E14]' : 'text-white'
                 }`}>
                 {item}
               </Text>
@@ -228,13 +242,14 @@ export default function ProfileSetupScreen() {
 
       {/* BUTTON */}
       <TouchableOpacity
+        activeOpacity={0.85}
         disabled={loading}
         onPress={handleContinue}
-        className="mb-20 mt-10 items-center rounded-2xl bg-[#3efe18] py-5">
+        className="mb-20 mt-10 items-center rounded-2xl bg-[#10B981] py-4.5 shadow-lg shadow-emerald-950/40">
         {loading ? (
-          <ActivityIndicator color="black" />
+          <ActivityIndicator color="#0B0E14" />
         ) : (
-          <Text className="text-center text-lg font-bold text-black">Continue</Text>
+          <Text className="text-center text-base font-bold text-[#0B0E14]">Complete Profile</Text>
         )}
       </TouchableOpacity>
     </ScrollView>

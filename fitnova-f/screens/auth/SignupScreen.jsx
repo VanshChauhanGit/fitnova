@@ -1,6 +1,15 @@
 import { useState } from 'react';
-
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 
 import useAuthStore from '../../store/authStore';
 
@@ -75,90 +84,154 @@ export default function SignupScreen({ navigation }) {
   };
 
   return (
-    <View className="flex-1 justify-center bg-[#071e00] px-6">
-      <Text className="mb-2 text-4xl font-bold text-white">Create Account</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        className="bg-[#0B0E14] px-6 py-12">
+        <View className="mb-6 items-center">
+          <View className="h-16 w-16 items-center justify-center rounded-3xl bg-[#10B981]/10 border border-[#10B981]/20">
+            <Ionicons name="person-add-outline" size={28} color="#10B981" />
+          </View>
+        </View>
 
-      <Text className="mb-10 text-gray-400">Join FitNova today</Text>
+        <Text className="text-3xl font-black text-white text-center">Create Account</Text>
+        <Text className="mb-8 text-center text-sm font-medium text-slate-400">
+          Join FitNova and kickstart your transformation
+        </Text>
 
-      <TextInput
-        placeholder="Full Name"
-        placeholderTextColor="#999"
-        value={name}
-        onChangeText={setName}
-        className="mb-4 rounded-2xl bg-[#112b0a] p-4 text-white"
-      />
-
-      <TextInput
-        placeholder="Username"
-        placeholderTextColor="#999"
-        autoCapitalize="none"
-        value={username}
-        onChangeText={setUsername}
-        className="mb-4 rounded-2xl bg-[#112b0a] p-4 text-white"
-      />
-
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#999"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-        className="mb-4 rounded-2xl bg-[#112b0a] p-4 text-white"
-      />
-
-      <View className="mb-4 flex-row items-center rounded-2xl bg-[#112b0a] px-4">
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#999"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-          className="flex-1 py-4 text-white"
-        />
-
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons
-            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-            size={22}
-            color="#999"
+        {/* Full Name */}
+        <View className="mb-4 h-14 flex-row items-center rounded-2xl border border-slate-800 bg-[#151B26] px-4">
+          <Ionicons name="person-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Full Name"
+            placeholderTextColor="#64748B"
+            value={name}
+            onChangeText={setName}
+            className="flex-1 ml-3 text-md text-white"
+            style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              textAlignVertical: 'center',
+            }}
           />
-        </TouchableOpacity>
-      </View>
+        </View>
 
-      <View className="mb-6 flex-row items-center rounded-2xl bg-[#112b0a] px-4">
-        <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor="#999"
-          secureTextEntry={!showConfirmPassword}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          className="flex-1 py-4 text-white"
-        />
-
-        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <Ionicons
-            name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
-            size={22}
-            color="#999"
+        {/* Username */}
+        <View className="mb-4 h-14 flex-row items-center rounded-2xl border border-slate-800 bg-[#151B26] px-4">
+          <Ionicons name="at-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Username"
+            placeholderTextColor="#64748B"
+            autoCapitalize="none"
+            value={username}
+            onChangeText={setUsername}
+            className="flex-1 ml-3 text-md text-white"
+            style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              textAlignVertical: 'center',
+            }}
           />
+        </View>
+
+        {/* Email */}
+        <View className="mb-4 h-14 flex-row items-center rounded-2xl border border-slate-800 bg-[#151B26] px-4">
+          <Ionicons name="mail-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Email address"
+            placeholderTextColor="#64748B"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+            className="flex-1 ml-3 text-md text-white"
+            style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              textAlignVertical: 'center',
+            }}
+          />
+        </View>
+
+        {/* Password */}
+        <View className="mb-4 h-14 flex-row items-center rounded-2xl border border-slate-800 bg-[#151B26] px-4">
+          <Ionicons name="lock-closed-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="#64748B"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+            className="flex-1 ml-3 text-md text-white"
+            style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              textAlignVertical: 'center',
+            }}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color="#94A3B8"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Confirm Password */}
+        <View className="mb-6 h-14 flex-row items-center rounded-2xl border border-slate-800 bg-[#151B26] px-4">
+          <Ionicons name="shield-checkmark-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Confirm Password"
+            placeholderTextColor="#64748B"
+            secureTextEntry={!showConfirmPassword}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            className="flex-1 ml-3 text-md text-white"
+            style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 0,
+              marginBottom: 0,
+              textAlignVertical: 'center',
+            }}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Ionicons
+              name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color="#94A3B8"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleSignup}
+          disabled={loading}
+          className="items-center rounded-2xl bg-[#10B981] py-4 shadow-lg shadow-emerald-950/40">
+          {loading ? (
+            <ActivityIndicator color="#0B0E14" />
+          ) : (
+            <Text className="text-base font-bold text-[#0B0E14]">Sign Up</Text>
+          )}
         </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity
-        onPress={handleSignup}
-        disabled={loading}
-        className="items-center rounded-2xl bg-[#3efe18] p-4">
-        {loading ? (
-          <ActivityIndicator color="black" />
-        ) : (
-          <Text className="text-lg font-bold text-black">Sign Up</Text>
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} className="mt-6">
-        <Text className="text-center text-gray-400">Already have an account? Login</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} className="mt-6 mb-8">
+          <Text className="text-center text-sm font-medium text-slate-400">
+            Already have an account? <Text className="font-bold text-[#10B981]">Login</Text>
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 }

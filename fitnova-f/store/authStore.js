@@ -57,15 +57,29 @@ const useAuthStore = create((set) => ({
         password,
       });
 
-      await AsyncStorage.setItem('token', res.data.token);
+      const token = res.data.token;
+      await AsyncStorage.setItem('token', token);
 
-      const { token, ...user } = res.data;
-
-      set({
-        user,
-        token,
-        loading: false,
-      });
+      // Fetch full user profile from backend to verify completed fields
+      try {
+        const meRes = await API.get('/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        set({
+          user: meRes.data,
+          token,
+          loading: false,
+        });
+      } catch (_meErr) {
+        const { token: tkn, ...user } = res.data;
+        set({
+          user,
+          token: tkn,
+          loading: false,
+        });
+      }
 
       return {
         success: true,

@@ -76,69 +76,107 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
     navigation.goBack();
   };
 
+  const formatTime = (totalSeconds) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <ScrollView className="flex-1 bg-[#071e00] px-6 pt-16">
-      <Text className="text-4xl font-bold capitalize text-white">{exercise.name}</Text>
+    <ScrollView className="flex-1 bg-[#0B0E14] px-6 pt-16">
+      {/* Header */}
+      <View className="flex-row items-center justify-between">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="rounded-2xl border border-slate-800 bg-[#151B26] p-3">
+          <Text className="text-sm font-bold text-slate-300">← Back</Text>
+        </TouchableOpacity>
 
-      {/* TIMER */}
-      <View className="mt-8 items-center rounded-3xl bg-[#112b0a] p-6">
-        <Text className="text-gray-400">Workout Timer</Text>
-
-        <Text className="mt-3 text-5xl font-bold text-[#3efe18]">{seconds}s</Text>
+        <View className="rounded-full bg-[#10B981]/10 px-3 py-1 border border-[#10B981]/20">
+          <Text className="text-xs font-bold text-[#10B981]">ACTIVE SESSION</Text>
+        </View>
       </View>
 
-      {/* REST */}
-      <View className="mt-5 items-center rounded-3xl bg-[#112b0a] p-6">
-        <Text className="text-gray-400">Rest Timer</Text>
+      <Text className="mt-6 text-3xl font-black capitalize text-white">{exercise.name}</Text>
+      <Text className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+        {exercise.bodyPart} • {exercise.target}
+      </Text>
 
-        <Text className="mt-3 text-5xl font-bold text-white">{restSeconds}s</Text>
+      {/* TIMERS ROW */}
+      <View className="mt-6 flex-row justify-between">
+        {/* WORKOUT TIMER */}
+        <View className="w-[48%] items-center rounded-3xl border border-slate-800 bg-[#151B26] p-5">
+          <Text className="text-xs font-semibold text-slate-400">Workout Time</Text>
+          <Text className="mt-2 text-3xl font-black text-[#10B981]">{formatTime(seconds)}</Text>
+        </View>
+
+        {/* REST TIMER */}
+        <View className="w-[48%] items-center rounded-3xl border border-slate-800 bg-[#151B26] p-5">
+          <Text className="text-xs font-semibold text-slate-400">Rest Timer</Text>
+          <Text className="mt-2 text-3xl font-black text-cyan-400">{formatTime(restSeconds)}</Text>
+        </View>
       </View>
 
       {/* INPUTS */}
-      <View className="mt-8">
-        <TextInput
-          keyboardType="number-pad"
-          value={reps}
-          onChangeText={setReps}
-          placeholder="Reps"
-          placeholderTextColor="#888"
-          className="mb-4 rounded-2xl bg-[#112b0a] p-5 text-white"
-        />
+      <View className="mt-8 rounded-3xl border border-slate-800 bg-[#151B26] p-6 space-y-4">
+        <Text className="text-sm font-bold text-slate-300">Log New Set</Text>
 
-        <TextInput
-          keyboardType="number-pad"
-          value={weight}
-          onChangeText={setWeight}
-          placeholder="Weight (kg)"
-          placeholderTextColor="#888"
-          className="rounded-2xl bg-[#112b0a] p-5 text-white"
-        />
+        <View className="flex-row justify-between mt-3">
+          <TextInput
+            keyboardType="number-pad"
+            value={reps}
+            onChangeText={setReps}
+            placeholder="Reps (e.g. 10)"
+            placeholderTextColor="#64748B"
+            className="w-[48%] rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white font-semibold"
+          />
+
+          <TextInput
+            keyboardType="number-pad"
+            value={weight}
+            onChangeText={setWeight}
+            placeholder="Weight (kg)"
+            placeholderTextColor="#64748B"
+            className="w-[48%] rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white font-semibold"
+          />
+        </View>
 
         <TextInput
           value={notes}
           onChangeText={setNotes}
-          placeholder="Workout notes..."
-          placeholderTextColor="#888"
+          placeholder="Set notes (optional)..."
+          placeholderTextColor="#64748B"
           multiline
-          className="mt-5 h-28 rounded-2xl bg-[#112b0a] p-5 text-white"
+          className="mt-3 h-20 rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white text-sm"
         />
       </View>
 
       {/* BUTTONS */}
-      <TouchableOpacity onPress={handleAddSet} className="mt-8 rounded-2xl bg-[#3efe18] py-5">
-        <Text className="text-center text-lg font-bold text-black">Add Set</Text>
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={handleAddSet}
+        className="mt-6 rounded-2xl bg-[#10B981] py-4 shadow-lg shadow-emerald-950/40">
+        <Text className="text-center text-base font-bold text-[#0B0E14]">Add Set</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
+        activeOpacity={0.85}
         onPress={() => setRestPause(!restPause)}
-        className={`mt-5 rounded-2xl p-5 ${restPause ? 'bg-[#3efe18]' : 'bg-[#112b0a]'}`}>
-        <Text className={`text-center font-bold ${restPause ? 'text-black' : 'text-white'}`}>
-          Rest Pause Set
+        className={`mt-3 rounded-2xl border p-4 ${
+          restPause
+            ? 'border-cyan-400 bg-cyan-500/20'
+            : 'border-slate-800 bg-[#151B26]'
+        }`}>
+        <Text className={`text-center text-sm font-bold ${restPause ? 'text-cyan-400' : 'text-slate-300'}`}>
+          {restPause ? '✓ Rest Pause Enabled' : 'Enable Rest Pause Set'}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleFinish} className="mb-20 mt-4 rounded-2xl bg-[#112b0a] py-5">
-        <Text className="text-center text-lg font-bold text-white">Finish Workout</Text>
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={handleFinish}
+        className="mb-20 mt-4 rounded-2xl border border-slate-800 bg-slate-900 py-4">
+        <Text className="text-center text-base font-bold text-slate-300">Finish Workout</Text>
       </TouchableOpacity>
     </ScrollView>
   );
