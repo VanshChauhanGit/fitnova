@@ -1,26 +1,34 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View } from 'react-native';
+import React from 'react';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import DashboardScreen from '../screens/home/DashboardScreen';
 import WorkoutScreen from '../screens/workout/WorkoutScreen';
 import ProgressScreen from '../screens/progress/ProgressScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import ActiveSessionFloatingBar from '../components/ActiveSessionFloatingBar';
 
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabNavigator() {
+export default function BottomTabNavigator({ navigation }) {
   const insets = useSafeAreaInsets();
   const bottomPadding = insets.bottom > 0 ? insets.bottom : 10;
 
   return (
     <Tab.Navigator
+      tabBar={(props) => (
+        <View>
+          <ActiveSessionFloatingBar navigation={navigation} bottomOffset={64 + bottomPadding} />
+          <BottomTabBar {...props} />
+        </View>
+      )}
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#10B981',
-        tabBarInactiveTintColor: '#64748B',
+        tabBarActiveTintColor: '#017374',
+        tabBarInactiveTintColor: '#3A7574',
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontSize: 11,
@@ -33,9 +41,9 @@ export default function BottomTabNavigator() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: '#0B0E14',
+          backgroundColor: '#EBF7F4',
           borderTopWidth: 1,
-          borderTopColor: 'rgba(255, 255, 255, 0.08)',
+          borderTopColor: 'rgba(1, 115, 116, 0.18)',
           height: 60 + bottomPadding,
           paddingTop: 8,
           paddingBottom: bottomPadding,
@@ -44,7 +52,7 @@ export default function BottomTabNavigator() {
         tabBarBackground: () => (
           <BlurView
             intensity={95}
-            tint="dark"
+            tint="light"
             style={{
               position: 'absolute',
               top: 0,
@@ -66,9 +74,9 @@ export default function BottomTabNavigator() {
           }
           if (route.name === 'Exercises') {
             return (
-              <MaterialCommunityIcons
-                name="dumbbell"
-                size={26}
+              <Ionicons
+                name={focused ? 'barbell' : 'barbell-outline'}
+                size={24}
                 color={color}
               />
             );

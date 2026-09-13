@@ -10,20 +10,22 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
   const user = useAuthStore((state) => state.user);
   const activePlan = useWorkoutPlanStore((state) => state.activePlan);
   const deletePlanStore = useWorkoutPlanStore((state) => state.deletePlan);
+  const getTodayMappedSession = useWorkoutPlanStore((state) => state.getTodayMappedSession);
 
   const plan = planParam || activePlan;
   const isActive = (activePlan?.id === plan?.id) || (activePlan?._id === plan?._id) || plan?.isActive;
+  const todaySession = isActive ? getTodayMappedSession() : null;
 
   const [selectedDayNum, setSelectedDayNum] = useState(1);
 
   if (!plan) {
     return (
-      <View className="flex-1 bg-[#0B0E14] items-center justify-center p-5">
-        <Text className="text-white text-lg">No Workout Plan selected.</Text>
+      <View className="flex-1 bg-[#EBF7F4] items-center justify-center p-5">
+        <Text className="text-[#014041] text-lg font-bold">No Workout Plan selected.</Text>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="mt-4 rounded-xl bg-[#10B981] px-5 py-3">
-          <Text className="font-bold text-[#0B0E14]">Go Back</Text>
+          className="mt-4 rounded-xl bg-[#017374] px-5 py-3 border border-[#017374]/20 shadow-sm">
+          <Text className="font-bold text-white">Go Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -59,114 +61,140 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
   };
 
   return (
-    <View className="flex-1 bg-[#0B0E14] pt-14">
+    <View className="flex-1 bg-[#EBF7F4] pt-14">
       {/* HEADER */}
-      <View className="flex-row items-center justify-between px-5 pb-4 border-b border-slate-800">
+      <View className="flex-row items-center justify-between px-5 pb-4 border-b border-[#017374]/15">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-2.5">
-          <Ionicons name="arrow-back" size={20} color="#F8FAFC" />
+          className="rounded-2xl border border-[#017374]/20 bg-white p-2.5 shadow-sm">
+          <Ionicons name="arrow-back" size={20} color="#014041" />
         </TouchableOpacity>
 
-        <Text className="text-lg font-bold text-white" numberOfLines={1}>
+        <Text className="text-lg font-bold text-[#014041]" numberOfLines={1}>
           {plan.name}
         </Text>
 
         <View className="flex-row items-center space-x-2">
           <TouchableOpacity
             onPress={handleExportPDF}
-            className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-2.5 mr-2">
-            <Ionicons name="share-outline" size={20} color="#10B981" />
+            className="rounded-2xl border border-[#017374]/25 bg-[#017374]/15 p-2.5 mr-2">
+            <Ionicons name="share-outline" size={20} color="#017374" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate('CreateEditWorkoutPlan', { plan })}
-            className="rounded-2xl border border-slate-800 bg-[#151B26] p-2.5">
-            <Ionicons name="create-outline" size={20} color="#F8FAFC" />
+            className="rounded-2xl border border-[#017374]/20 bg-white p-2.5 shadow-sm">
+            <Ionicons name="create-outline" size={20} color="#014041" />
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView className="flex-1 px-5 pt-5" showsVerticalScrollIndicator={false}>
         {/* HERO CARD */}
-        <View className="overflow-hidden rounded-3xl border border-emerald-500/20 bg-[#151B26] p-6 shadow-xl">
+        <View className="overflow-hidden rounded-3xl border border-[#017374]/20 bg-white p-6 shadow-md">
           <View className="flex-row items-center justify-between">
-            <View className="rounded-full bg-emerald-500/10 px-3.5 py-1 border border-emerald-500/30">
-              <Text className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
+            <View className="rounded-full bg-[#017374]/15 px-3.5 py-1 border border-[#017374]/30">
+              <Text className="text-xs font-bold uppercase tracking-wider text-[#017374]">
                 {plan.goal || 'Build Muscle'}
               </Text>
             </View>
 
             {isActive ? (
-              <View className="flex-row items-center rounded-full bg-emerald-500/20 px-3.5 py-1 border border-emerald-500/40">
-                <Ionicons name="checkmark-circle" size={14} color="#10B981" />
-                <Text className="ml-1 text-xs font-extrabold text-emerald-400">ACTIVE PLAN</Text>
+              <View className="flex-row items-center rounded-full bg-[#017374] px-3.5 py-1 border border-[#017374]">
+                <Ionicons name="checkmark-circle" size={14} color="#FFFFFF" />
+                <Text className="ml-1 text-xs font-extrabold text-white">ACTIVE PLAN</Text>
               </View>
             ) : (
-              <View className="flex-row items-center rounded-full bg-slate-800/80 px-3.5 py-1 border border-slate-700">
-                <Ionicons name="ellipse-outline" size={12} color="#94A3B8" />
-                <Text className="ml-1 text-xs font-bold text-slate-400">Inactive</Text>
+              <View className="flex-row items-center rounded-full bg-[#EBF7F4] px-3.5 py-1 border border-[#017374]/15">
+                <Ionicons name="ellipse-outline" size={12} color="#3A7574" />
+                <Text className="ml-1 text-xs font-bold text-[#3A7574]">Inactive</Text>
               </View>
             )}
           </View>
 
-          <Text className="mt-4 text-2xl font-black text-white">{plan.name}</Text>
-          <Text className="mt-1 text-xs text-slate-400">
+          <Text className="mt-4 text-2xl font-black text-[#014041]">{plan.name}</Text>
+          <Text className="mt-1 text-xs text-[#025C5D]">
             {plan.description || 'Comprehensive muscle building & progression split routine.'}
           </Text>
 
-          <View className="mt-4 flex-row items-center justify-between border-t border-slate-800/80 pt-4">
+          <View className="mt-4 flex-row items-center justify-between border-t border-[#017374]/10 pt-4">
             <View className="flex-row items-center">
-              <Ionicons name="calendar-outline" size={16} color="#94A3B8" />
-              <Text className="ml-1.5 text-xs font-semibold text-slate-300">
+              <Ionicons name="calendar-outline" size={16} color="#3A7574" />
+              <Text className="ml-1.5 text-xs font-semibold text-[#025C5D]">
                 {plan.splitDays || plan.days?.length || 6}-Day Split Cycle
               </Text>
             </View>
 
             <TouchableOpacity
               onPress={handleExportPDF}
-              className="flex-row items-center rounded-xl bg-emerald-500 px-3 py-1.5">
-              <Ionicons name="document-text-outline" size={16} color="#0B0E14" />
-              <Text className="ml-1 text-xs font-bold text-[#0B0E14]">Export PDF</Text>
+              className="flex-row items-center rounded-xl bg-[#017374] px-3 py-1.5 border border-[#017374]/20 shadow-sm">
+              <Ionicons name="document-text-outline" size={16} color="#FFFFFF" />
+              <Text className="ml-1 text-xs font-bold text-white">Export PDF</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* DAY SELECTOR TABS */}
         <View className="mt-7">
-          <Text className="mb-3 text-base font-black text-white">Program Routine Days</Text>
+          <Text className="mb-3 text-base font-black text-[#014041]">Program Routine Days</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
-            {(plan.days || []).map((d) => (
-              <TouchableOpacity
-                key={d.dayNumber}
-                onPress={() => setSelectedDayNum(d.dayNumber)}
-                className={`mr-2.5 rounded-2xl border px-4 py-3 ${
-                  selectedDayNum === d.dayNumber
-                    ? 'border-[#10B981] bg-[#10B981]'
-                    : 'border-slate-800 bg-[#151B26]'
-                }`}>
-                <Text
-                  className={`text-xs font-extrabold ${
-                    selectedDayNum === d.dayNumber ? 'text-[#0B0E14]' : 'text-slate-300'
+            {(plan.days || []).map((d) => {
+              const isToday = isActive && todaySession && todaySession.dayNumber === d.dayNumber;
+              const isTodaySkipped = isToday && todaySession?.isTodaySkipped;
+              const isTodayCompleted = isToday && todaySession?.isTodayCompleted;
+
+              return (
+                <TouchableOpacity
+                  key={d.dayNumber}
+                  onPress={() => setSelectedDayNum(d.dayNumber)}
+                  className={`mr-2.5 rounded-2xl border px-4 py-3 ${
+                    selectedDayNum === d.dayNumber
+                      ? 'border-[#017374] bg-[#017374]'
+                      : isTodaySkipped
+                      ? 'border-amber-500 bg-amber-500/15 shadow-sm'
+                      : isTodayCompleted
+                      ? 'border-emerald-500 bg-emerald-500/15 shadow-sm'
+                      : 'border-[#017374]/20 bg-white shadow-sm'
                   }`}>
-                  Day {d.dayNumber} {d.isRestDay ? '😴' : '💪'}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    className={`text-xs font-extrabold ${
+                      selectedDayNum === d.dayNumber
+                        ? 'text-white'
+                        : isTodaySkipped
+                        ? 'text-amber-700'
+                        : isTodayCompleted
+                        ? 'text-emerald-700'
+                        : 'text-[#025C5D]'
+                    }`}>
+                    Day {d.dayNumber} {d.isRestDay ? '😴' : '💪'} {isTodaySkipped ? '⏭️' : isTodayCompleted ? '✓' : ''}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
 
         {/* DAY DETAILS CARD */}
         {currentDayObj && (
-          <View className="mt-5 rounded-3xl border border-slate-800 bg-[#151B26] p-5 shadow-lg">
-            <View className="flex-row items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <View className="mt-5 rounded-3xl border border-[#017374]/20 bg-white p-5 shadow-md">
+            {isActive && todaySession && todaySession.dayNumber === currentDayObj.dayNumber && todaySession.isTodaySkipped && (
+              <View className="mb-4 flex-row items-center rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3.5">
+                <Ionicons name="play-skip-forward-circle" size={22} color="#D97706" />
+                <View className="ml-2.5 flex-1">
+                  <Text className="text-xs font-extrabold text-amber-800">Today's Session Skipped ⏭️</Text>
+                  <Text className="text-[11px] text-amber-700">This workout is rescheduled for tomorrow so your split stays on track.</Text>
+                </View>
+              </View>
+            )}
+
+            <View className="flex-row items-center justify-between border-b border-[#017374]/15 pb-3 mb-4">
               <View className="flex-row items-center">
-                <View className="mr-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 px-2.5 py-1">
-                  <Text className="text-xs font-extrabold text-[#10B981]">
+                <View className="mr-2.5 rounded-xl bg-[#017374]/15 border border-[#017374]/25 px-2.5 py-1">
+                  <Text className="text-xs font-extrabold text-[#017374]">
                     DAY {currentDayObj.dayNumber}
                   </Text>
                 </View>
-                <Text className="text-base font-bold text-white">{currentDayObj.title}</Text>
+                <Text className="text-base font-bold text-[#014041]">{currentDayObj.title}</Text>
               </View>
             </View>
 
@@ -176,8 +204,8 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
                 {currentDayObj.targetMuscles.map((m) => (
                   <View
                     key={m}
-                    className="mr-2 mb-1.5 rounded-lg bg-slate-800 px-2.5 py-1 border border-slate-700">
-                    <Text className="text-xs font-semibold text-cyan-400">🎯 {m}</Text>
+                    className="mr-2 mb-1.5 rounded-lg bg-[#EBF7F4] px-2.5 py-1 border border-[#017374]/15">
+                    <Text className="text-xs font-semibold text-[#017374]">🎯 {m}</Text>
                   </View>
                 ))}
               </View>
@@ -185,46 +213,46 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
 
             {currentDayObj.isRestDay ? (
               <View className="py-8 items-center justify-center">
-                <MaterialCommunityIcons name="moon-full" size={40} color="#64748B" />
-                <Text className="mt-3 text-base font-bold text-slate-300">Rest & Recovery Day</Text>
-                <Text className="mt-1 text-xs text-slate-500 text-center px-6">
+                <MaterialCommunityIcons name="moon-full" size={40} color="#3A7574" />
+                <Text className="mt-3 text-base font-bold text-[#025C5D]">Rest & Recovery Day</Text>
+                <Text className="mt-1 text-xs text-[#3A7574] text-center px-6">
                   Rest is when your muscles rebuild and grow. Eat clean, stay hydrated!
                 </Text>
               </View>
             ) : (
               <View>
-                <Text className="mb-3 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                <Text className="mb-3 text-xs font-extrabold uppercase tracking-wider text-[#3A7574]">
                   Target Exercises ({currentDayObj.exercises?.length || 0})
                 </Text>
 
                 {currentDayObj.exercises?.map((ex, idx) => (
                   <View
                     key={ex.exerciseId || idx}
-                    className="mb-3 rounded-2xl border border-slate-800 bg-[#0B0E14] p-4">
+                    className="mb-3 rounded-2xl border border-[#017374]/15 bg-[#EBF7F4] p-4">
                     <View className="flex-row items-center justify-between">
-                      <Text className="text-sm font-extrabold text-white">
+                      <Text className="text-sm font-extrabold text-[#014041]">
                         {idx + 1}. {ex.name}
                       </Text>
-                      <View className="rounded-lg bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/20">
-                        <Text className="text-xs font-bold text-emerald-400">{ex.bodyPart}</Text>
+                      <View className="rounded-lg bg-[#017374]/15 px-2 py-0.5 border border-[#017374]/25">
+                        <Text className="text-xs font-bold text-[#017374]">{ex.bodyPart}</Text>
                       </View>
                     </View>
 
                     <View className="mt-2.5 flex-row items-center space-x-4">
-                      <Text className="text-xs font-semibold text-slate-300">
-                        📊 <Text className="font-bold text-white">{ex.sets}</Text> sets
+                      <Text className="text-xs font-semibold text-[#025C5D]">
+                        📊 <Text className="font-bold text-[#014041]">{ex.sets}</Text> sets
                       </Text>
-                      <Text className="text-xs font-semibold text-slate-300">
-                        🔁 <Text className="font-bold text-white">{ex.reps}</Text> reps
+                      <Text className="text-xs font-semibold text-[#025C5D]">
+                        🔁 <Text className="font-bold text-[#014041]">{ex.reps}</Text> reps
                       </Text>
-                      <Text className="text-xs font-semibold text-slate-300">
-                        ⏱️ <Text className="font-bold text-white">{ex.restTime || 60}s</Text> rest
+                      <Text className="text-xs font-semibold text-[#025C5D]">
+                        ⏱️ <Text className="font-bold text-[#014041]">{ex.restTime || 60}s</Text> rest
                       </Text>
                     </View>
 
                     {ex.notes ? (
-                      <View className="mt-2.5 rounded-xl bg-slate-900/90 p-2.5 border border-slate-800">
-                        <Text className="text-xs text-slate-400">💡 {ex.notes}</Text>
+                      <View className="mt-2.5 rounded-xl bg-white p-2.5 border border-[#017374]/15">
+                        <Text className="text-xs text-[#3A7574]">💡 {ex.notes}</Text>
                       </View>
                     ) : null}
                   </View>
@@ -240,14 +268,14 @@ export default function WorkoutPlanDetailScreen({ route, navigation }) {
             onPress={handleDelete}
             className="flex-row items-center rounded-2xl bg-red-500/10 border border-red-500/20 px-4 py-3.5">
             <Ionicons name="trash-outline" size={18} color="#EF4444" style={{ marginRight: 6 }} />
-            <Text className="text-xs font-bold text-red-400">Delete Plan</Text>
+            <Text className="text-xs font-bold text-red-500">Delete Plan</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate('CreateEditWorkoutPlan', { plan })}
-            className="flex-row items-center rounded-2xl bg-[#151B26] border border-slate-800 px-5 py-3.5">
-            <Ionicons name="create-outline" size={18} color="#F8FAFC" style={{ marginRight: 6 }} />
-            <Text className="text-xs font-bold text-white">Edit Program</Text>
+            className="flex-row items-center rounded-2xl bg-[#D8F3EB] border border-[#017374]/15 px-5 py-3.5">
+            <Ionicons name="create-outline" size={18} color="#014041" style={{ marginRight: 6 }} />
+            <Text className="text-xs font-bold text-[#014041]">Edit Program</Text>
           </TouchableOpacity>
         </View>
 

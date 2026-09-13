@@ -35,13 +35,16 @@ const workoutPlanSchema = new mongoose.Schema(
     splitDays: { type: Number, default: 6 }, // 4, 6, 7 or custom
     isActive: { type: Boolean, default: false },
     days: [dayPlanSchema],
-    lastCompletedDayIndex: { type: Number, default: 0 },
+    lastCompletedDayIndex: { type: Number, default: -1 },
     lastCompletedDate: { type: Date, default: null },
+    lastCompletedIsSkipped: { type: Boolean, default: false },
+    lastLogDayIndex: { type: Number, default: -1 },
     completedLogs: [
       {
         dayIndex: Number,
         completedAt: { type: Date, default: Date.now },
         workoutId: String,
+        isSkipped: { type: Boolean, default: false },
       },
     ],
   },

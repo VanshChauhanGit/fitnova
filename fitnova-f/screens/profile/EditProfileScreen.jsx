@@ -82,15 +82,15 @@ export default function EditProfileScreen({ navigation }) {
   };
 
   return (
-    <ScrollView className="flex-1 bg-[#0B0E14] px-6 pt-16">
+    <ScrollView className="flex-1 bg-[#EBF7F4] px-6 pt-16">
       {/* HEADER */}
       <View className="flex-row items-center justify-between">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-3">
-          <Ionicons name="arrow-back" size={20} color="#F8FAFC" />
+          className="rounded-2xl border border-[#017374]/20 bg-white p-3 shadow-sm">
+          <Ionicons name="arrow-back" size={20} color="#014041" />
         </TouchableOpacity>
-        <Text className="text-2xl font-black text-white">Edit Profile</Text>
+        <Text className="text-2xl font-black text-[#014041]">Edit Profile</Text>
         <View className="w-10" />
       </View>
 
@@ -105,13 +105,13 @@ export default function EditProfileScreen({ navigation }) {
                   ? 'https://plus.unsplash.com/premium_photo-1739786996060-2769f1ded135?q=80&w=580&auto=format&fit=crop'
                   : 'https://images.unsplash.com/photo-1740252117027-4275d3f84385?w=500&auto=format&fit=crop'),
             }}
-            className="h-28 w-28 rounded-full border-4 border-[#10B981]"
+            className="h-28 w-28 rounded-full border-4 border-[#017374]"
           />
-          <View className="absolute bottom-0 right-0 rounded-full bg-[#10B981] p-2 border-2 border-[#0B0E14]">
-            <Ionicons name="camera" size={16} color="#0B0E14" />
+          <View className="absolute bottom-0 right-0 rounded-full bg-[#017374] p-2 border-2 border-[#EBF7F4]">
+            <Ionicons name="camera" size={16} color="#FFFFFF" />
           </View>
         </View>
-        <Text className="mt-3 text-xs font-bold uppercase tracking-wider text-[#10B981]">
+        <Text className="mt-3 text-xs font-bold uppercase tracking-wider text-[#017374]">
           Change Photo
         </Text>
       </TouchableOpacity>
@@ -119,61 +119,61 @@ export default function EditProfileScreen({ navigation }) {
       {/* FORM INPUTS */}
       <View className="mt-8 space-y-4">
         <View className="mb-4">
-          <Text className="mb-2 text-xs font-semibold text-slate-400">Full Name</Text>
+          <Text className="mb-2 text-xs font-semibold text-[#3A7574]">Full Name</Text>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="Name"
-            placeholderTextColor="#64748B"
-            className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-white"
+            placeholderTextColor="#3A7574"
+            className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-[#014041] shadow-sm"
           />
         </View>
 
         <View className="mb-4">
-          <Text className="mb-2 text-xs font-semibold text-slate-400">Username</Text>
+          <Text className="mb-2 text-xs font-semibold text-[#3A7574]">Username</Text>
           <TextInput
             value={username}
             onChangeText={setUsername}
             placeholder="Username"
-            placeholderTextColor="#64748B"
-            className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-white"
+            placeholderTextColor="#3A7574"
+            className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-[#014041] shadow-sm"
           />
         </View>
 
         <View className="mb-4 flex-row justify-between">
           <View className="w-[31%]">
-            <Text className="mb-2 text-xs font-semibold text-slate-400">Age</Text>
+            <Text className="mb-2 text-xs font-semibold text-[#3A7574]">Age</Text>
             <TextInput
               keyboardType="number-pad"
               value={age}
               onChangeText={setAge}
               placeholder="Age"
-              placeholderTextColor="#64748B"
-              className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-white text-center"
+              placeholderTextColor="#3A7574"
+              className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-[#014041] text-center shadow-sm"
             />
           </View>
 
           <View className="w-[31%]">
-            <Text className="mb-2 text-xs font-semibold text-slate-400">Height (cm)</Text>
+            <Text className="mb-2 text-xs font-semibold text-[#3A7574]">Height (cm)</Text>
             <TextInput
               keyboardType="number-pad"
               value={height}
               onChangeText={setHeight}
               placeholder="cm"
-              placeholderTextColor="#64748B"
-              className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-white text-center"
+              placeholderTextColor="#3A7574"
+              className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-[#014041] text-center shadow-sm"
             />
           </View>
 
           <View className="w-[31%]">
-            <Text className="mb-2 text-xs font-semibold text-slate-400">Weight (kg)</Text>
+            <Text className="mb-2 text-xs font-semibold text-[#3A7574]">Weight (kg)</Text>
             <TextInput
               keyboardType="number-pad"
               value={weight}
               onChangeText={setWeight}
               placeholder="kg"
-              placeholderTextColor="#64748B"
-              className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-white text-center"
+              placeholderTextColor="#3A7574"
+              className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-[#014041] text-center shadow-sm"
             />
           </View>
         </View>
@@ -182,8 +182,8 @@ export default function EditProfileScreen({ navigation }) {
       {/* GOALS */}
       <View className="mt-4">
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-sm font-bold text-white">Fitness Goals</Text>
-          <Text className="text-xs font-bold text-[#10B981]">{goals.length}/2 selected</Text>
+          <Text className="text-sm font-bold text-[#014041]">Fitness Goals</Text>
+          <Text className="text-xs font-bold text-[#017374]">{goals.length}/2 selected</Text>
         </View>
 
         <View className="flex-row flex-wrap justify-between">
@@ -196,12 +196,12 @@ export default function EditProfileScreen({ navigation }) {
                 onPress={() => toggleGoal(goal)}
                 className={`mb-3 w-[48%] rounded-2xl border p-4 ${
                   selected
-                    ? 'border-[#10B981] bg-[#10B981]'
-                    : 'border-slate-800 bg-[#151B26]'
+                    ? 'border-[#017374] bg-[#017374]'
+                    : 'border-[#017374]/20 bg-white shadow-sm'
                 }`}>
                 <Text
                   className={`text-center text-xs font-bold ${
-                    selected ? 'text-[#0B0E14]' : 'text-slate-300'
+                    selected ? 'text-white' : 'text-[#025C5D]'
                   }`}>
                   {goal}
                 </Text>
@@ -216,11 +216,11 @@ export default function EditProfileScreen({ navigation }) {
         activeOpacity={0.85}
         disabled={loading}
         onPress={handleUpdate}
-        className="mb-24 mt-8 items-center rounded-2xl bg-[#10B981] py-4 shadow-lg shadow-emerald-950/40">
+        className="mb-24 mt-8 items-center rounded-2xl bg-[#017374] py-4 shadow-lg border border-[#017374]/20">
         {loading ? (
-          <ActivityIndicator color="#0B0E14" />
+          <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text className="text-base font-bold text-[#0B0E14]">Save Changes</Text>
+          <Text className="text-base font-bold text-white">Save Changes</Text>
         )}
       </TouchableOpacity>
     </ScrollView>

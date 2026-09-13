@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 
 import {
   View,
@@ -19,14 +18,12 @@ const goalsData = ['Lose Weight', 'Build Muscle', 'Stay Fit', 'Gain Strength'];
 
 const activityLevels = ['Beginner', 'Intermediate', 'Advanced'];
 
-export default function ProfileSetupScreen() {
+export default function ProfileSetupScreen({ navigation }) {
   const user = useAuthStore((state) => state.user);
 
   const completeProfile = useAuthStore((state) => state.completeProfile);
 
   const loading = useAuthStore((state) => state.loading);
-
-  const navigation = useNavigation();
 
   const [age, setAge] = useState('');
 
@@ -102,35 +99,35 @@ export default function ProfileSetupScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-[#0B0E14] px-6 pt-16">
-      <View className="mb-2 inline-flex self-start rounded-full bg-[#10B981]/10 px-4 py-1.5 border border-[#10B981]/20">
-        <Text className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
+    <ScrollView className="flex-1 bg-[#EBF7F4] px-6 pt-16">
+      <View className="mb-2 inline-flex self-start rounded-full bg-[#017374]/15 px-4 py-1.5 border border-[#017374]/25">
+        <Text className="text-xs font-bold uppercase tracking-wider text-[#017374]">
           Step 1 of 1 • Setup Profile
         </Text>
       </View>
 
-      <Text className="mt-2 text-3xl font-black text-white">Tell us about yourself</Text>
-      <Text className="mt-1 text-sm font-medium text-slate-400">
+      <Text className="mt-2 text-3xl font-black text-[#014041]">Tell us about yourself</Text>
+      <Text className="mt-1 text-sm font-medium text-[#025C5D]">
         Help us personalize your workouts and targets
       </Text>
 
       {/* AGE */}
       <View className="mt-8">
-        <Text className="mb-2 text-sm font-semibold text-slate-300">Age</Text>
+        <Text className="mb-2 text-sm font-semibold text-[#3A7574]">Age</Text>
         <TextInput
           keyboardType="numeric"
           value={age}
           maxLength={3}
           onChangeText={setAge}
           placeholder="Enter your age (e.g. 24)"
-          placeholderTextColor="#64748B"
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
+          placeholderTextColor="#3A7574"
+          className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-base text-[#014041] shadow-sm"
         />
       </View>
 
       {/* GENDER */}
       <View className="mt-6">
-        <Text className="mb-2 text-sm font-semibold text-slate-300">Gender</Text>
+        <Text className="mb-2 text-sm font-semibold text-[#3A7574]">Gender</Text>
         <View className="flex-row justify-between">
           {['Male', 'Female'].map((item) => (
             <TouchableOpacity
@@ -139,12 +136,12 @@ export default function ProfileSetupScreen() {
               onPress={() => setGender(item)}
               className={`w-[48%] rounded-2xl border p-4.5 ${
                 gender === item
-                  ? 'border-[#10B981] bg-[#10B981]'
-                  : 'border-slate-800 bg-[#151B26]'
+                  ? 'border-[#017374] bg-[#017374]'
+                  : 'border-[#017374]/20 bg-white shadow-sm'
               }`}>
               <Text
                 className={`text-center font-bold ${
-                  gender === item ? 'text-[#0B0E14]' : 'text-white'
+                  gender === item ? 'text-white' : 'text-[#014041]'
                 }`}>
                 {item}
               </Text>
@@ -155,37 +152,37 @@ export default function ProfileSetupScreen() {
 
       {/* HEIGHT */}
       <View className="mt-6">
-        <Text className="mb-2 text-sm font-semibold text-slate-300">Height (cm)</Text>
+        <Text className="mb-2 text-sm font-semibold text-[#3A7574]">Height (cm)</Text>
         <TextInput
           keyboardType="numeric"
           value={height}
           maxLength={3}
           onChangeText={setHeight}
           placeholder="Enter height in cm (e.g. 175)"
-          placeholderTextColor="#64748B"
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
+          placeholderTextColor="#3A7574"
+          className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-base text-[#014041] shadow-sm"
         />
       </View>
 
       {/* WEIGHT */}
       <View className="mt-6">
-        <Text className="mb-2 text-sm font-semibold text-slate-300">Weight (kg)</Text>
+        <Text className="mb-2 text-sm font-semibold text-[#3A7574]">Weight (kg)</Text>
         <TextInput
           keyboardType="numeric"
           maxLength={3}
           value={weight}
           onChangeText={setWeight}
           placeholder="Enter weight in kg (e.g. 70)"
-          placeholderTextColor="#64748B"
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base text-white"
+          placeholderTextColor="#3A7574"
+          className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-base text-[#014041] shadow-sm"
         />
       </View>
 
       {/* GOALS */}
       <View className="mt-6">
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-sm font-semibold text-slate-300">Fitness Goals</Text>
-          <Text className="text-xs font-bold text-[#10B981]">{goals.length}/2 selected</Text>
+          <Text className="text-sm font-semibold text-[#3A7574]">Fitness Goals</Text>
+          <Text className="text-xs font-bold text-[#017374]">{goals.length}/2 selected</Text>
         </View>
 
         <View className="flex-row flex-wrap justify-between">
@@ -199,12 +196,12 @@ export default function ProfileSetupScreen() {
                 onPress={() => toggleGoal(item)}
                 className={`mb-3.5 w-[48%] rounded-2xl border p-4.5 ${
                   selected
-                    ? 'border-[#10B981] bg-[#10B981]'
-                    : 'border-slate-800 bg-[#151B26]'
+                    ? 'border-[#017374] bg-[#017374]'
+                    : 'border-[#017374]/20 bg-white shadow-sm'
                 }`}>
                 <Text
                   className={`text-center font-bold ${
-                    selected ? 'text-[#0B0E14]' : 'text-white'
+                    selected ? 'text-white' : 'text-[#014041]'
                   }`}>
                   {item}
                 </Text>
@@ -216,7 +213,7 @@ export default function ProfileSetupScreen() {
 
       {/* LEVEL */}
       <View className="mt-4">
-        <Text className="mb-3 text-sm font-semibold text-slate-300">Activity Level</Text>
+        <Text className="mb-3 text-sm font-semibold text-[#3A7574]">Activity Level</Text>
 
         <View className="flex-row justify-between">
           {activityLevels.map((item) => (
@@ -226,12 +223,12 @@ export default function ProfileSetupScreen() {
               onPress={() => setActivityLevel(item)}
               className={`w-[31%] rounded-2xl border px-2 py-4 ${
                 activityLevel === item
-                  ? 'border-[#10B981] bg-[#10B981]'
-                  : 'border-slate-800 bg-[#151B26]'
+                  ? 'border-[#017374] bg-[#017374]'
+                  : 'border-[#017374]/20 bg-white shadow-sm'
               }`}>
               <Text
                 className={`text-center text-xs font-bold ${
-                  activityLevel === item ? 'text-[#0B0E14]' : 'text-white'
+                  activityLevel === item ? 'text-white' : 'text-[#014041]'
                 }`}>
                 {item}
               </Text>
@@ -245,11 +242,11 @@ export default function ProfileSetupScreen() {
         activeOpacity={0.85}
         disabled={loading}
         onPress={handleContinue}
-        className="mb-20 mt-10 items-center rounded-2xl bg-[#10B981] py-4.5 shadow-lg shadow-emerald-950/40">
+        className="mb-20 mt-10 items-center rounded-2xl bg-[#017374] py-4.5 shadow-lg border border-[#017374]/20">
         {loading ? (
-          <ActivityIndicator color="#0B0E14" />
+          <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text className="text-center text-base font-bold text-[#0B0E14]">Complete Profile</Text>
+          <Text className="text-base font-bold text-white">Save Profile</Text>
         )}
       </TouchableOpacity>
     </ScrollView>

@@ -9,7 +9,7 @@ import {
   Switch,
   Modal,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import useWorkoutPlanStore, { PRESET_SPLITS } from '../../store/workoutPlanStore';
 
 const MUSCLE_GROUPS = [
@@ -32,6 +32,9 @@ const SPLIT_PRESETS_OPTIONS = [
   { label: '6-Day Split', value: 6 },
   { label: '7-Day Split', value: 7 },
 ];
+
+const REPS_PRESETS = ['6-8', '8-10', '10-12', '12-15', '15-20'];
+const REST_PRESETS = [45, 60, 90, 120, 180];
 
 export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
   const editPlan = route?.params?.plan || null;
@@ -151,9 +154,9 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
       exerciseId: 'ex-' + Date.now(),
       name: exName.trim(),
       bodyPart: exBodyPart,
-      sets: parseInt(exSets) || 3,
+      sets: parseInt(exSets, 10) || 3,
       reps: exReps || '10-12',
-      restTime: parseInt(exRest) || 60,
+      restTime: parseInt(exRest, 10) || 60,
       notes: exNotes,
     };
 
@@ -204,38 +207,45 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
   };
 
   return (
-    <View className="flex-1 bg-[#0B0E14] pt-14">
+    <View className="flex-1 bg-[#EBF7F4] pt-14">
       {/* HEADER */}
-      <View className="flex-row items-center justify-between px-5 pb-4 border-b border-slate-800">
+      <View className="flex-row items-center justify-between px-5 pb-4 border-b border-[#017374]/15">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-2.5">
-          <Ionicons name="arrow-back" size={20} color="#F8FAFC" />
+          className="flex-row items-center rounded-xl border border-[#017374]/20 bg-white px-3 py-2 shadow-xs">
+          <Ionicons name="arrow-back" size={18} color="#017374" />
+          <Text className="ml-1 text-xs font-bold text-[#017374]">Back</Text>
         </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">
-          {editPlan ? 'Edit Workout Plan' : 'Create Workout Plan'}
-        </Text>
+
+        <View className="items-center flex-1 mx-2">
+          <Text className="text-[10px] font-extrabold text-[#017374] uppercase tracking-wider">ROUTINE PLAN BUILDER</Text>
+          <Text className="text-base font-black text-[#014041]" numberOfLines={1}>
+            {editPlan ? 'Edit Workout Plan' : 'Create Workout Plan'}
+          </Text>
+        </View>
+
         <TouchableOpacity
           onPress={handleSavePlan}
-          className="rounded-xl bg-[#10B981] px-4 py-2.5">
-          <Text className="font-bold text-[#0B0E14]">Save Plan</Text>
+          className="flex-row items-center rounded-full bg-[#017374] px-4 py-2 shadow-md border border-[#017374]/20 active:opacity-90">
+          <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" style={{ marginRight: 4 }} />
+          <Text className="text-xs font-black text-white uppercase tracking-wider">Save</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
         {/* PRESET SPLIT SELECTION BUTTONS */}
         {!editPlan && (
-          <View className="mb-6 rounded-2xl border border-slate-800 bg-[#151B26] p-4">
-            <Text className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-              ⚡ Quick Preset Split Templates
+          <View className="mb-5 rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+            <Text className="text-[10px] font-extrabold uppercase tracking-widest text-[#017374]">
+              ⚡ QUICK PRESET SPLIT TEMPLATES
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-3 flex-row">
               {PRESET_SPLITS.map((p) => (
                 <TouchableOpacity
                   key={p.id}
                   onPress={() => loadPresetTemplate(p.id)}
-                  className="mr-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2">
-                  <Text className="text-xs font-bold text-emerald-400">{p.name}</Text>
+                  className="mr-2.5 rounded-full border border-[#017374]/30 bg-[#F0F9F6] px-4 py-2 active:bg-[#017374] active:border-[#017374]">
+                  <Text className="text-xs font-black text-[#017374]">{p.name}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -245,51 +255,51 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
         {/* PLAN NAME & DESCRIPTION */}
         <View className="space-y-4">
           <View>
-            <Text className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Plan Title
+            <Text className="mb-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+              Plan Title *
             </Text>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder="e.g. 6-Day Hypertrophy PPL"
-              placeholderTextColor="#64748B"
-              className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-base font-bold text-white"
+              placeholderTextColor="#3A7574"
+              className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-base font-black text-[#014041] shadow-xs"
             />
           </View>
 
           <View className="mt-4">
-            <Text className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Description / Notes
+            <Text className="mb-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+              Description / Routine Notes
             </Text>
             <TextInput
               value={description}
               onChangeText={setDescription}
               placeholder="e.g. Target progressive overload on heavy compound lifts."
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#3A7574"
               multiline
               numberOfLines={2}
-              className="rounded-2xl border border-slate-800 bg-[#151B26] p-4 text-sm text-white"
+              className="rounded-2xl border border-[#017374]/20 bg-white p-4 text-sm font-semibold text-[#014041] shadow-xs"
             />
           </View>
         </View>
 
         {/* GOAL & ACTIVE STATUS TOGGLE */}
-        <View className="mt-5 flex-row justify-between">
+        <View className="mt-5 flex-row justify-between gap-3">
           <View className="w-[48%]">
-            <Text className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <Text className="mb-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
               Primary Goal
             </Text>
-            <View className="rounded-2xl border border-slate-800 bg-[#151B26] p-1.5">
+            <View className="rounded-2xl border border-[#017374]/20 bg-white p-1.5 shadow-xs">
               {['Build Muscle', 'Gain Strength', 'Fat Loss'].map((g) => (
                 <TouchableOpacity
                   key={g}
                   onPress={() => setGoal(g)}
-                  className={`rounded-xl py-2 px-3 ${
-                    goal === g ? 'bg-[#10B981]' : 'bg-transparent'
+                  className={`rounded-xl py-2 px-3 mb-1 ${
+                    goal === g ? 'bg-[#017374] shadow-xs' : 'bg-transparent'
                   }`}>
                   <Text
-                    className={`text-xs font-bold text-center ${
-                      goal === g ? 'text-[#0B0E14]' : 'text-slate-400'
+                    className={`text-xs font-black text-center ${
+                      goal === g ? 'text-white' : 'text-[#3A7574]'
                     }`}>
                     {g}
                   </Text>
@@ -298,18 +308,24 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
             </View>
           </View>
 
-          <View className="w-[48%] rounded-2xl border border-slate-800 bg-[#151B26] p-4 justify-between">
-            <Text className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Active Plan Status
-            </Text>
-            <View className="flex-row items-center justify-between mt-2">
-              <Text className="text-xs font-bold text-white">
+          <View className="w-[48%] rounded-2xl border border-[#017374]/20 bg-white p-4 justify-between shadow-xs">
+            <View>
+              <Text className="text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+                Plan Status
+              </Text>
+              <Text className="text-xs font-semibold text-[#3A7574] mt-1">
+                Toggle as your main workout routine
+              </Text>
+            </View>
+
+            <View className="flex-row items-center justify-between mt-3 pt-3 border-t border-[#017374]/10">
+              <Text className="text-xs font-black text-[#014041]">
                 {isActive ? 'Active Plan' : 'Inactive'}
               </Text>
               <Switch
                 value={isActive}
                 onValueChange={setIsActive}
-                trackColor={{ false: '#334155', true: '#10B981' }}
+                trackColor={{ false: '#D1EFE7', true: '#017374' }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -318,22 +334,22 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
 
         {/* SPLIT DURATION SELECTOR (4, 6, 7 Days) */}
         <View className="mt-6">
-          <Text className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <Text className="mb-2 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
             Split Days Length
           </Text>
-          <View className="flex-row space-x-3">
+          <View className="flex-row gap-2">
             {SPLIT_PRESETS_OPTIONS.map((opt) => (
               <TouchableOpacity
                 key={opt.value}
                 onPress={() => handleSplitCountChange(opt.value)}
-                className={`flex-1 rounded-2xl border py-3 px-2 mr-2 items-center ${
+                className={`flex-1 rounded-full border py-3 items-center ${
                   days.length === opt.value
-                    ? 'border-[#10B981] bg-[#10B981]/15'
-                    : 'border-slate-800 bg-[#151B26]'
+                    ? 'border-[#017374] bg-[#017374] shadow-sm'
+                    : 'border-[#017374]/20 bg-white shadow-xs'
                 }`}>
                 <Text
-                  className={`text-xs font-bold ${
-                    days.length === opt.value ? 'text-[#10B981]' : 'text-slate-400'
+                  className={`text-xs font-black ${
+                    days.length === opt.value ? 'text-white' : 'text-[#3A7574]'
                   }`}>
                   {opt.label}
                 </Text>
@@ -344,20 +360,20 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
 
         {/* DAY-BY-DAY TAB BAR */}
         <View className="mt-7">
-          <Text className="mb-3 text-base font-black text-white">Day-by-Day Routine Builder</Text>
+          <Text className="mb-3 text-base font-black text-[#014041]">Day-by-Day Routine Builder</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
             {days.map((d) => (
               <TouchableOpacity
                 key={d.dayNumber}
                 onPress={() => setActiveDayTab(d.dayNumber)}
-                className={`mr-2.5 rounded-2xl border px-4 py-3 flex-row items-center ${
+                className={`mr-2.5 rounded-full border px-4 py-3 flex-row items-center ${
                   activeDayTab === d.dayNumber
-                    ? 'border-[#10B981] bg-[#10B981]'
-                    : 'border-slate-800 bg-[#151B26]'
+                    ? 'border-[#017374] bg-[#017374] shadow-sm'
+                    : 'border-[#017374]/20 bg-white shadow-xs'
                 }`}>
                 <Text
-                  className={`text-xs font-extrabold ${
-                    activeDayTab === d.dayNumber ? 'text-[#0B0E14]' : 'text-slate-300'
+                  className={`text-xs font-black ${
+                    activeDayTab === d.dayNumber ? 'text-white' : 'text-[#025C5D]'
                   }`}>
                   Day {d.dayNumber} {d.isRestDay ? '😴' : '💪'}
                 </Text>
@@ -368,40 +384,40 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
 
         {/* ACTIVE DAY EDITING SECTION */}
         {currentDayObj && (
-          <View className="mt-5 rounded-3xl border border-slate-800 bg-[#151B26] p-5 shadow-lg">
-            <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+          <View className="mt-5 rounded-3xl border border-[#017374]/20 bg-white p-5 shadow-sm mb-10">
+            <View className="flex-row items-center justify-between pb-3 border-b border-[#017374]/10 mb-4">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-[#017374]">
                 Editing Day {currentDayObj.dayNumber}
               </Text>
 
               <View className="flex-row items-center">
-                <Text className="mr-2 text-xs font-medium text-slate-400">Rest Day</Text>
+                <Text className="mr-2 text-xs font-extrabold text-[#3A7574]">Rest Day</Text>
                 <Switch
                   value={currentDayObj.isRestDay}
                   onValueChange={(val) => updateCurrentDay({ isRestDay: val })}
-                  trackColor={{ false: '#334155', true: '#10B981' }}
+                  trackColor={{ false: '#D1EFE7', true: '#017374' }}
                   thumbColor="#FFFFFF"
                 />
               </View>
             </View>
 
             {/* DAY TITLE */}
-            <Text className="mb-1 text-xs font-semibold text-slate-400">Routine Title</Text>
+            <Text className="mb-1 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">Routine Title</Text>
             <TextInput
               value={currentDayObj.title}
               onChangeText={(txt) => updateCurrentDay({ title: txt })}
               placeholder="e.g. Push A (Chest & Triceps)"
-              placeholderTextColor="#64748B"
-              className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-3.5 text-sm font-bold text-white mb-4"
+              placeholderTextColor="#3A7574"
+              className="rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] p-3.5 text-sm font-black text-[#014041] mb-4"
             />
 
             {currentDayObj.isRestDay ? (
               <View className="py-8 items-center justify-center">
-                <MaterialCommunityIcons name="bed-clock" size={48} color="#64748B" />
-                <Text className="mt-3 text-base font-bold text-slate-300">
+                <MaterialCommunityIcons name="bed-clock" size={48} color="#3A7574" />
+                <Text className="mt-3 text-base font-black text-[#025C5D]">
                   Active Recovery & Rest Day
                 </Text>
-                <Text className="mt-1 text-xs text-slate-500 text-center px-6">
+                <Text className="mt-1 text-xs font-semibold text-[#3A7574] text-center px-6">
                   No exercise logging required for rest days. Prioritize hydration & sleep!
                 </Text>
               </View>
@@ -409,51 +425,53 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
               <View>
                 {/* EXERCISES LIST FOR THIS DAY */}
                 <View className="flex-row items-center justify-between mb-3">
-                  <Text className="text-sm font-bold text-white">
+                  <Text className="text-sm font-black text-[#014041]">
                     Exercises ({currentDayObj.exercises?.length || 0})
                   </Text>
                   <TouchableOpacity
                     onPress={() => setIsExerciseModalOpen(true)}
-                    className="flex-row items-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5">
-                    <Ionicons name="add" size={16} color="#10B981" />
-                    <Text className="ml-1 text-xs font-bold text-emerald-400">Add Exercise</Text>
+                    className="flex-row items-center rounded-full bg-[#017374] px-3.5 py-2 shadow-xs">
+                    <Ionicons name="add" size={16} color="#FFFFFF" />
+                    <Text className="ml-1 text-xs font-black text-white uppercase tracking-wider">Add Exercise</Text>
                   </TouchableOpacity>
                 </View>
 
-                {currentDayObj.exercises?.length === 0 ? (
-                  <View className="rounded-2xl border border-dashed border-slate-800 p-6 items-center">
-                    <Ionicons name="barbell-outline" size={32} color="#64748B" />
-                    <Text className="mt-2 text-xs font-semibold text-slate-400">
+                {!Array.isArray(currentDayObj?.exercises) || currentDayObj.exercises.length === 0 ? (
+                  <View className="rounded-2xl border border-dashed border-[#017374]/30 p-6 items-center bg-[#F0F9F6]">
+                    <Ionicons name="barbell-outline" size={32} color="#3A7574" />
+                    <Text className="mt-2 text-xs font-extrabold text-[#3A7574]">
                       No exercises added yet for Day {currentDayObj.dayNumber}
                     </Text>
                     <TouchableOpacity
                       onPress={() => setIsExerciseModalOpen(true)}
-                      className="mt-3 rounded-xl bg-[#10B981] px-4 py-2">
-                      <Text className="text-xs font-bold text-[#0B0E14]">+ Add First Exercise</Text>
+                      className="mt-3 rounded-full bg-[#017374] px-4 py-2.5 shadow-sm active:opacity-90">
+                      <Text className="text-xs font-black text-white uppercase tracking-wider">+ Add First Exercise</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
                   currentDayObj.exercises.map((ex, idx) => (
                     <View
                       key={ex.exerciseId || idx}
-                      className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-800 bg-[#0B0E14] p-3.5">
+                      className="mb-3 flex-row items-center justify-between rounded-2xl border border-[#017374]/15 bg-[#F0F9F6] p-3.5 shadow-xs">
                       <View className="flex-1 mr-3">
                         <View className="flex-row items-center space-x-2">
-                          <Text className="text-xs font-bold text-emerald-400">#{idx + 1}</Text>
-                          <Text className="text-sm font-bold text-white">{ex.name}</Text>
+                          <View className="h-6 w-6 rounded-lg bg-[#017374]/15 items-center justify-center mr-1">
+                            <Text className="text-xs font-black text-[#017374]">#{idx + 1}</Text>
+                          </View>
+                          <Text className="text-sm font-black text-[#014041]">{ex.name}</Text>
                         </View>
-                        <Text className="mt-0.5 text-xs text-slate-400">
+                        <Text className="mt-1 text-xs font-bold text-[#025C5D]">
                           {ex.sets} sets • {ex.reps} reps • {ex.restTime || 60}s rest ({ex.bodyPart})
                         </Text>
                         {ex.notes ? (
-                          <Text className="mt-1 text-xs italic text-slate-500">
+                          <Text className="mt-1 text-xs italic font-semibold text-[#3A7574]">
                             💡 {ex.notes}
                           </Text>
                         ) : null}
                       </View>
                       <TouchableOpacity
                         onPress={() => handleDeleteExercise(ex.exerciseId)}
-                        className="rounded-xl bg-red-500/10 p-2 border border-red-500/20">
+                        className="rounded-xl bg-red-500/10 p-2.5 border border-red-500/20 active:bg-red-500/20">
                         <Ionicons name="trash-outline" size={18} color="#EF4444" />
                       </TouchableOpacity>
                     </View>
@@ -464,95 +482,160 @@ export default function CreateEditWorkoutPlanScreen({ route, navigation }) {
           </View>
         )}
 
-        <View className="h-32" />
+        <View className="h-24" />
       </ScrollView>
 
-      {/* ADD EXERCISE MODAL */}
+      {/* ADD EXERCISE MODAL POPUP */}
       <Modal visible={isExerciseModalOpen} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/80">
-          <View className="rounded-t-3xl border-t border-slate-800 bg-[#151B26] p-6 max-h-[85%]">
-            <View className="flex-row items-center justify-between pb-4 border-b border-slate-800">
-              <Text className="text-lg font-bold text-white">Add Exercise to Day {activeDayTab}</Text>
-              <TouchableOpacity onPress={() => setIsExerciseModalOpen(false)}>
-                <Ionicons name="close" size={24} color="#94A3B8" />
+        <View className="flex-1 bg-black/60 justify-end">
+          <View className="bg-white rounded-t-[40px] p-6 border-t border-[#017374]/20 shadow-2xl max-h-[90%]">
+            {/* TOP DRAG HANDLE */}
+            <View className="h-1.5 w-14 rounded-full bg-gray-300 self-center mb-4" />
+
+            <View className="flex-row items-center justify-between pb-4 border-b border-[#017374]/10">
+              <View>
+                <Text className="text-[10px] font-extrabold text-[#017374]/70 uppercase tracking-widest mb-0.5">
+                  EXERCISE CONFIGURATION
+                </Text>
+                <Text className="text-xl font-black text-[#014041]">
+                  Add Exercise to Day {activeDayTab}
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => setIsExerciseModalOpen(false)}
+                className="rounded-full bg-[#F0F9F6] p-2.5 active:bg-[#E2F4EE]">
+                <Ionicons name="close" size={22} color="#014041" />
               </TouchableOpacity>
             </View>
 
             <ScrollView className="mt-4" showsVerticalScrollIndicator={false}>
-              <Text className="mb-1 text-xs font-semibold text-slate-400">Exercise Name *</Text>
-              <TextInput
-                value={exName}
-                onChangeText={setExName}
-                placeholder="e.g. Barbell Bench Press, Lat Pulldown"
-                placeholderTextColor="#64748B"
-                className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-4 text-sm font-bold text-white mb-4"
-              />
+              {/* EXERCISE NAME */}
+              <Text className="mb-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+                Exercise Name *
+              </Text>
+              <View className="flex-row items-center rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] px-4 py-1 mb-4 shadow-inner">
+                <Ionicons name="barbell-outline" size={20} color="#017374" style={{ marginRight: 8 }} />
+                <TextInput
+                  value={exName}
+                  onChangeText={setExName}
+                  placeholder="e.g. Barbell Bench Press, Lat Pulldown"
+                  placeholderTextColor="#3A7574"
+                  className="flex-1 py-3 text-sm font-black text-[#014041]"
+                />
+              </View>
 
-              <Text className="mb-1 text-xs font-semibold text-slate-400">Target Muscle Group</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-4">
-                {MUSCLE_GROUPS.map((m) => (
-                  <TouchableOpacity
-                    key={m}
-                    onPress={() => setExBodyPart(m)}
-                    className={`mr-2 rounded-xl px-3 py-2 border ${
-                      exBodyPart === m
-                        ? 'border-[#10B981] bg-[#10B981]'
-                        : 'border-slate-800 bg-[#0B0E14]'
-                    }`}>
-                    <Text
-                      className={`text-xs font-bold ${
-                        exBodyPart === m ? 'text-[#0B0E14]' : 'text-slate-400'
+              {/* TARGET MUSCLE GROUP */}
+              <Text className="mb-2 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+                Target Muscle Group
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-5">
+                {MUSCLE_GROUPS.map((m) => {
+                  const isSel = exBodyPart === m;
+                  return (
+                    <TouchableOpacity
+                      key={m}
+                      onPress={() => setExBodyPart(m)}
+                      className={`mr-2 px-4 py-2.5 rounded-full border ${
+                        isSel
+                          ? 'border-[#017374] bg-[#017374] shadow-md'
+                          : 'border-[#017374]/20 bg-[#F0F9F6]'
                       }`}>
-                      {m}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <Text
+                        className={`text-xs font-black ${
+                          isSel ? 'text-white' : 'text-[#014041]'
+                        }`}>
+                        {m}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
               </ScrollView>
 
-              <View className="flex-row justify-between mb-4">
-                <View className="w-[30%]">
-                  <Text className="mb-1 text-xs font-semibold text-slate-400">Target Sets</Text>
-                  <TextInput
-                    value={exSets}
-                    onChangeText={setExSets}
-                    keyboardType="numeric"
-                    className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-3.5 text-sm font-bold text-white text-center"
-                  />
+              {/* SETS, REPS & REST STATS */}
+              <Text className="mb-2 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+                Sets, Reps & Rest Targets
+              </Text>
+              <View className="flex-row justify-between gap-2 mb-4">
+                {/* SETS */}
+                <View className="flex-1 rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] p-3 items-center">
+                  <Text className="text-[9px] font-extrabold uppercase text-[#017374] mb-1">Target Sets</Text>
+                  <View className="flex-row items-center space-x-2">
+                    <TouchableOpacity
+                      onPress={() => setExSets(String(Math.max(1, (parseInt(exSets, 10) || 3) - 1)))}
+                      className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15">
+                      <Ionicons name="remove" size={14} color="#017374" />
+                    </TouchableOpacity>
+                    <Text className="text-base font-black text-[#014041] px-1">{exSets || '3'}</Text>
+                    <TouchableOpacity
+                      onPress={() => setExSets(String((parseInt(exSets, 10) || 3) + 1))}
+                      className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15">
+                      <Ionicons name="add" size={14} color="#017374" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View className="w-[33%]">
-                  <Text className="mb-1 text-xs font-semibold text-slate-400">Target Reps</Text>
+
+                {/* REPS */}
+                <View className="flex-[1.2] rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] p-3 items-center">
+                  <Text className="text-[9px] font-extrabold uppercase text-[#017374] mb-1">Target Reps</Text>
                   <TextInput
                     value={exReps}
                     onChangeText={setExReps}
                     placeholder="10-12"
-                    placeholderTextColor="#64748B"
-                    className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-3.5 text-sm font-bold text-white text-center"
+                    placeholderTextColor="#3A7574"
+                    className="text-base font-black text-[#014041] text-center w-full"
                   />
                 </View>
-                <View className="w-[30%]">
-                  <Text className="mb-1 text-xs font-semibold text-slate-400">Rest (sec)</Text>
+
+                {/* REST */}
+                <View className="flex-1 rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] p-3 items-center">
+                  <Text className="text-[9px] font-extrabold uppercase text-[#017374] mb-1">Rest (sec)</Text>
                   <TextInput
                     value={exRest}
                     onChangeText={setExRest}
                     keyboardType="numeric"
-                    className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-3.5 text-sm font-bold text-white text-center"
+                    placeholder="60"
+                    placeholderTextColor="#3A7574"
+                    className="text-base font-black text-[#014041] text-center w-full"
                   />
                 </View>
               </View>
 
-              <Text className="mb-1 text-xs font-semibold text-slate-400">Form Notes / Cue</Text>
+              {/* QUICK REPS PRESETS */}
+              <View className="flex-row items-center gap-1.5 mb-4">
+                <Text className="text-[10px] font-extrabold uppercase text-[#3A7574] mr-1">Reps Presets:</Text>
+                {REPS_PRESETS.map((rp) => (
+                  <TouchableOpacity
+                    key={rp}
+                    onPress={() => setExReps(rp)}
+                    className={`px-2.5 py-1 rounded-lg border ${
+                      exReps === rp ? 'border-[#017374] bg-[#017374]' : 'border-[#017374]/20 bg-[#F0F9F6]'
+                    }`}>
+                    <Text className={`text-[10px] font-black ${exReps === rp ? 'text-white' : 'text-[#017374]'}`}>{rp}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* FORM NOTES / CUES */}
+              <Text className="mb-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#3A7574]">
+                Form Notes / Cue (Optional)
+              </Text>
               <TextInput
                 value={exNotes}
                 onChangeText={setExNotes}
                 placeholder="e.g. Squeeze lats, control eccentric 3s"
-                placeholderTextColor="#64748B"
-                className="rounded-2xl border border-slate-800 bg-[#0B0E14] p-4 text-xs text-white mb-6"
+                placeholderTextColor="#3A7574"
+                className="rounded-2xl border border-[#017374]/20 bg-[#F0F9F6] p-3.5 text-xs font-semibold text-[#014041] mb-6"
               />
 
+              {/* ADD EXERCISE ACTION BUTTON */}
               <TouchableOpacity
                 onPress={handleAddExercise}
-                className="rounded-2xl bg-[#10B981] py-4 items-center mb-6">
-                <Text className="text-base font-bold text-[#0B0E14]">Add to Day {activeDayTab}</Text>
+                className="rounded-full bg-[#017374] py-4 items-center mb-6 shadow-lg shadow-[#017374]/40 active:opacity-90 flex-row justify-center">
+                <Ionicons name="add-circle" size={20} color="#FFFFFF" style={{ marginRight: 6 }} />
+                <Text className="text-sm font-black text-white uppercase tracking-widest">
+                  ADD TO DAY {activeDayTab}
+                </Text>
               </TouchableOpacity>
             </ScrollView>
           </View>

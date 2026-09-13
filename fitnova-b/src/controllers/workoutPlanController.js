@@ -158,25 +158,40 @@ export const deactivateAllWorkoutPlans = async (req, res) => {
   }
 };
 
-// @desc    Log completion of a plan day & advance cycle
+// @desc    Log completion of a plan day & advance cycle (or skip session)
 // @route   PATCH /api/workout-plans/:id/log-day
 // @access  Private
 export const logPlanDayCompletion = async (req, res) => {
   try {
-    const { dayIndex, workoutId } = req.body;
+    const { dayIndex, workoutId, isSkipped } = req.body;
     const plan = await WorkoutPlan.findOne({ _id: req.params.id, user: req.user._id });
 
     if (!plan) {
       return res.status(404).json({ message: "Workout plan not found" });
     }
 
-    plan.lastCompletedDayIndex = dayIndex;
-    plan.lastCompletedDate = new Date();
-    plan.completedLogs.push({
-      dayIndex,
-      completedAt: new Date(),
-      workoutId: workoutId || "",
-    });
+    if (isSkipped) {
+      plan.lastCompletedDate = new Date();
+      plan.lastCompletedIsSkipped = true;
+      plan.lastLogDayIndex = dayIndex;
+      plan.completedLogs.push({
+        dayIndex,
+        completedAt: new Date(),
+        workoutId: "",
+        isSkipped: true,
+      });
+    } else {
+      plan.lastCompletedDayIndex = dayIndex;
+      plan.lastCompletedDate = new Date();
+      plan.lastCompletedIsSkipped = false;
+      plan.lastLogDayIndex = dayIndex;
+      plan.completedLogs.push({
+        dayIndex,
+        completedAt: new Date(),
+        workoutId: workoutId || "",
+        isSkipped: false,
+      });
+    }
 
     const updatedPlan = await plan.save();
     res.status(200).json(updatedPlan);

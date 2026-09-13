@@ -83,43 +83,43 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
   };
 
   return (
-    <ScrollView className="flex-1 bg-[#0B0E14] px-6 pt-16">
+    <ScrollView className="flex-1 bg-[#EBF7F4] px-6 pt-16">
       {/* Header */}
       <View className="flex-row items-center justify-between">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="rounded-2xl border border-slate-800 bg-[#151B26] p-3">
-          <Text className="text-sm font-bold text-slate-300">← Back</Text>
+          className="rounded-2xl border border-[#017374]/20 bg-white p-3 shadow-sm">
+          <Text className="text-sm font-bold text-[#017374]">← Back</Text>
         </TouchableOpacity>
 
-        <View className="rounded-full bg-[#10B981]/10 px-3 py-1 border border-[#10B981]/20">
-          <Text className="text-xs font-bold text-[#10B981]">ACTIVE SESSION</Text>
+        <View className="rounded-full bg-[#017374]/15 px-3 py-1 border border-[#017374]/25">
+          <Text className="text-xs font-bold text-[#017374]">ACTIVE SESSION</Text>
         </View>
       </View>
 
-      <Text className="mt-6 text-3xl font-black capitalize text-white">{exercise.name}</Text>
-      <Text className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+      <Text className="mt-6 text-3xl font-black capitalize text-[#014041]">{exercise.name}</Text>
+      <Text className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#3A7574]">
         {exercise.bodyPart} • {exercise.target}
       </Text>
 
       {/* TIMERS ROW */}
       <View className="mt-6 flex-row justify-between">
         {/* WORKOUT TIMER */}
-        <View className="w-[48%] items-center rounded-3xl border border-slate-800 bg-[#151B26] p-5">
-          <Text className="text-xs font-semibold text-slate-400">Workout Time</Text>
-          <Text className="mt-2 text-3xl font-black text-[#10B981]">{formatTime(seconds)}</Text>
+        <View className="w-[48%] items-center rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-sm">
+          <Text className="text-xs font-semibold text-[#3A7574]">Workout Time</Text>
+          <Text className="mt-2 text-3xl font-black text-[#017374]">{formatTime(seconds)}</Text>
         </View>
 
         {/* REST TIMER */}
-        <View className="w-[48%] items-center rounded-3xl border border-slate-800 bg-[#151B26] p-5">
-          <Text className="text-xs font-semibold text-slate-400">Rest Timer</Text>
-          <Text className="mt-2 text-3xl font-black text-cyan-400">{formatTime(restSeconds)}</Text>
+        <View className="w-[48%] items-center rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-sm">
+          <Text className="text-xs font-semibold text-[#3A7574]">Rest Timer</Text>
+          <Text className="mt-2 text-3xl font-black text-[#017374]">{formatTime(restSeconds)}</Text>
         </View>
       </View>
 
       {/* INPUTS */}
-      <View className="mt-8 rounded-3xl border border-slate-800 bg-[#151B26] p-6 space-y-4">
-        <Text className="text-sm font-bold text-slate-300">Log New Set</Text>
+      <View className="mt-8 rounded-3xl border border-[#017374]/15 bg-white p-6 space-y-4 shadow-sm">
+        <Text className="text-sm font-bold text-[#014041]">Log New Set</Text>
 
         <View className="flex-row justify-between mt-3">
           <TextInput
@@ -127,8 +127,8 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
             value={reps}
             onChangeText={setReps}
             placeholder="Reps (e.g. 10)"
-            placeholderTextColor="#64748B"
-            className="w-[48%] rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white font-semibold"
+            placeholderTextColor="#3A7574"
+            className="w-[48%] rounded-2xl border border-[#017374]/20 bg-[#EBF7F4] p-4 text-[#014041] font-semibold"
           />
 
           <TextInput
@@ -136,8 +136,8 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
             value={weight}
             onChangeText={setWeight}
             placeholder="Weight (kg)"
-            placeholderTextColor="#64748B"
-            className="w-[48%] rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white font-semibold"
+            placeholderTextColor="#3A7574"
+            className="w-[48%] rounded-2xl border border-[#017374]/20 bg-[#EBF7F4] p-4 text-[#014041] font-semibold"
           />
         </View>
 
@@ -145,9 +145,9 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
           value={notes}
           onChangeText={setNotes}
           placeholder="Set notes (optional)..."
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#3A7574"
           multiline
-          className="mt-3 h-20 rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white text-sm"
+          className="mt-3 h-20 rounded-2xl border border-[#017374]/20 bg-[#EBF7F4] p-4 text-[#014041] text-sm"
         />
       </View>
 
@@ -155,8 +155,8 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={handleAddSet}
-        className="mt-6 rounded-2xl bg-[#10B981] py-4 shadow-lg shadow-emerald-950/40">
-        <Text className="text-center text-base font-bold text-[#0B0E14]">Add Set</Text>
+        className="mt-6 rounded-2xl bg-[#017374] py-4 shadow-md border border-[#017374]/20">
+        <Text className="text-center text-base font-bold text-white">Add Set</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -164,10 +164,10 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
         onPress={() => setRestPause(!restPause)}
         className={`mt-3 rounded-2xl border p-4 ${
           restPause
-            ? 'border-cyan-400 bg-cyan-500/20'
-            : 'border-slate-800 bg-[#151B26]'
+            ? 'border-[#017374] bg-[#017374]'
+            : 'border-[#017374]/20 bg-white shadow-sm'
         }`}>
-        <Text className={`text-center text-sm font-bold ${restPause ? 'text-cyan-400' : 'text-slate-300'}`}>
+        <Text className={`text-center text-sm font-bold ${restPause ? 'text-white' : 'text-[#025C5D]'}`}>
           {restPause ? '✓ Rest Pause Enabled' : 'Enable Rest Pause Set'}
         </Text>
       </TouchableOpacity>
@@ -175,8 +175,8 @@ export default function ActiveWorkoutScreen({ route, navigation }) {
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={handleFinish}
-        className="mb-20 mt-4 rounded-2xl border border-slate-800 bg-slate-900 py-4">
-        <Text className="text-center text-base font-bold text-slate-300">Finish Workout</Text>
+        className="mb-20 mt-4 rounded-2xl border border-[#017374]/20 bg-[#D8F3EB] py-4 shadow-sm">
+        <Text className="text-center text-base font-bold text-[#014041]">Finish Workout</Text>
       </TouchableOpacity>
     </ScrollView>
   );

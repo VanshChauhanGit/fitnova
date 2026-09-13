@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../api/axios';
+import { scheduleDailyWorkoutReminder, cancelAllWorkoutReminders } from '../utils/notificationService';
 
 export const PRESET_SPLITS = [
   {
@@ -161,23 +162,32 @@ export const PRESET_SPLITS = [
   },
 ];
 
-const STORAGE_KEY = '@fitnova_workout_plans_v2';
-const ACTIVE_ID_KEY = '@fitnova_active_plan_id';
+const REMINDER_TIME_KEY = '@fitnova_reminder_time';
+const REMINDER_ENABLED_KEY = '@fitnova_reminder_enabled';
 
 const useWorkoutPlanStore = create((set, get) => ({
   plans: [],
   activePlan: null,
   loading: false,
   error: null,
+  reminderTime: '18:00',
+  reminderEnabled: true,
 
-  // INIT & LOAD PLANS (API first, local storage fallback)
+  // INIT & LOAD PLANS (Directly from backend API)
   loadPlans: async () => {
     set({ loading: true });
     try {
-      const token = await AsyncStorage.getItem('token');
-      let loadedFromApi = false;
+      // Load reminder preferences
+      const savedReminderTime = await AsyncStorage.getItem(REMINDER_TIME_KEY);
+      const savedReminderEnabled = await AsyncStorage.getItem(REMINDER_ENABLED_KEY);
+      if (savedReminderTime) {
+        set({ reminderTime: savedReminderTime });
+      }
+      if (savedReminderEnabled !== null) {
+        set({ reminderEnabled: JSON.parse(savedReminderEnabled) });
+      }
 
-      // 1. Try fetching from backend API first if logged in
+      const token = await AsyncStorage.getItem('token');
       if (token) {
         try {
           const res = await API.get('/workout-plans', {
@@ -189,42 +199,14 @@ const useWorkoutPlanStore = create((set, get) => ({
             id: p._id || p.id,
           }));
 
-          if (rawApiPlans.length > 0) {
-            const activePlan = rawApiPlans.find((p) => p.isActive) || null;
-            set({ plans: rawApiPlans, activePlan });
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(rawApiPlans));
-            if (activePlan) {
-              await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
-            } else {
-              await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-            }
-            loadedFromApi = true;
-          } else {
-            set({ plans: [], activePlan: null });
-            loadedFromApi = true;
-          }
+          const activePlan = rawApiPlans.find((p) => p.isActive) || null;
+          set({ plans: rawApiPlans, activePlan });
+          return;
         } catch (_apiErr) {
-          // Backend API unreachable or offline, fall back to local storage
+          console.log('Error fetching plans from backend:', _apiErr.message);
         }
       }
-
-      // 2. Fall back to local storage only if offline or API fetch skipped
-      if (!loadedFromApi) {
-        const storedPlansJson = await AsyncStorage.getItem(STORAGE_KEY);
-        const storedActiveId = await AsyncStorage.getItem(ACTIVE_ID_KEY);
-
-        let localPlans = [];
-        if (storedPlansJson) {
-          localPlans = JSON.parse(storedPlansJson);
-        }
-
-        if (localPlans && localPlans.length > 0) {
-          const activePlan = localPlans.find((p) => p.isActive || p.id === storedActiveId) || null;
-          set({ plans: localPlans, activePlan });
-        } else {
-          set({ plans: [], activePlan: null });
-        }
-      }
+      set({ plans: [], activePlan: null });
     } catch (err) {
       console.log('Error loading workout plans:', err);
     } finally {
@@ -232,7 +214,47 @@ const useWorkoutPlanStore = create((set, get) => ({
     }
   },
 
-  // GET TODAY'S DYNAMIC MAPPED SESSION (Smart Catch-Up Engine)
+  // SET REMINDER TIME & SCHEDULE LOCAL NOTIFICATION
+  setReminderTime: async (timeString) => {
+    try {
+      set({ reminderTime: timeString, reminderEnabled: true });
+      await AsyncStorage.setItem(REMINDER_TIME_KEY, timeString);
+      await AsyncStorage.setItem(REMINDER_ENABLED_KEY, JSON.stringify(true));
+
+      const todaySession = get().getTodayMappedSession();
+      const res = await scheduleDailyWorkoutReminder(
+        timeString,
+        todaySession?.dayTitle || "Today's Workout",
+        todaySession?.targetMuscles || []
+      );
+      return res;
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  // TOGGLE REMINDER ENABLED
+  toggleReminder: async (enabled) => {
+    try {
+      set({ reminderEnabled: enabled });
+      await AsyncStorage.setItem(REMINDER_ENABLED_KEY, JSON.stringify(enabled));
+      if (enabled) {
+        const timeString = get().reminderTime || '18:00';
+        const todaySession = get().getTodayMappedSession();
+        return await scheduleDailyWorkoutReminder(
+          timeString,
+          todaySession?.dayTitle || "Today's Workout",
+          todaySession?.targetMuscles || []
+        );
+      } else {
+        return await cancelAllWorkoutReminders();
+      }
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  // GET TODAY'S DYNAMIC MAPPED SESSION (Smart Catch-Up Engine & Today Completion/Skip State)
   getTodayMappedSession: () => {
     const activePlan = get().activePlan;
     if (!activePlan || !activePlan.days || activePlan.days.length === 0) {
@@ -243,15 +265,19 @@ const useWorkoutPlanStore = create((set, get) => ({
     const lastCompletedDayIndex = typeof activePlan.lastCompletedDayIndex === 'number' ? activePlan.lastCompletedDayIndex : -1;
     const lastCompletedDateStr = activePlan.lastCompletedDate;
 
-    let targetDayIndex = (lastCompletedDayIndex + 1) % totalDays;
-    let isRolledOver = false;
+    const logs = activePlan.completedLogs || [];
+    const lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
+
+    let isTodayLogged = false;
+    let isTodayCompleted = false;
+    let isTodaySkipped = false;
     let daysSinceLast = 0;
+    let lastLogDayIndex = typeof activePlan.lastLogDayIndex === 'number' ? activePlan.lastLogDayIndex : (lastLog?.dayIndex ?? -1);
 
     if (lastCompletedDateStr) {
       const lastDate = new Date(lastCompletedDateStr);
       const today = new Date();
-      
-      // Reset time portion for accurate date diff
+
       lastDate.setHours(0, 0, 0, 0);
       const todayZero = new Date(today);
       todayZero.setHours(0, 0, 0, 0);
@@ -259,28 +285,56 @@ const useWorkoutPlanStore = create((set, get) => ({
       const diffMs = todayZero.getTime() - lastDate.getTime();
       daysSinceLast = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-      // If last completed was yesterday (daysSinceLast === 1), user is on schedule.
-      // If daysSinceLast > 1 (e.g. 2+ days without logging), the engine AUTO-MAPS today to targetDayIndex!
-      if (daysSinceLast > 1) {
-        isRolledOver = true;
+      if (daysSinceLast === 0) {
+        isTodayLogged = true;
+        const isSkipped = activePlan.lastCompletedIsSkipped !== undefined
+          ? activePlan.lastCompletedIsSkipped
+          : Boolean(lastLog?.isSkipped);
+
+        if (isSkipped) {
+          isTodaySkipped = true;
+          isTodayCompleted = false;
+        } else {
+          isTodayCompleted = true;
+          isTodaySkipped = false;
+        }
       }
     }
 
+    let targetDayIndex;
+    if (isTodayLogged) {
+      if (isTodaySkipped) {
+        targetDayIndex = lastLogDayIndex >= 0 ? lastLogDayIndex : (lastCompletedDayIndex + 1) % totalDays;
+      } else {
+        targetDayIndex = lastCompletedDayIndex >= 0 ? lastCompletedDayIndex : 0;
+      }
+    } else {
+      targetDayIndex = (lastCompletedDayIndex + 1) % totalDays;
+    }
+
+    const isRolledOver = !isTodayLogged && daysSinceLast > 1;
     const mappedDay = activePlan.days[targetDayIndex];
 
     return {
       planId: activePlan.id || activePlan._id,
-      planName: activePlan.name,
+      planName: activePlan.name || 'Custom Plan',
       splitDays: activePlan.splitDays || totalDays,
       dayIndex: targetDayIndex,
       dayNumber: mappedDay?.dayNumber || targetDayIndex + 1,
       dayTitle: mappedDay?.title || `Day ${targetDayIndex + 1}`,
-      isRestDay: mappedDay?.isRestDay || false,
-      targetMuscles: mappedDay?.targetMuscles || [],
-      exercises: mappedDay?.exercises || [],
+      isRestDay: Boolean(mappedDay?.isRestDay),
+      targetMuscles: Array.isArray(mappedDay?.targetMuscles) ? mappedDay.targetMuscles : [],
+      exercises: Array.isArray(mappedDay?.exercises) ? mappedDay.exercises : [],
       isRolledOver,
+      isTodayLogged,
+      isTodayCompleted,
+      isTodaySkipped,
       daysSinceLast,
-      statusLabel: isRolledOver
+      statusLabel: isTodayCompleted
+        ? "✓ Today's Workout Completed 🎉"
+        : isTodaySkipped
+        ? "⏭️ Today's Session Skipped (Rescheduled for Tomorrow)"
+        : isRolledOver
         ? `⚡ Rolled over (${daysSinceLast - 1} unlogged day${daysSinceLast > 2 ? 's' : ''} auto-caught up)`
         : lastCompletedDayIndex >= 0
         ? `✓ On Schedule (Cycle Day ${targetDayIndex + 1}/${totalDays})`
@@ -288,64 +342,105 @@ const useWorkoutPlanStore = create((set, get) => ({
     };
   },
 
+  // GET TOMORROW'S WORKOUT SESSION PREVIEW
+  getTomorrowSession: () => {
+    const activePlan = get().activePlan;
+    if (!activePlan || !activePlan.days || activePlan.days.length === 0) {
+      return null;
+    }
+
+    const totalDays = activePlan.days.length;
+    const lastCompletedDayIndex = typeof activePlan.lastCompletedDayIndex === 'number' ? activePlan.lastCompletedDayIndex : -1;
+    const lastCompletedDateStr = activePlan.lastCompletedDate;
+
+    const logs = activePlan.completedLogs || [];
+    const lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
+
+    let isTodayLogged = false;
+    let isTodaySkipped = false;
+    let lastLogDayIndex = typeof activePlan.lastLogDayIndex === 'number' ? activePlan.lastLogDayIndex : (lastLog?.dayIndex ?? -1);
+
+    if (lastCompletedDateStr) {
+      const lastDate = new Date(lastCompletedDateStr);
+      const today = new Date();
+      lastDate.setHours(0, 0, 0, 0);
+      const todayZero = new Date(today);
+      todayZero.setHours(0, 0, 0, 0);
+
+      if (todayZero.getTime() === lastDate.getTime()) {
+        isTodayLogged = true;
+        isTodaySkipped = activePlan.lastCompletedIsSkipped !== undefined
+          ? activePlan.lastCompletedIsSkipped
+          : Boolean(lastLog?.isSkipped);
+      }
+    }
+
+    let tomorrowIndex;
+    if (isTodayLogged) {
+      if (isTodaySkipped) {
+        // If today was skipped, tomorrow must show today's skipped workout!
+        tomorrowIndex = lastLogDayIndex >= 0 ? lastLogDayIndex : (lastCompletedDayIndex + 1) % totalDays;
+      } else {
+        // If today was completed, tomorrow shows next day in cycle
+        tomorrowIndex = (lastCompletedDayIndex + 1) % totalDays;
+      }
+    } else {
+      // If today is pending (not logged yet), preview assumes today will be completed
+      const currentTodayIndex = (lastCompletedDayIndex + 1) % totalDays;
+      tomorrowIndex = (currentTodayIndex + 1) % totalDays;
+    }
+
+    const mappedTomorrow = activePlan.days[tomorrowIndex];
+
+    return {
+      planId: activePlan.id || activePlan._id,
+      planName: activePlan.name || 'Custom Plan',
+      splitDays: activePlan.splitDays || totalDays,
+      dayIndex: tomorrowIndex,
+      dayNumber: mappedTomorrow?.dayNumber || tomorrowIndex + 1,
+      dayTitle: mappedTomorrow?.title || `Day ${tomorrowIndex + 1}`,
+      isRestDay: Boolean(mappedTomorrow?.isRestDay),
+      targetMuscles: Array.isArray(mappedTomorrow?.targetMuscles) ? mappedTomorrow.targetMuscles : [],
+      exercises: Array.isArray(mappedTomorrow?.exercises) ? mappedTomorrow.exercises : [],
+      isSkippedRollover: isTodayLogged && isTodaySkipped,
+    };
+  },
+
   // CREATE A NEW WORKOUT PLAN
   createPlan: async (newPlanData) => {
     set({ loading: true });
     try {
-      const planId = 'plan-' + Date.now();
+      const token = await AsyncStorage.getItem('token');
       const planObj = {
-        id: planId,
         name: newPlanData.name,
         description: newPlanData.description || '',
         goal: newPlanData.goal || 'Build Muscle',
         splitDays: newPlanData.days ? newPlanData.days.length : 6,
         isActive: !!newPlanData.isActive,
-        lastCompletedDayIndex: -1,
-        lastCompletedDate: null,
-        completedLogs: [],
         days: newPlanData.days || [],
-        createdAt: new Date().toISOString(),
       };
 
-      const currentPlans = get().plans;
-      let updatedPlans = [planObj, ...currentPlans];
-
-      if (planObj.isActive) {
-        updatedPlans = updatedPlans.map((p) => ({
-          ...p,
-          isActive: p.id === planId,
-        }));
-      }
-
-      const activePlan = updatedPlans.find((p) => p.isActive) || null;
-
-      set({ plans: updatedPlans, activePlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      if (activePlan) {
-        await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id);
-      } else {
-        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-      }
-
-      // Backend API call
-      const token = await AsyncStorage.getItem('token');
       if (token) {
         try {
           const res = await API.post('/workout-plans', planObj, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (res.data) {
-            const apiPlan = { ...res.data, id: res.data._id || res.data.id };
-            const syncedPlans = updatedPlans.map((p) => (p.id === planId ? apiPlan : p));
-            set({ plans: syncedPlans, activePlan: apiPlan.isActive ? apiPlan : activePlan });
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(syncedPlans));
+            await get().loadPlans();
+            return { success: true, plan: res.data };
           }
         } catch (e) {
-          console.log('API sync warning (create):', e.message);
+          console.log('API plan create error:', e.message);
         }
       }
 
-      return { success: true, plan: planObj };
+      // Optimistic local state fallback if offline
+      const fallbackId = 'plan-' + Date.now();
+      const fallbackPlan = { ...planObj, id: fallbackId, lastCompletedDayIndex: -1, lastCompletedDate: null, completedLogs: [] };
+      const updatedPlans = [fallbackPlan, ...get().plans];
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
+      set({ plans: updatedPlans, activePlan });
+      return { success: true, plan: fallbackPlan };
     } catch (err) {
       set({ error: err.message });
       return { success: false, message: err.message };
@@ -358,43 +453,6 @@ const useWorkoutPlanStore = create((set, get) => ({
   updatePlan: async (planId, updatedFields) => {
     set({ loading: true });
     try {
-      const currentPlans = get().plans;
-      let updatedPlans = currentPlans.map((p) => {
-        if (p.id === planId || p._id === planId) {
-          return {
-            ...p,
-            ...updatedFields,
-            splitDays: updatedFields.days ? updatedFields.days.length : p.splitDays,
-          };
-        }
-        return p;
-      });
-
-      if (updatedFields.isActive === true) {
-        updatedPlans = updatedPlans.map((p) => ({
-          ...p,
-          isActive: p.id === planId || p._id === planId,
-        }));
-      } else if (updatedFields.isActive === false) {
-        updatedPlans = updatedPlans.map((p) => {
-          if (p.id === planId || p._id === planId) {
-            return { ...p, isActive: false };
-          }
-          return p;
-        });
-      }
-
-      const activePlan = updatedPlans.find((p) => p.isActive) || null;
-
-      set({ plans: updatedPlans, activePlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      if (activePlan) {
-        await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
-      } else {
-        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-      }
-
-      // API sync
       const token = await AsyncStorage.getItem('token');
       const realId = planId;
       const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
@@ -404,11 +462,21 @@ const useWorkoutPlanStore = create((set, get) => ({
           await API.put(`/workout-plans/${realId}`, updatedFields, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          await get().loadPlans();
+          return { success: true };
         } catch (e) {
-          console.log('API sync warning (update):', e.message);
+          console.log('API update warning:', e.message);
         }
       }
 
+      const updatedPlans = get().plans.map((p) => {
+        if (p.id === planId || p._id === planId) {
+          return { ...p, ...updatedFields };
+        }
+        return p;
+      });
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
+      set({ plans: updatedPlans, activePlan });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
@@ -420,44 +488,24 @@ const useWorkoutPlanStore = create((set, get) => ({
   // DELETE WORKOUT PLAN
   deletePlan: async (planId) => {
     try {
-      const currentPlans = get().plans;
-      const filtered = currentPlans.filter((p) => p.id !== planId && p._id !== planId);
-
-      let activePlan = get().activePlan;
-      const isDeletingActive = activePlan?.id === planId || activePlan?._id === planId;
-
-      if (filtered.length > 0) {
-        if (isDeletingActive) {
-          filtered[0].isActive = true;
-          activePlan = filtered[0];
-        } else {
-          activePlan = filtered.find((p) => p.isActive) || filtered[0];
-        }
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-        if (activePlan) {
-          await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
-        }
-      } else {
-        activePlan = null;
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-      }
-
-      set({ plans: filtered, activePlan });
-
-      // API sync
       const token = await AsyncStorage.getItem('token');
       const isMongoId = typeof planId === 'string' && /^[0-9a-fA-F]{24}$/.test(planId);
+
       if (token && isMongoId) {
         try {
           await API.delete(`/workout-plans/${planId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          await get().loadPlans();
+          return { success: true };
         } catch (e) {
-          console.log('API sync warning (delete):', e.message);
+          console.log('API delete warning:', e.message);
         }
       }
 
+      const filtered = get().plans.filter((p) => p.id !== planId && p._id !== planId);
+      const activePlan = filtered.find((p) => p.isActive) || filtered[0] || null;
+      set({ plans: filtered, activePlan });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
@@ -467,23 +515,8 @@ const useWorkoutPlanStore = create((set, get) => ({
   // SET ACTIVE PLAN
   setActivePlan: async (planId) => {
     try {
-      const currentPlans = get().plans;
-      const updatedPlans = currentPlans.map((p) => ({
-        ...p,
-        isActive: p.id === planId || p._id === planId,
-      }));
-
-      const activePlan = updatedPlans.find((p) => p.isActive) || null;
-
-      set({ plans: updatedPlans, activePlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      if (activePlan) {
-        await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
-      }
-
-      // API sync
       const token = await AsyncStorage.getItem('token');
-      const realId = activePlan?._id || activePlan?.id || planId;
+      const realId = planId;
       const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
 
       if (token && isMongoId) {
@@ -491,11 +524,19 @@ const useWorkoutPlanStore = create((set, get) => ({
           await API.patch(`/workout-plans/${realId}/activate`, {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          await get().loadPlans();
+          return { success: true };
         } catch (e) {
-          console.log('API sync warning (activate):', e.message);
+          console.log('API activate warning:', e.message);
         }
       }
 
+      const updatedPlans = get().plans.map((p) => ({
+        ...p,
+        isActive: p.id === planId || p._id === planId,
+      }));
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
+      set({ plans: updatedPlans, activePlan });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
@@ -505,37 +546,11 @@ const useWorkoutPlanStore = create((set, get) => ({
   // TOGGLE ACTIVE PLAN (Activate or Deactivate plan)
   toggleActivePlan: async (planId) => {
     try {
-      const currentPlans = get().plans;
-      const targetPlan = currentPlans.find((p) => p.id === planId || p._id === planId);
+      const targetPlan = get().plans.find((p) => p.id === planId || p._id === planId);
       const isCurrentlyActive = !!targetPlan?.isActive;
-
-      let updatedPlans = [];
-      let activePlan = null;
-
-      if (isCurrentlyActive) {
-        // Deactivate all plans
-        updatedPlans = currentPlans.map((p) => ({ ...p, isActive: false }));
-        activePlan = null;
-        await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-      } else {
-        // Activate selected plan only
-        updatedPlans = currentPlans.map((p) => ({
-          ...p,
-          isActive: p.id === planId || p._id === planId,
-        }));
-        activePlan = updatedPlans.find((p) => p.isActive) || null;
-        if (activePlan) {
-          await AsyncStorage.setItem(ACTIVE_ID_KEY, activePlan.id || activePlan._id);
-        }
-      }
-
-      set({ plans: updatedPlans, activePlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-
-      // API sync
-      const token = await AsyncStorage.getItem('token');
       const realId = targetPlan?._id || targetPlan?.id || planId;
       const isMongoId = typeof realId === 'string' && /^[0-9a-fA-F]{24}$/.test(realId);
+      const token = await AsyncStorage.getItem('token');
 
       if (token) {
         try {
@@ -548,11 +563,19 @@ const useWorkoutPlanStore = create((set, get) => ({
               headers: { Authorization: `Bearer ${token}` },
             });
           }
+          await get().loadPlans();
+          return { success: true, isActive: !isCurrentlyActive };
         } catch (e) {
-          console.log('API sync warning (toggle-active):', e.message);
+          console.log('API toggle active warning:', e.message);
         }
       }
 
+      const updatedPlans = get().plans.map((p) => ({
+        ...p,
+        isActive: isCurrentlyActive ? false : (p.id === planId || p._id === planId),
+      }));
+      const activePlan = updatedPlans.find((p) => p.isActive) || null;
+      set({ plans: updatedPlans, activePlan });
       return { success: true, isActive: !isCurrentlyActive };
     } catch (err) {
       return { success: false, message: err.message };
@@ -562,24 +585,21 @@ const useWorkoutPlanStore = create((set, get) => ({
   // DEACTIVATE ALL PLANS
   deactivateAllPlans: async () => {
     try {
-      const currentPlans = get().plans;
-      const updatedPlans = currentPlans.map((p) => ({ ...p, isActive: false }));
-
-      set({ plans: updatedPlans, activePlan: null });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-      await AsyncStorage.removeItem(ACTIVE_ID_KEY);
-
       const token = await AsyncStorage.getItem('token');
       if (token) {
         try {
           await API.patch('/workout-plans/deactivate-all', {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          await get().loadPlans();
+          return { success: true };
         } catch (e) {
-          console.log('API sync warning (deactivate-all):', e.message);
+          console.log('API deactivate all warning:', e.message);
         }
       }
 
+      const updatedPlans = get().plans.map((p) => ({ ...p, isActive: false }));
+      set({ plans: updatedPlans, activePlan: null });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
@@ -590,27 +610,11 @@ const useWorkoutPlanStore = create((set, get) => ({
   markDayComplete: async (dayIndex, workoutId = null) => {
     try {
       const activePlan = get().activePlan;
-      if (!activePlan) return;
+      if (!activePlan) return { success: false, message: 'No active plan found' };
 
-      const planId = activePlan.id || activePlan._id;
-      const updatedDate = new Date().toISOString();
-      const logs = activePlan.completedLogs || [];
-      const newLogs = [...logs, { dayIndex, completedAt: updatedDate, workoutId }];
-
-      const updatedPlan = {
-        ...activePlan,
-        lastCompletedDayIndex: dayIndex,
-        lastCompletedDate: updatedDate,
-        completedLogs: newLogs,
-      };
-
-      const updatedPlans = get().plans.map((p) => (p.id === planId || p._id === planId ? updatedPlan : p));
-
-      set({ plans: updatedPlans, activePlan: updatedPlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-
-      // API sync
+      const planId = activePlan._id || activePlan.id;
       const token = await AsyncStorage.getItem('token');
+
       if (token) {
         try {
           await API.patch(
@@ -618,18 +622,33 @@ const useWorkoutPlanStore = create((set, get) => ({
             { dayIndex, workoutId },
             { headers: { Authorization: `Bearer ${token}` } }
           );
+          await get().loadPlans();
+          return { success: true };
         } catch (e) {
-          console.log('API sync warning (log-day):', e.message);
+          console.log('API log day completion warning:', e.message);
         }
       }
 
+      const updatedDate = new Date().toISOString();
+      const logs = activePlan.completedLogs || [];
+      const newLogs = [...logs, { dayIndex, completedAt: updatedDate, isSkipped: false, workoutId }];
+      const updatedPlan = {
+        ...activePlan,
+        lastCompletedDayIndex: dayIndex,
+        lastCompletedDate: updatedDate,
+        lastCompletedIsSkipped: false,
+        lastLogDayIndex: dayIndex,
+        completedLogs: newLogs,
+      };
+      const updatedPlans = get().plans.map((p) => (p.id === planId || p._id === planId ? updatedPlan : p));
+      set({ plans: updatedPlans, activePlan: updatedPlan });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
     }
   },
 
-  // SKIP TODAY'S SESSION (ADVANCE CYCLE WITHOUT LOGGING WORKOUT)
+  // SKIP TODAY'S SESSION (MARK TODAY SKIPPED WITHOUT ADVANCING CYCLE POSITION)
   skipTodaySession: async () => {
     try {
       const activePlan = get().activePlan;
@@ -639,25 +658,9 @@ const useWorkoutPlanStore = create((set, get) => ({
       if (!todaySession) return { success: false, message: 'No today session mapped' };
 
       const dayIndex = todaySession.dayIndex;
-      const planId = activePlan.id || activePlan._id;
-      const updatedDate = new Date().toISOString();
-      const logs = activePlan.completedLogs || [];
-      const newLogs = [...logs, { dayIndex, completedAt: updatedDate, isSkipped: true }];
-
-      const updatedPlan = {
-        ...activePlan,
-        lastCompletedDayIndex: dayIndex,
-        lastCompletedDate: updatedDate,
-        completedLogs: newLogs,
-      };
-
-      const updatedPlans = get().plans.map((p) => (p.id === planId || p._id === planId ? updatedPlan : p));
-
-      set({ plans: updatedPlans, activePlan: updatedPlan });
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
-
-      // API sync
+      const planId = activePlan._id || activePlan.id;
       const token = await AsyncStorage.getItem('token');
+
       if (token) {
         try {
           await API.patch(
@@ -665,11 +668,25 @@ const useWorkoutPlanStore = create((set, get) => ({
             { dayIndex, isSkipped: true },
             { headers: { Authorization: `Bearer ${token}` } }
           );
+          await get().loadPlans();
+          return { success: true, skippedDayTitle: todaySession.dayTitle };
         } catch (e) {
-          console.log('API sync warning (skip-day):', e.message);
+          console.log('API skip session warning:', e.message);
         }
       }
 
+      const updatedDate = new Date().toISOString();
+      const logs = activePlan.completedLogs || [];
+      const newLogs = [...logs, { dayIndex, completedAt: updatedDate, isSkipped: true }];
+      const updatedPlan = {
+        ...activePlan,
+        lastCompletedDate: updatedDate,
+        lastCompletedIsSkipped: true,
+        lastLogDayIndex: dayIndex,
+        completedLogs: newLogs,
+      };
+      const updatedPlans = get().plans.map((p) => (p.id === planId || p._id === planId ? updatedPlan : p));
+      set({ plans: updatedPlans, activePlan: updatedPlan });
       return { success: true, skippedDayTitle: todaySession.dayTitle };
     } catch (err) {
       return { success: false, message: err.message };
