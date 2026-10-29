@@ -29,13 +29,28 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vansh1411r.fitnova",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#EBF7F4"
       }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "efdab331-ac33-4142-98b6-6b305498ab99"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/efdab331-ac33-4142-98b6-6b305498ab99"
     }
   }
 }

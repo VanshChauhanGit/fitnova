@@ -17,6 +17,23 @@ import useWorkoutStore from '../../store/workoutStore';
 import useWorkoutPlanStore from '../../store/workoutPlanStore';
 import { unlockAudio } from '../../utils/alarm';
 
+// Helper to look up previous logged exercise sets from user's workout history
+const getLastLoggedExerciseSets = (exName, history) => {
+  if (!exName || !Array.isArray(history) || history.length === 0) return null;
+  const nameLower = exName.trim().toLowerCase();
+
+  for (const w of history) {
+    const foundEx = (w.exercises || []).find((e) => e.name?.trim().toLowerCase() === nameLower);
+    if (foundEx && Array.isArray(foundEx.sets) && foundEx.sets.length > 0) {
+      return foundEx.sets.map(s => ({
+        weight: String(s.weight || '0'),
+        reps: String(s.reps || '10'),
+      }));
+    }
+  }
+  return null;
+};
+
 function SwipeableSetRow({
   setObj,
   exIdx,
@@ -107,10 +124,11 @@ function SwipeableSetRow({
       <Animated.View
         {...panResponder.panHandlers}
         style={{ transform: [{ translateX: pan }] }}
-        className={`p-2.5 rounded-2xl border flex-row items-center justify-between ${setObj?.completed
-          ? 'border-[#017374]/35 bg-[#DDF3EE]'
-          : 'border-[#017374]/15 bg-white shadow-xs'
-          }`}>
+        className={`p-2.5 rounded-2xl border flex-row items-center justify-between ${
+          setObj?.completed
+            ? 'border-[#017374]/35 bg-[#DDF3EE]'
+            : 'border-[#017374]/15 bg-white shadow-xs'
+        }`}>
         {/* IF SWIPED OPEN, OVERLAY SHOWS CANCEL DELETE & DISMISSES SWIPE ON TAP */}
         {isOpen && (
           <TouchableOpacity
@@ -126,7 +144,7 @@ function SwipeableSetRow({
 
         {/* SET NUMBER BADGE */}
         <View className="h-8 w-8 rounded-xl bg-[#017374]/15 items-center justify-center border border-[#017374]/20 mr-1.5">
-          <Text className="text-xs font-black text-[#014041]">S{setObj?.setNum || (setIdx + 1)}</Text>
+          <Text className="text-xs font-black text-[#014041]">S{setObj?.setNum || setIdx + 1}</Text>
         </View>
 
         {/* TACTILE WEIGHT STEPPER + PICKER TRIGGER CONTROL */}
@@ -184,10 +202,11 @@ function SwipeableSetRow({
         {/* CHECKMARK DONE BUTTON */}
         <TouchableOpacity
           onPress={() => toggleSetCompleted(exIdx, setIdx)}
-          className={`h-9 w-9 rounded-xl items-center justify-center border shadow-xs ${setObj?.completed
-            ? 'border-emerald-600 bg-[#017374]'
-            : 'border-[#017374]/30 bg-white'
-            }`}>
+          className={`h-9 w-9 rounded-xl items-center justify-center border shadow-xs ${
+            setObj?.completed
+              ? 'border-emerald-600 bg-[#017374]'
+              : 'border-[#017374]/30 bg-white'
+          }`}>
           <Ionicons
             name="checkmark"
             size={18}
@@ -206,6 +225,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
   const startSession = useWorkoutStore((state) => state.startSession);
   const updateActiveSession = useWorkoutStore((state) => state.updateActiveSession);
   const activeSession = useWorkoutStore((state) => state.activeSession);
+  const workoutHistory = useWorkoutStore((state) => state.workoutHistory);
   const markDayComplete = useWorkoutPlanStore((state) => state.markDayComplete);
 
   const [saving, setSaving] = useState(false);
@@ -256,10 +276,29 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
     { name: 'Treadmill Running', bodyPart: 'Cardio' },
   ];
 
-  // Initialize or attach to global persistent session
+  // Initialize or attach to global persistent session + SMART PRE-FILL FROM HISTORY
   useEffect(() => {
     if (!activeSession && routeSession) {
-      startSession(routeSession);
+      const initializedSession = startSession(routeSession);
+
+      // Auto pre-fill exact sets count, weights, and reps from user's workout history
+      if (initializedSession && Array.isArray(initializedSession.exerciseLogs)) {
+        const prefilledLogs = initializedSession.exerciseLogs.map((ex) => {
+          const prevSets = getLastLoggedExerciseSets(ex.name, workoutHistory);
+          if (prevSets && prevSets.length > 0) {
+            const updatedSets = prevSets.map((prevS, idx) => ({
+              id: `set-${Date.now()}-${idx}`,
+              setNum: idx + 1,
+              weight: prevS.weight,
+              reps: prevS.reps,
+              completed: false,
+            }));
+            return { ...ex, sets: updatedSets };
+          }
+          return ex;
+        });
+        updateActiveSession({ exerciseLogs: prefilledLogs });
+      }
     }
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -285,22 +324,38 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
   const dismissRestAlarm = useWorkoutStore((state) => state.dismissRestAlarm);
   const extendRestTimer = useWorkoutStore((state) => state.extendRestTimer);
 
+  // Add Exercise To Session with Smart Pre-fill from Previous History
   const handleAddExerciseToSession = (exName, exBodyPart) => {
     if (!exName || !exName.trim()) return;
     const name = exName.trim();
     const bodyPart = exBodyPart || 'General';
 
+    const prevSets = getLastLoggedExerciseSets(name, workoutHistory);
+    let initialSets = [];
+
+    if (prevSets && prevSets.length > 0) {
+      initialSets = prevSets.map((s, idx) => ({
+        id: `set-${Date.now()}-${idx}`,
+        setNum: idx + 1,
+        weight: s.weight,
+        reps: s.reps,
+        completed: false,
+      }));
+    } else {
+      initialSets = [
+        { id: `set-${Date.now()}-1`, setNum: 1, weight: '0', reps: '10', completed: false },
+        { id: `set-${Date.now()}-2`, setNum: 2, weight: '0', reps: '10', completed: false },
+        { id: `set-${Date.now()}-3`, setNum: 3, weight: '0', reps: '10', completed: false },
+      ];
+    }
+
     const newExLog = {
       exerciseId: `ex-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       name,
       bodyPart,
-      targetReps: '10',
+      targetReps: initialSets[0].reps,
       notes: '',
-      sets: [
-        { id: `set-${Date.now()}-1`, setNum: 1, weight: '0', reps: '10', completed: false },
-        { id: `set-${Date.now()}-2`, setNum: 2, weight: '0', reps: '10', completed: false },
-        { id: `set-${Date.now()}-3`, setNum: 3, weight: '0', reps: '10', completed: false },
-      ],
+      sets: initialSets,
     };
 
     const newLogs = [...exerciseLogs, newExLog];
@@ -560,30 +615,34 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
           }}
           className="flex-row items-center rounded-xl border border-[#017374]/20 bg-white px-3 py-2 shadow-xs">
           <Ionicons name="arrow-back" size={18} color="#017374" />
-          <Text className="ml-1 text-xs font-bold text-[#017374]">Back</Text>
+          {/* <Text className="ml-1 text-xs font-bold text-[#017374]">Back</Text> */}
         </TouchableOpacity>
 
         <View className="items-center flex-1 mx-2">
-          <Text className="text-[10px] font-extrabold text-[#017374] uppercase tracking-wider">ACTIVE WORKOUT LOG</Text>
+          {/* <Text className="text-[10px] font-extrabold text-[#017374] uppercase tracking-wider">ACTIVE WORKOUT LOG</Text> */}
           <Text className="text-base font-black text-[#014041]" numberOfLines={1}>
             {sessionInfo?.dayTitle || 'Workout Session'}
           </Text>
         </View>
-
+    
         <View className="flex-row items-center space-x-2">
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setShowAddExerciseModal(true)}
             className="flex-row items-center rounded-xl border border-[#017374]/25 bg-[#017374]/15 px-2.5 py-2 mr-2">
             <Ionicons name="add-circle-outline" size={16} color="#017374" />
             <Text className="ml-1 text-xs font-bold text-[#017374]">+ Ex</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             onPress={handleFinishWorkout}
             disabled={saving}
             className="flex-row items-center rounded-xl bg-[#017374] px-3.5 py-2 shadow-sm border border-[#017374]/20">
-            <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" style={{ marginRight: 4 }} />
-            <Text className="text-xs font-black text-white">Finish</Text>
+            {saving ? (
+              <ActivityIndicator size="small" color="#FFFFFF" style={{ marginRight: 4 }} />
+            ) : (
+              <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" style={{ marginRight: 4 }} />
+            )}
+            <Text className="text-xs font-black text-white">{saving ? 'Saving...' : 'Finish'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -632,9 +691,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                 e?.stopPropagation?.();
                 startRestTimer(defaultRestTarget);
               }}
-              className="rounded-xl bg-[#017374] px-2.5 py-1.5 flex-row items-center active:opacity-80 shadow-xs">
-              <Ionicons name="play" size={14} color="#FFFFFF" style={{ marginRight: 3 }} />
-              <Text className="text-[11px] font-black text-white uppercase">Start</Text>
+              className="rounded-xl bg-[#017374] p-2 active:opacity-80 shadow-xs">
+              <Ionicons name="play" size={18} color="#FFFFFF" />
             </TouchableOpacity>
           )}
         </TouchableOpacity>
@@ -683,7 +741,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     onPress={() => addSetToExercise(exIdx)}
                     className="flex-row items-center rounded-xl bg-[#017374]/10 px-2.5 py-1.5 border border-[#017374]/20 mr-1.5">
                     <Ionicons name="add" size={14} color="#017374" />
-                    <Text className="ml-0.5 text-[11px] font-bold text-[#017374]">+ Set</Text>
+                    <Text className="ml-0.5 text-[11px] font-bold text-[#017374]">Set</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -732,7 +790,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
         )}
 
         {/* FINISH WORKOUT CARD AT BOTTOM */}
-        <View className="mt-2 mb-16 p-5 rounded-3xl border border-[#017374]/20 bg-white items-center shadow-md">
+        {/* <View className="mt-2 mb-16 p-5 rounded-3xl border border-[#017374]/20 bg-white items-center shadow-md">
           <Text className="text-base font-black text-[#014041]">Ready to log this workout?</Text>
           <Text className="text-xs text-[#3A7574] text-center mt-1 mb-4">
             Finishing will store your sets into workout history and update your overall workout stats!
@@ -751,7 +809,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
               </>
             )}
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* REST TIMER CONFIGURATION MODAL */}
@@ -1222,6 +1280,19 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
               className="mt-3 rounded-2xl border border-[#017374]/20 bg-[#EBF7F4] py-3 items-center">
               <Text className="text-xs font-bold text-[#014041]">Close</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* SAVING OVERLAY MODAL */}
+      <Modal transparent={true} visible={saving} animationType="fade">
+        <View className="flex-1 bg-black/60 items-center justify-center">
+          <View className="bg-white p-7 rounded-3xl items-center shadow-2xl mx-5 w-4/5 max-w-[320px] border border-[#017374]/20">
+            <ActivityIndicator size="large" color="#017374" />
+            <Text className="mt-5 text-lg font-black text-[#014041]">Saving Workout...</Text>
+            <Text className="mt-2 text-sm text-center text-[#3A7574] leading-5">
+              Logging your sets and updating your progress.
+            </Text>
           </View>
         </View>
       </Modal>
