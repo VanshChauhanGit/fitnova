@@ -1,134 +1,203 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Pressable,
   Keyboard,
-  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
   ActivityIndicator,
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useAuthStore from '../../store/authStore';
 import { validateEmail } from '../../utils/validation';
 
 export default function LoginScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
   const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
+
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      return Alert.alert('Missing Fields', 'Please fill all fields');
+    setErrorMessage('');
+
+    if (!email.trim() || !password) {
+      setErrorMessage('Please enter both email and password.');
+      return;
     }
-    if (!validateEmail(email)) {
-      return Alert.alert('Invalid Email', 'Please enter a valid email');
+    if (!validateEmail(email.trim())) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
     }
     if (password.length < 6) {
-      return Alert.alert('Invalid Password', 'Password must be at least 6 characters');
+      setErrorMessage('Password must be at least 6 characters.');
+      return;
     }
 
-    const res = await login(email, password);
+    const res = await login(email.trim(), password);
     if (!res.success) {
-      return Alert.alert('Login Failed', res.message || 'Something went wrong');
+      setErrorMessage(res.message || 'Invalid email or password. Please try again.');
     }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="flex-1 justify-center bg-[#EBF7F4] px-6">
-        {/* Top Brand Logo */}
-        <View className="mb-6 items-center">
-          <View className="h-20 w-20 items-center justify-center rounded-3xl bg-white border border-[#017374]/20 p-2 overflow-hidden shadow-lg">
-            <Image
-              source={require('../../assets/logo-icon.png')}
-              className="h-full w-full rounded-2xl"
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-
-        <Text className="text-3xl font-black text-[#014041] text-center">Welcome Back</Text>
-        <Text className="mb-8 text-center text-sm font-medium text-[#025C5D]">
-          Log in to continue your fitness streak
-        </Text>
-
-        {/* Input Group */}
-        <View className="space-y-4">
-          {/* Email Input */}
-          <View className="mb-4 h-14 flex-row items-center rounded-2xl border border-[#017374]/20 bg-white px-4 shadow-sm">
-            <Ionicons name="mail-outline" size={20} color="#3A7574" />
-            <TextInput
-              placeholder="Email address"
-              placeholderTextColor="#3A7574"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-              className="w-full ml-3 text-md text-[#014041]"
-              style={{
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginTop: 0,
-                marginBottom: 0,
-                textAlignVertical: 'center',
-              }}
-            />
-          </View>
-
-          {/* Password Input */}
-          <View className="mb-6 h-14 flex-row items-center rounded-2xl border border-[#017374]/20 bg-white px-4 shadow-sm">
-            <Ionicons name="lock-closed-outline" size={20} color="#3A7574" />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="#3A7574"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
-              className="flex-1 ml-3 text-md text-[#014041]"
-              style={{
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginTop: 0,
-                marginBottom: 0,
-                textAlignVertical: 'center',
-              }}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={20}
-                color="#3A7574"
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#121417' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            paddingHorizontal: 24,
+            paddingTop: insets.top > 0 ? insets.top + 20 : 40,
+            paddingBottom: insets.bottom > 0 ? insets.bottom + 24 : 40,
+          }}>
+          {/* Top Brand Logo */}
+          <View className="mb-6 items-center">
+            <View className="h-16 w-24 items-center justify-center rounded-xl border border-[#2D333B] overflow-hidden">
+              <Image
+                source={require('../../assets/logo-icon.png')}
+                className="h-full w-full"
+                resizeMode="cover"
               />
-            </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* Login Button */}
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={handleLogin}
-          disabled={loading}
-          className="items-center rounded-2xl bg-[#017374] py-4 shadow-lg border border-[#017374]/20">
-          {loading ? (
-            <ActivityIndicator color="#FFFFFF" />
-          ) : (
-            <Text className="text-base font-bold text-white">Login</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')} className="mt-8">
-          <Text className="text-center text-sm font-medium text-[#025C5D]">
-            Don{"'"}t have an account? <Text className="font-bold text-[#017374]">Sign Up</Text>
+          <Text className="text-3xl font-bold text-[#E8EAED] text-center">Welcome Back</Text>
+          <Text className="mb-8 text-center text-sm font-medium text-[#9AA0A6]">
+            Log in to continue your fitness streak
           </Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+
+          {/* Input Group */}
+          <View className="space-y-4">
+            {/* Email Input */}
+            <Pressable
+              onPress={() => emailInputRef.current?.focus()}
+              className={`mb-4 h-14 flex-row items-center rounded-2xl border px-4 shadow-sm bg-[#1F2328] ${isEmailFocused ? 'border-[#2D9CDB]' : 'border-[#2D333B]'
+                }`}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={isEmailFocused ? '#2D9CDB' : '#9AA0A6'}
+              />
+              <TextInput
+                ref={emailInputRef}
+                placeholder="Email address"
+                placeholderTextColor="#9AA0A6"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onFocus={() => setIsEmailFocused(true)}
+                onBlur={() => setIsEmailFocused(false)}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (errorMessage) setErrorMessage('');
+                }}
+                className="flex-1 h-full ml-3 text-md text-[#E8EAED]"
+                style={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  marginTop: 0,
+                  marginBottom: 0,
+                  textAlignVertical: 'center',
+                }}
+              />
+            </Pressable>
+
+            {/* Password Input */}
+            <Pressable
+              onPress={() => passwordInputRef.current?.focus()}
+              className={`mb-4 h-14 flex-row items-center rounded-2xl border px-4 shadow-sm bg-[#1F2328] ${isPasswordFocused ? 'border-[#2D9CDB]' : 'border-[#2D333B]'
+                }`}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={isPasswordFocused ? '#2D9CDB' : '#9AA0A6'}
+              />
+              <TextInput
+                ref={passwordInputRef}
+                placeholder="Password"
+                placeholderTextColor="#9AA0A6"
+                secureTextEntry={!showPassword}
+                value={password}
+                onFocus={() => setIsPasswordFocused(true)}
+                onBlur={() => setIsPasswordFocused(false)}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (errorMessage) setErrorMessage('');
+                }}
+                className="flex-1 h-full ml-3 text-md text-[#E8EAED]"
+                style={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  marginTop: 0,
+                  marginBottom: 0,
+                  textAlignVertical: 'center',
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                className="p-1">
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={isPasswordFocused ? '#2D9CDB' : '#9AA0A6'}
+                />
+              </TouchableOpacity>
+            </Pressable>
+          </View>
+
+          {/* Inline Error Message */}
+          {errorMessage ? (
+            <View className="mb-4 flex-row items-center rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 shadow-xs">
+              <Ionicons name="alert-circle" size={18} color="#EF4444" />
+              <Text className="ml-2.5 flex-1 text-xs font-semibold text-red-400">
+                {errorMessage}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Login Button */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={handleLogin}
+            disabled={loading}
+            className="items-center rounded-2xl bg-[#2D9CDB] py-4 shadow-lg shadow-[#2D9CDB]/30 border border-[#2D9CDB]/40">
+            {loading ? (
+              <ActivityIndicator color="#121417" />
+            ) : (
+              <Text className="text-base font-black text-[#121417]">Login</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')} className="mt-8 mb-4">
+            <Text className="text-center text-sm font-medium text-[#9AA0A6]">
+              Don{"'"}t have an account? <Text className="font-bold text-[#2D9CDB]">Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

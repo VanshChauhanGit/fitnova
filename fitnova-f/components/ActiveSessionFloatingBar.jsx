@@ -37,24 +37,24 @@ export default function ActiveSessionFloatingBar({ navigation, bottomOffset = 72
         onPress={handlePress}
         className={`flex-row items-center justify-between rounded-2xl p-3.5 shadow-xl border ${
           restAlarmActive
-            ? 'bg-rose-950 border-rose-500/80 shadow-rose-900/50'
+            ? 'bg-rose-950/95 border-rose-500/80 shadow-rose-900/50'
             : restActive
-            ? 'bg-[#014041] border-teal-400/50'
-            : 'bg-[#014041] border-[#017374]/40'
+            ? 'bg-[#1F2328] border-[#F2C94C]/60 shadow-lg'
+            : 'bg-[#1F2328] border-[#2D9CDB]/40 shadow-lg'
         }`}>
         <View className="flex-row items-center flex-1 mr-2">
-          <View className={`rounded-xl p-2 mr-3 ${restAlarmActive ? 'bg-rose-600' : 'bg-[#017374]'}`}>
-            <Ionicons name={restAlarmActive ? 'alarm' : 'timer'} size={20} color="#FFFFFF" />
+          <View className={`rounded-xl p-2 mr-3 ${restAlarmActive ? 'bg-rose-600' : restActive ? 'bg-[#F2C94C]' : 'bg-[#2D9CDB]'}`}>
+            <Ionicons name={restAlarmActive ? 'alarm' : 'timer'} size={20} color={restActive && !restAlarmActive ? '#121417' : '#FFFFFF'} />
           </View>
 
           <View className="flex-1">
             <View className="flex-row items-center">
-              <View className={`h-2 w-2 rounded-full mr-1.5 ${restAlarmActive ? 'bg-rose-400' : 'bg-emerald-400'}`} />
-              <Text className={`text-[10px] font-extrabold uppercase tracking-wider ${restAlarmActive ? 'text-rose-300' : 'text-emerald-300'}`}>
+              <View className={`h-2 w-2 rounded-full mr-1.5 ${restAlarmActive ? 'bg-rose-400' : restActive ? 'bg-[#F2C94C]' : 'bg-[#2D9CDB]'}`} />
+              <Text className={`text-[10px] font-extrabold uppercase tracking-wider ${restAlarmActive ? 'text-rose-300' : restActive ? 'text-[#F2C94C]' : 'text-[#2D9CDB]'}`}>
                 {restAlarmActive ? '🚨 Rest Time Over!' : restActive ? `Resting: ${formatTime(restSeconds)}` : 'Workout In Progress'}
               </Text>
             </View>
-            <Text className="text-sm font-black text-white" numberOfLines={1}>
+            <Text className="text-sm font-black text-[#E8EAED]" numberOfLines={1}>
               {title}
             </Text>
           </View>
@@ -72,8 +72,8 @@ export default function ActiveSessionFloatingBar({ navigation, bottomOffset = 72
               <Text className="text-xs font-black text-white uppercase">Stop Alarm</Text>
             </TouchableOpacity>
           ) : (
-            <View className="rounded-xl bg-[#017374]/40 px-2.5 py-1 border border-white/10">
-              <Text className="text-xs font-mono font-bold text-white">
+            <View className="rounded-xl bg-[#2D9CDB]/20 px-2.5 py-1 border border-[#2D9CDB]/30">
+              <Text className="text-xs font-mono font-bold text-[#E8EAED]">
                 {formatTime(elapsed)}
               </Text>
             </View>

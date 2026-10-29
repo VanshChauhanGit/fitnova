@@ -292,25 +292,25 @@ export default function ProgressScreen({ navigation }) {
   );
 
   return (
-    <ScrollView className="flex-1 bg-[#EBF7F4] px-4 pt-14" showsVerticalScrollIndicator={false}>
+    <ScrollView className="flex-1 bg-[#121417] px-4 pt-14" showsVerticalScrollIndicator={false}>
       {/* HEADER BAR */}
       <View className="flex-row items-center justify-between">
         <View>
-          <Text className="text-3xl font-black text-[#014041]">Analytics & Progress</Text>
-          <Text className="mt-0.5 text-xs font-bold text-[#3A7574]">
+          <Text className="text-3xl font-black text-[#E8EAED]">Analytics & Progress</Text>
+          <Text className="mt-0.5 text-xs font-bold text-[#9AA0A6]">
             Performance metrics & exercise progression
           </Text>
         </View>
         <TouchableOpacity
           onPress={() => navigation?.navigate && navigation.navigate('Tabs', { screen: 'Dashboard' })}
-          className="rounded-2xl bg-[#017374] px-3.5 py-2 shadow-sm border border-[#017374]/30 flex-row items-center">
-          <Ionicons name="play" size={14} color="#FFFFFF" style={{ marginRight: 4 }} />
-          <Text className="text-xs font-black text-white uppercase">Start</Text>
+          className="rounded-2xl bg-[#2D9CDB] px-3.5 py-2 shadow-sm border border-[#2D9CDB] flex-row items-center">
+          <Ionicons name="play" size={14} color="#121417" style={{ marginRight: 4 }} />
+          <Text className="text-xs font-black text-[#121417] uppercase">Start</Text>
         </TouchableOpacity>
       </View>
 
       {/* NAVIGATION MODE TABS */}
-      <View className="mt-5 flex-row rounded-2xl bg-white p-1 border border-[#017374]/20 shadow-xs">
+      <View className="mt-5 flex-row rounded-2xl bg-[#1F2328] p-1 border border-[#2D333B] shadow-xs">
         {[
           { key: 'overview', label: '📊 Overview' },
           { key: 'exercise', label: '🏋️ Exercise Stats' },
@@ -320,11 +320,11 @@ export default function ProgressScreen({ navigation }) {
             key={tab.key}
             onPress={() => setActiveTab(tab.key)}
             className={`flex-1 py-2.5 rounded-xl items-center justify-center ${
-              activeTab === tab.key ? 'bg-[#017374] shadow-sm' : 'bg-transparent'
+              activeTab === tab.key ? 'bg-[#2D9CDB] shadow-sm' : 'bg-transparent'
             }`}>
             <Text
               className={`text-xs font-extrabold ${
-                activeTab === tab.key ? 'text-white' : 'text-[#025C5D]'
+                activeTab === tab.key ? 'text-[#121417]' : 'text-[#9AA0A6]'
               }`}>
               {tab.label}
             </Text>
@@ -334,10 +334,10 @@ export default function ProgressScreen({ navigation }) {
 
       {/* TIMEFRAME SELECTOR */}
       <View className="mt-4 flex-row items-center justify-between">
-        <Text className="text-xs font-black text-[#3A7574] uppercase tracking-wider">
+        <Text className="text-xs font-black text-[#9AA0A6] uppercase tracking-wider">
           Time Period:
         </Text>
-        <View className="flex-row rounded-xl bg-white p-1 border border-[#017374]/15">
+        <View className="flex-row rounded-xl bg-[#1F2328] p-1 border border-[#2D333B]">
           {[
             { key: '7d', label: '7 Days' },
             { key: '30d', label: '30 Days' },
@@ -347,11 +347,11 @@ export default function ProgressScreen({ navigation }) {
               key={tf.key}
               onPress={() => setTimeFrame(tf.key)}
               className={`px-3 py-1 rounded-lg ${
-                timeFrame === tf.key ? 'bg-[#017374]/15 border border-[#017374]/30' : ''
+                timeFrame === tf.key ? 'bg-[#2D9CDB]/15 border border-[#2D9CDB]/30' : ''
               }`}>
               <Text
                 className={`text-[11px] font-extrabold ${
-                  timeFrame === tf.key ? 'text-[#017374]' : 'text-[#3A7574]'
+                  timeFrame === tf.key ? 'text-[#2D9CDB]' : 'text-[#9AA0A6]'
                 }`}>
                 {tf.label}
               </Text>
@@ -366,68 +366,68 @@ export default function ProgressScreen({ navigation }) {
           {/* STAT CARDS GRID */}
           <View className="flex-row flex-wrap justify-between">
             {/* Workouts Logged */}
-            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
               <View className="flex-row items-center justify-between">
-                <Text className="text-xs font-extrabold text-[#3A7574]">Workouts Logged</Text>
-                <View className="rounded-xl bg-[#017374]/15 p-2 border border-[#017374]/20">
-                  <MaterialCommunityIcons name="dumbbell" size={18} color="#017374" />
+                <Text className="text-xs font-extrabold text-[#9AA0A6]">Workouts Logged</Text>
+                <View className="rounded-xl bg-[#2D9CDB]/15 p-2 border border-[#2D9CDB]/20">
+                  <MaterialCommunityIcons name="dumbbell" size={18} color="#2D9CDB" />
                 </View>
               </View>
-              <Text className="mt-2 text-3xl font-black text-[#014041]">{totalWorkoutsCount}</Text>
-              <Text className="mt-0.5 text-[11px] font-bold text-[#017374]">Completed sessions</Text>
+              <Text className="mt-2 text-3xl font-black text-[#E8EAED]">{totalWorkoutsCount}</Text>
+              <Text className="mt-0.5 text-[11px] font-bold text-[#2D9CDB]">Completed sessions</Text>
             </View>
 
             {/* Total Volume */}
-            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
               <View className="flex-row items-center justify-between">
-                <Text className="text-xs font-extrabold text-[#3A7574]">Total Volume</Text>
-                <View className="rounded-xl bg-orange-500/10 p-2 border border-orange-500/20">
-                  <MaterialCommunityIcons name="weight-kilogram" size={18} color="#F97316" />
+                <Text className="text-xs font-extrabold text-[#9AA0A6]">Total Volume</Text>
+                <View className="rounded-xl bg-[#F2C94C]/15 p-2 border border-[#F2C94C]/25">
+                  <MaterialCommunityIcons name="weight-kilogram" size={18} color="#F2C94C" />
                 </View>
               </View>
-              <Text className="mt-2 text-3xl font-black text-[#014041]">
+              <Text className="mt-2 text-3xl font-black text-[#E8EAED]">
                 {totalVolumeKg >= 1000 ? `${(totalVolumeKg / 1000).toFixed(1)}t` : `${Math.round(totalVolumeKg)}kg`}
               </Text>
-              <Text className="mt-0.5 text-[11px] font-bold text-[#017374]">Weight lifted total</Text>
+              <Text className="mt-0.5 text-[11px] font-bold text-[#F2C94C]">Weight lifted total</Text>
             </View>
 
             {/* Active Time */}
-            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
               <View className="flex-row items-center justify-between">
-                <Text className="text-xs font-extrabold text-[#3A7574]">Active Time</Text>
-                <View className="rounded-xl bg-[#017374]/15 p-2 border border-[#017374]/20">
-                  <Ionicons name="timer-outline" size={18} color="#017374" />
+                <Text className="text-xs font-extrabold text-[#9AA0A6]">Active Time</Text>
+                <View className="rounded-xl bg-[#2D9CDB]/15 p-2 border border-[#2D9CDB]/20">
+                  <Ionicons name="timer-outline" size={18} color="#2D9CDB" />
                 </View>
               </View>
-              <Text className="mt-2 text-3xl font-black text-[#014041]">{formatSeconds(totalTimeSec)}</Text>
-              <Text className="mt-0.5 text-[11px] font-bold text-[#017374]">Time in gym</Text>
+              <Text className="mt-2 text-3xl font-black text-[#E8EAED]">{formatSeconds(totalTimeSec)}</Text>
+              <Text className="mt-0.5 text-[11px] font-bold text-[#2D9CDB]">Time in gym</Text>
             </View>
 
             {/* Streak */}
-            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+            <View className="mb-3.5 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
               <View className="flex-row items-center justify-between">
-                <Text className="text-xs font-extrabold text-[#3A7574]">Streak</Text>
-                <View className="rounded-xl bg-amber-500/15 p-2 border border-amber-500/25">
-                  <Ionicons name="flame" size={18} color="#D97706" />
+                <Text className="text-xs font-extrabold text-[#9AA0A6]">Streak</Text>
+                <View className="rounded-xl bg-[#F2C94C]/15 p-2 border border-[#F2C94C]/25">
+                  <Ionicons name="flame" size={18} color="#F2C94C" />
                 </View>
               </View>
-              <Text className="mt-2 text-3xl font-black text-[#014041]">
+              <Text className="mt-2 text-3xl font-black text-[#E8EAED]">
                 {analytics?.streak || (totalWorkoutsCount > 0 ? 1 : 0)} <Text className="text-base font-bold">Days</Text>
               </Text>
-              <Text className="mt-0.5 text-[11px] font-bold text-amber-700">Consistency 🔥</Text>
+              <Text className="mt-0.5 text-[11px] font-bold text-[#F2C94C]">Consistency 🔥</Text>
             </View>
           </View>
 
           {/* MAIN VOLUME PROGRESSION GRAPH CARD */}
-          <View className="mt-1 rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-md">
+          <View className="mt-1 rounded-3xl border border-[#2D333B] bg-[#1F2328] p-5 shadow-md">
             <View className="flex-row items-center justify-between mb-3">
               <View>
-                <Text className="text-lg font-black text-[#014041]">Volume Lifted Trend</Text>
-                <Text className="text-xs font-bold text-[#3A7574]">Cumulative kg per workout session</Text>
+                <Text className="text-lg font-black text-[#E8EAED]">Volume Lifted Trend</Text>
+                <Text className="text-xs font-bold text-[#9AA0A6]">Cumulative kg per workout session</Text>
               </View>
-              <View className="flex-row items-center rounded-xl bg-[#017374]/15 px-3 py-1 border border-[#017374]/25">
-                <Ionicons name="trending-up" size={15} color="#017374" />
-                <Text className="ml-1 text-xs font-black text-[#017374]">kg Volume</Text>
+              <View className="flex-row items-center rounded-xl bg-[#2D9CDB]/15 px-3 py-1 border border-[#2D9CDB]/25">
+                <Ionicons name="trending-up" size={15} color="#2D9CDB" />
+                <Text className="ml-1 text-xs font-black text-[#2D9CDB]">kg Volume</Text>
               </View>
             </View>
 
@@ -444,19 +444,19 @@ export default function ProgressScreen({ navigation }) {
               height={200}
               yAxisSuffix="kg"
               chartConfig={{
-                backgroundGradientFrom: '#FFFFFF',
-                backgroundGradientTo: '#FFFFFF',
+                backgroundGradientFrom: '#1F2328',
+                backgroundGradientTo: '#1F2328',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(1, 115, 116, ${opacity})`,
-                labelColor: () => '#3A7574',
+                color: (opacity = 1) => `rgba(45, 156, 219, ${opacity})`,
+                labelColor: () => '#9AA0A6',
                 style: {
                   borderRadius: 16,
                 },
                 propsForDots: {
                   r: '5',
                   strokeWidth: '2.5',
-                  stroke: '#017374',
-                  fill: '#EBF7F4',
+                  stroke: '#2D9CDB',
+                  fill: '#121417',
                 },
               }}
               bezier
@@ -469,15 +469,15 @@ export default function ProgressScreen({ navigation }) {
 
           {/* PR HALL OF FAME / TOP RECORDS */}
           {prHallOfFame.length > 0 && (
-            <View className="mt-5 rounded-3xl border border-amber-500/25 bg-amber-500/5 p-5 shadow-xs">
+            <View className="mt-5 rounded-3xl border border-[#F2C94C]/25 bg-[#1F2328] p-5 shadow-xs">
               <View className="flex-row items-center justify-between mb-3">
                 <View className="flex-row items-center">
-                  <View className="rounded-xl bg-amber-500/20 p-2 mr-2.5 border border-amber-500/30">
-                    <Ionicons name="trophy" size={20} color="#D97706" />
+                  <View className="rounded-xl bg-[#F2C94C]/20 p-2 mr-2.5 border border-[#F2C94C]/30">
+                    <Ionicons name="trophy" size={20} color="#F2C94C" />
                   </View>
                   <View>
-                    <Text className="text-base font-black text-[#014041]">Personal Records (PRs)</Text>
-                    <Text className="text-xs font-bold text-amber-800">Your heaviest peak lifts logged</Text>
+                    <Text className="text-base font-black text-[#E8EAED]">Personal Records (PRs)</Text>
+                    <Text className="text-xs font-bold text-[#F2C94C]">Your heaviest peak lifts logged</Text>
                   </View>
                 </View>
               </View>
@@ -486,18 +486,18 @@ export default function ProgressScreen({ navigation }) {
                 {prHallOfFame.map((pr, idx) => (
                   <View
                     key={idx}
-                    className="flex-row items-center justify-between rounded-2xl bg-white p-3 border border-amber-500/20 shadow-xs mb-2">
+                    className="flex-row items-center justify-between rounded-2xl bg-[#16191E] p-3 border border-[#2D333B] shadow-xs mb-2">
                     <View className="flex-row items-center">
-                      <Text className="text-xs font-black text-amber-600 mr-2.5">#{idx + 1}</Text>
+                      <Text className="text-xs font-black text-[#F2C94C] mr-2.5">#{idx + 1}</Text>
                       <View>
-                        <Text className="text-sm font-black text-[#014041]">{pr.exerciseName}</Text>
-                        <Text className="text-[11px] font-bold text-[#3A7574]">
+                        <Text className="text-sm font-black text-[#E8EAED]">{pr.exerciseName}</Text>
+                        <Text className="text-[11px] font-bold text-[#9AA0A6]">
                           {pr.bodyPart} • Best: {pr.maxWeight}kg × {pr.reps} reps
                         </Text>
                       </View>
                     </View>
-                    <View className="rounded-xl bg-amber-500/15 px-3 py-1.5 border border-amber-500/25">
-                      <Text className="text-xs font-black text-amber-700">{pr.maxWeight} kg</Text>
+                    <View className="rounded-xl bg-[#F2C94C]/15 px-3 py-1.5 border border-[#F2C94C]/25">
+                      <Text className="text-xs font-black text-[#F2C94C]">{pr.maxWeight} kg</Text>
                     </View>
                   </View>
                 ))}
@@ -507,9 +507,9 @@ export default function ProgressScreen({ navigation }) {
 
           {/* MUSCLE GROUP DISTRIBUTION */}
           {Object.keys(muscleDist).length > 0 && (
-            <View className="mt-5 rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-xs mb-8">
-              <Text className="text-base font-black text-[#014041]">Muscle Group Focus</Text>
-              <Text className="text-xs font-bold text-[#3A7574] mb-3.5">Distribution of completed sets</Text>
+            <View className="mt-5 rounded-3xl border border-[#2D333B] bg-[#1F2328] p-5 shadow-xs mb-8">
+              <Text className="text-base font-black text-[#E8EAED]">Muscle Group Focus</Text>
+              <Text className="text-xs font-bold text-[#9AA0A6] mb-3.5">Distribution of completed sets</Text>
 
               {Object.entries(muscleDist).map(([muscle, count]) => {
                 const totalSets = Object.values(muscleDist).reduce((a, b) => a + b, 0);
@@ -518,14 +518,14 @@ export default function ProgressScreen({ navigation }) {
                 return (
                   <View key={muscle} className="mb-3">
                     <View className="flex-row items-center justify-between mb-1">
-                      <Text className="text-xs font-extrabold text-[#014041]">{muscle}</Text>
-                      <Text className="text-xs font-black text-[#017374]">
+                      <Text className="text-xs font-extrabold text-[#E8EAED]">{muscle}</Text>
+                      <Text className="text-xs font-black text-[#2D9CDB]">
                         {count} sets ({percent}%)
                       </Text>
                     </View>
-                    <View className="h-2.5 w-full rounded-full bg-[#EBF7F4] overflow-hidden border border-[#017374]/10">
+                    <View className="h-2.5 w-full rounded-full bg-[#16191E] overflow-hidden border border-[#2D333B]">
                       <View
-                        className="h-full rounded-full bg-[#017374]"
+                        className="h-full rounded-full bg-[#2D9CDB]"
                         style={{ width: `${percent}%` }}
                       />
                     </View>
@@ -540,24 +540,24 @@ export default function ProgressScreen({ navigation }) {
       {/* TAB 2: EXERCISE-SPECIFIC PROGRESS */}
       {activeTab === 'exercise' && (
         <View className="mt-4 mb-10">
-          <Text className="text-base font-black text-[#014041] mb-1">Select Exercise to Analyze</Text>
-          <Text className="text-xs font-bold text-[#3A7574] mb-3">
+          <Text className="text-base font-black text-[#E8EAED] mb-1">Select Exercise to Analyze</Text>
+          <Text className="text-xs font-bold text-[#9AA0A6] mb-3">
             Track individual exercise progression, 1RM estimates & historical sets
           </Text>
 
           {/* SEARCH & HORIZONTAL EXERCISE SELECTOR CHIPS */}
-          <View className="mb-3 rounded-2xl bg-white p-2.5 border border-[#017374]/20 flex-row items-center">
-            <Ionicons name="search" size={18} color="#017374" style={{ marginRight: 8 }} />
+          <View className="mb-3 rounded-2xl bg-[#1F2328] p-2.5 border border-[#2D333B] flex-row items-center">
+            <Ionicons name="search" size={18} color="#2D9CDB" style={{ marginRight: 8 }} />
             <TextInput
               value={exerciseSearch}
               onChangeText={setExerciseSearch}
               placeholder="Search exercise (e.g., Bench Press, Squat)..."
-              placeholderTextColor="#3A7574"
-              className="flex-1 text-xs font-bold text-[#014041]"
+              placeholderTextColor="#9AA0A6"
+              className="flex-1 text-xs font-bold text-[#E8EAED]"
             />
             {exerciseSearch.length > 0 && (
               <TouchableOpacity onPress={() => setExerciseSearch('')}>
-                <Ionicons name="close-circle" size={18} color="#3A7574" />
+                <Ionicons name="close-circle" size={18} color="#9AA0A6" />
               </TouchableOpacity>
             )}
           </View>
@@ -569,14 +569,14 @@ export default function ProgressScreen({ navigation }) {
                 onPress={() => setSelectedExercise(exName)}
                 className={`mr-2 rounded-xl border px-3.5 py-2 ${
                   selectedExercise?.toLowerCase() === exName.toLowerCase()
-                    ? 'border-[#017374] bg-[#017374]'
-                    : 'border-[#017374]/20 bg-white shadow-xs'
+                    ? 'border-[#2D9CDB] bg-[#2D9CDB]'
+                    : 'border-[#2D333B] bg-[#1F2328] shadow-xs'
                 }`}>
                 <Text
                   className={`text-xs font-extrabold ${
                     selectedExercise?.toLowerCase() === exName.toLowerCase()
-                      ? 'text-white'
-                      : 'text-[#025C5D]'
+                      ? 'text-[#121417]'
+                      : 'text-[#9AA0A6]'
                   }`}>
                   {exName}
                 </Text>
@@ -588,16 +588,16 @@ export default function ProgressScreen({ navigation }) {
           {exerciseProgressData ? (
             <View>
               {/* EXERCISE TITLE HEADER */}
-              <View className="rounded-3xl border border-[#017374]/20 bg-white p-5 shadow-md mb-4">
-                <View className="flex-row items-center justify-between pb-3 border-b border-[#017374]/10">
+              <View className="rounded-3xl border border-[#2D333B] bg-[#1F2328] p-5 shadow-md mb-4">
+                <View className="flex-row items-center justify-between pb-3 border-b border-[#2D333B]">
                   <View className="flex-1">
-                    <Text className="text-xl font-black text-[#014041]">{exerciseProgressData.name}</Text>
-                    <Text className="text-xs font-bold text-[#017374] mt-0.5">
+                    <Text className="text-xl font-black text-[#E8EAED]">{exerciseProgressData.name}</Text>
+                    <Text className="text-xs font-bold text-[#2D9CDB] mt-0.5">
                       Target Body Part: {exerciseProgressData.logs[0]?.bodyPart || 'General'}
                     </Text>
                   </View>
-                  <View className="rounded-2xl bg-[#017374]/15 px-3 py-1.5 border border-[#017374]/25">
-                    <Text className="text-xs font-black text-[#017374]">
+                  <View className="rounded-2xl bg-[#2D9CDB]/15 px-3 py-1.5 border border-[#2D9CDB]/25">
+                    <Text className="text-xs font-black text-[#2D9CDB]">
                       {exerciseProgressData.growthPercent >= 0 ? `+${exerciseProgressData.growthPercent}%` : `${exerciseProgressData.growthPercent}%`} Strength
                     </Text>
                   </View>
@@ -606,52 +606,52 @@ export default function ProgressScreen({ navigation }) {
                 {/* EXERCISE METRIC BADGES */}
                 <View className="mt-4 flex-row flex-wrap justify-between">
                   {/* Max Weight Ever */}
-                  <View className="mb-3 w-[48%] rounded-2xl bg-[#EBF7F4] p-3.5 border border-[#017374]/15">
-                    <Text className="text-[11px] font-extrabold text-[#3A7574]">Peak Weight Lifted</Text>
-                    <Text className="mt-1 text-2xl font-black text-[#014041]">
+                  <View className="mb-3 w-[48%] rounded-2xl bg-[#16191E] p-3.5 border border-[#2D333B]">
+                    <Text className="text-[11px] font-extrabold text-[#9AA0A6]">Peak Weight Lifted</Text>
+                    <Text className="mt-1 text-2xl font-black text-[#E8EAED]">
                       {exerciseProgressData.maxWeightEver} <Text className="text-xs font-bold">kg</Text>
                     </Text>
-                    <Text className="text-[10px] font-bold text-[#017374] mt-0.5">Personal Record (PR)</Text>
+                    <Text className="text-[10px] font-bold text-[#2D9CDB] mt-0.5">Personal Record (PR)</Text>
                   </View>
 
                   {/* Estimated 1RM */}
-                  <View className="mb-3 w-[48%] rounded-2xl bg-[#EBF7F4] p-3.5 border border-[#017374]/15">
-                    <Text className="text-[11px] font-extrabold text-[#3A7574]">Est. 1RM (One Rep Max)</Text>
-                    <Text className="mt-1 text-2xl font-black text-[#014041]">
+                  <View className="mb-3 w-[48%] rounded-2xl bg-[#16191E] p-3.5 border border-[#2D333B]">
+                    <Text className="text-[11px] font-extrabold text-[#9AA0A6]">Est. 1RM (One Rep Max)</Text>
+                    <Text className="mt-1 text-2xl font-black text-[#E8EAED]">
                       {exerciseProgressData.max1RMEver} <Text className="text-xs font-bold">kg</Text>
                     </Text>
-                    <Text className="text-[10px] font-bold text-[#017374] mt-0.5">Calculated Max Strength</Text>
+                    <Text className="text-[10px] font-bold text-[#2D9CDB] mt-0.5">Calculated Max Strength</Text>
                   </View>
 
                   {/* Total Sets */}
-                  <View className="w-[48%] rounded-2xl bg-[#EBF7F4] p-3.5 border border-[#017374]/15">
-                    <Text className="text-[11px] font-extrabold text-[#3A7574]">Total Sets Done</Text>
-                    <Text className="mt-1 text-2xl font-black text-[#014041]">
+                  <View className="w-[48%] rounded-2xl bg-[#16191E] p-3.5 border border-[#2D333B]">
+                    <Text className="text-[11px] font-extrabold text-[#9AA0A6]">Total Sets Done</Text>
+                    <Text className="mt-1 text-2xl font-black text-[#E8EAED]">
                       {exerciseProgressData.totalExerciseSets} <Text className="text-xs font-bold">sets</Text>
                     </Text>
-                    <Text className="text-[10px] font-bold text-[#017374] mt-0.5">Completed in history</Text>
+                    <Text className="text-[10px] font-bold text-[#2D9CDB] mt-0.5">Completed in history</Text>
                   </View>
 
                   {/* Total Sessions */}
-                  <View className="w-[48%] rounded-2xl bg-[#EBF7F4] p-3.5 border border-[#017374]/15">
-                    <Text className="text-[11px] font-extrabold text-[#3A7574]">Logged Sessions</Text>
-                    <Text className="mt-1 text-2xl font-black text-[#014041]">
+                  <View className="w-[48%] rounded-2xl bg-[#16191E] p-3.5 border border-[#2D333B]">
+                    <Text className="text-[11px] font-extrabold text-[#9AA0A6]">Logged Sessions</Text>
+                    <Text className="mt-1 text-2xl font-black text-[#E8EAED]">
                       {exerciseProgressData.logs.length} <Text className="text-xs font-bold">workouts</Text>
                     </Text>
-                    <Text className="text-[10px] font-bold text-[#017374] mt-0.5">Occurrences</Text>
+                    <Text className="text-[10px] font-bold text-[#2D9CDB] mt-0.5">Occurrences</Text>
                   </View>
                 </View>
               </View>
 
               {/* EXERCISE PROGRESSION LINE CHART */}
-              <View className="rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-md mb-5">
+              <View className="rounded-3xl border border-[#2D333B] bg-[#1F2328] p-5 shadow-md mb-5">
                 <View className="flex-row items-center justify-between mb-2">
-                  <Text className="text-base font-black text-[#014041]">Peak Weight Progression Graph</Text>
-                  <View className="rounded-lg bg-[#017374]/15 px-2.5 py-1">
-                    <Text className="text-[10px] font-black text-[#017374]">kg Lifted</Text>
+                  <Text className="text-base font-black text-[#E8EAED]">Peak Weight Progression Graph</Text>
+                  <View className="rounded-lg bg-[#2D9CDB]/15 px-2.5 py-1">
+                    <Text className="text-[10px] font-black text-[#2D9CDB]">kg Lifted</Text>
                   </View>
                 </View>
-                <Text className="text-xs font-bold text-[#3A7574] mb-3">
+                <Text className="text-xs font-bold text-[#9AA0A6] mb-3">
                   Max weight lifted per session over time
                 </Text>
 
@@ -664,17 +664,17 @@ export default function ProgressScreen({ navigation }) {
                   height={190}
                   yAxisSuffix="kg"
                   chartConfig={{
-                    backgroundGradientFrom: '#FFFFFF',
-                    backgroundGradientTo: '#FFFFFF',
+                    backgroundGradientFrom: '#1F2328',
+                    backgroundGradientTo: '#1F2328',
                     decimalPlaces: 0,
-                    color: (opacity = 1) => `rgba(1, 115, 116, ${opacity})`,
-                    labelColor: () => '#3A7574',
+                    color: (opacity = 1) => `rgba(45, 156, 219, ${opacity})`,
+                    labelColor: () => '#9AA0A6',
                     style: { borderRadius: 16 },
                     propsForDots: {
                       r: '5',
                       strokeWidth: '2',
-                      stroke: '#017374',
-                      fill: '#EBF7F4',
+                      stroke: '#2D9CDB',
+                      fill: '#121417',
                     },
                   }}
                   bezier
@@ -683,22 +683,22 @@ export default function ProgressScreen({ navigation }) {
               </View>
 
               {/* EXERCISE HISTORY LOG TABLE */}
-              <View className="rounded-3xl border border-[#017374]/15 bg-white p-5 shadow-sm">
-                <Text className="text-base font-black text-[#014041] mb-3">
+              <View className="rounded-3xl border border-[#2D333B] bg-[#1F2328] p-5 shadow-sm">
+                <Text className="text-base font-black text-[#E8EAED] mb-3">
                   {selectedExercise} History Log
                 </Text>
 
                 {exerciseProgressData.logs.map((logItem, logIdx) => (
                   <View
                     key={logIdx}
-                    className="mb-3 rounded-2xl border border-[#017374]/15 bg-[#EBF7F4]/40 p-3.5">
-                    <View className="flex-row items-center justify-between pb-2 border-b border-[#017374]/10">
+                    className="mb-3 rounded-2xl border border-[#2D333B] bg-[#16191E] p-3.5">
+                    <View className="flex-row items-center justify-between pb-2 border-b border-[#2D333B]">
                       <View>
-                        <Text className="text-xs font-black text-[#014041]">{logItem.workoutTitle}</Text>
-                        <Text className="text-[10px] font-bold text-[#3A7574]">{formatDate(logItem.date)}</Text>
+                        <Text className="text-xs font-black text-[#E8EAED]">{logItem.workoutTitle}</Text>
+                        <Text className="text-[10px] font-bold text-[#9AA0A6]">{formatDate(logItem.date)}</Text>
                       </View>
-                      <View className="rounded-xl bg-[#017374] px-2.5 py-1">
-                        <Text className="text-[10px] font-black text-white">Max: {logItem.maxWeight}kg</Text>
+                      <View className="rounded-xl bg-[#2D9CDB] px-2.5 py-1">
+                        <Text className="text-[10px] font-black text-[#121417]">Max: {logItem.maxWeight}kg</Text>
                       </View>
                     </View>
 
@@ -706,11 +706,11 @@ export default function ProgressScreen({ navigation }) {
                       {logItem.sets.map((s, sIdx) => (
                         <View
                           key={sIdx}
-                          className="rounded-xl border border-[#017374]/20 bg-white px-2.5 py-1 flex-row items-center shadow-xs">
-                          <Text className="text-[10px] font-bold text-[#017374] mr-1">
+                          className="rounded-xl border border-[#2D333B] bg-[#1F2328] px-2.5 py-1 flex-row items-center shadow-xs">
+                          <Text className="text-[10px] font-bold text-[#2D9CDB] mr-1">
                             Set {sIdx + 1}:
                           </Text>
-                          <Text className="text-[11px] font-extrabold text-[#014041]">
+                          <Text className="text-[11px] font-extrabold text-[#E8EAED]">
                             {s.weight || 0}kg × {s.reps || 0} reps
                           </Text>
                         </View>
@@ -721,10 +721,10 @@ export default function ProgressScreen({ navigation }) {
               </View>
             </View>
           ) : (
-            <View className="rounded-3xl border border-dashed border-[#017374]/30 bg-white p-8 items-center mt-2 shadow-xs">
-              <MaterialCommunityIcons name="dumbbell" size={40} color="#017374" />
-              <Text className="text-base font-black text-[#014041] mt-3">No Exercise Logs Found</Text>
-              <Text className="text-xs text-[#3A7574] text-center mt-1">
+            <View className="rounded-3xl border border-dashed border-[#2D333B] bg-[#1F2328] p-8 items-center mt-2 shadow-xs">
+              <MaterialCommunityIcons name="dumbbell" size={40} color="#2D9CDB" />
+              <Text className="text-base font-black text-[#E8EAED] mt-3">No Exercise Logs Found</Text>
+              <Text className="text-xs text-[#9AA0A6] text-center mt-1">
                 Select an exercise from the list above or log a workout session containing this exercise to view full analytics!
               </Text>
             </View>
@@ -749,12 +749,12 @@ export default function ProgressScreen({ navigation }) {
                 onPress={() => setActiveFilter(chip.key)}
                 className={`mr-2 rounded-xl border px-3.5 py-2 ${
                   activeFilter === chip.key
-                    ? 'border-[#017374] bg-[#017374]'
-                    : 'border-[#017374]/20 bg-white shadow-xs'
+                    ? 'border-[#2D9CDB] bg-[#2D9CDB]'
+                    : 'border-[#2D333B] bg-[#1F2328] shadow-xs'
                 }`}>
                 <Text
                   className={`text-xs font-extrabold ${
-                    activeFilter === chip.key ? 'text-white' : 'text-[#025C5D]'
+                    activeFilter === chip.key ? 'text-[#121417]' : 'text-[#9AA0A6]'
                   }`}>
                   {chip.label}
                 </Text>
@@ -764,10 +764,10 @@ export default function ProgressScreen({ navigation }) {
 
           {/* HISTORY FEED LIST */}
           {filteredHistoryFeed.length === 0 ? (
-            <View className="rounded-3xl border border-dashed border-[#017374]/30 bg-white p-8 items-center shadow-xs">
-              <MaterialCommunityIcons name="clipboard-text-outline" size={44} color="#017374" />
-              <Text className="text-base font-black text-[#014041] mt-2">No History Log Found</Text>
-              <Text className="text-xs text-[#025C5D] text-center mt-1 mb-4">
+            <View className="rounded-3xl border border-dashed border-[#2D333B] bg-[#1F2328] p-8 items-center shadow-xs">
+              <MaterialCommunityIcons name="clipboard-text-outline" size={44} color="#2D9CDB" />
+              <Text className="text-base font-black text-[#E8EAED] mt-2">No History Log Found</Text>
+              <Text className="text-xs text-[#9AA0A6] text-center mt-1 mb-4">
                 Complete a workout session to log exercise sets, reps, duration, and progressive volume!
               </Text>
             </View>
@@ -792,62 +792,62 @@ export default function ProgressScreen({ navigation }) {
               return (
                 <View
                   key={workoutId}
-                  className="mb-4 overflow-hidden rounded-3xl border border-[#017374]/20 bg-white shadow-sm">
+                  className="mb-4 overflow-hidden rounded-3xl border border-[#2D333B] bg-[#1F2328] shadow-sm">
                   {/* MAIN CARD ACCORDION BAR */}
                   <TouchableOpacity
                     activeOpacity={0.85}
                     onPress={() => toggleExpand(workoutId)}
                     className="p-4 flex-row items-center justify-between">
                     <View className="flex-row items-center flex-1 mr-2">
-                      <View className="rounded-2xl bg-[#017374]/15 p-3 border border-[#017374]/25 mr-3">
-                        <MaterialCommunityIcons name="arm-flex" size={22} color="#017374" />
+                      <View className="rounded-2xl bg-[#2D9CDB]/15 p-3 border border-[#2D9CDB]/25 mr-3">
+                        <MaterialCommunityIcons name="arm-flex" size={22} color="#2D9CDB" />
                       </View>
                       <View className="flex-1">
-                        <Text className="text-base font-black text-[#014041]" numberOfLines={1}>
+                        <Text className="text-base font-black text-[#E8EAED]" numberOfLines={1}>
                           {workout.title || workout.name || 'Workout Session'}
                         </Text>
-                        <Text className="text-xs font-medium text-[#3A7574] mt-0.5">
+                        <Text className="text-xs font-medium text-[#9AA0A6] mt-0.5">
                           {formatDate(workout.createdAt)}
                         </Text>
                       </View>
                     </View>
 
                     <View className="items-end">
-                      <View className="rounded-full bg-[#EBF7F4] px-2.5 py-1 border border-[#017374]/15 flex-row items-center mb-1">
-                        <Ionicons name="timer-outline" size={13} color="#017374" style={{ marginRight: 3 }} />
-                        <Text className="text-[11px] font-extrabold text-[#017374]">
+                      <View className="rounded-full bg-[#16191E] px-2.5 py-1 border border-[#2D333B] flex-row items-center mb-1">
+                        <Ionicons name="timer-outline" size={13} color="#2D9CDB" style={{ marginRight: 3 }} />
+                        <Text className="text-[11px] font-extrabold text-[#2D9CDB]">
                           {formatSeconds(workout.duration)}
                         </Text>
                       </View>
                       <Ionicons
                         name={isExpanded ? 'chevron-up' : 'chevron-down'}
                         size={18}
-                        color="#3A7574"
+                        color="#9AA0A6"
                       />
                     </View>
                   </TouchableOpacity>
 
                   {/* QUICK STATS SUB-BAR */}
-                  <View className="px-4 pb-3 flex-row items-center justify-between border-b border-[#017374]/10">
+                  <View className="px-4 pb-3 flex-row items-center justify-between border-b border-[#2D333B]">
                     <View className="flex-row items-center space-x-2">
-                      <Text className="text-xs font-bold text-[#025C5D]">
+                      <Text className="text-xs font-bold text-[#E8EAED]">
                         📊 {exercisesList.length} Exercise{exercisesList.length !== 1 ? 's' : ''}
                       </Text>
-                      <Text className="text-xs text-[#3A7574]">•</Text>
-                      <Text className="text-xs font-bold text-[#025C5D]">
+                      <Text className="text-xs text-[#9AA0A6]">•</Text>
+                      <Text className="text-xs font-bold text-[#E8EAED]">
                         {totalSetsCount} Set{totalSetsCount !== 1 ? 's' : ''}
                       </Text>
                     </View>
 
-                    <Text className="text-xs font-extrabold text-[#017374]">
+                    <Text className="text-xs font-extrabold text-[#2D9CDB]">
                       {Math.round(workoutVol)} kg Volume
                     </Text>
                   </View>
 
                   {/* EXPANDABLE EXERCISE SET BREAKDOWN */}
                   {isExpanded && (
-                    <View className="bg-[#EBF7F4]/40 p-4 border-t border-[#017374]/10">
-                      <Text className="text-[11px] font-extrabold text-[#3A7574] uppercase tracking-wider mb-2.5">
+                    <View className="bg-[#16191E] p-4 border-t border-[#2D333B]">
+                      <Text className="text-[11px] font-extrabold text-[#9AA0A6] uppercase tracking-wider mb-2.5">
                         Exercise Details Breakdown
                       </Text>
 
@@ -859,13 +859,13 @@ export default function ProgressScreen({ navigation }) {
                         return (
                           <View
                             key={ex.exerciseId || exIdx}
-                            className="mb-3 rounded-2xl border border-[#017374]/15 bg-white p-3">
-                            <View className="flex-row items-center justify-between pb-2 border-b border-[#017374]/10">
-                              <Text className="text-xs font-extrabold text-[#014041]">
+                            className="mb-3 rounded-2xl border border-[#2D333B] bg-[#1F2328] p-3">
+                            <View className="flex-row items-center justify-between pb-2 border-b border-[#2D333B]">
+                              <Text className="text-xs font-extrabold text-[#E8EAED]">
                                 {exIdx + 1}. {ex.name}
                               </Text>
-                              <View className="rounded-md bg-[#017374]/15 px-2 py-0.5">
-                                <Text className="text-[10px] font-bold text-[#017374] uppercase">
+                              <View className="rounded-md bg-[#2D9CDB]/15 px-2 py-0.5">
+                                <Text className="text-[10px] font-bold text-[#2D9CDB] uppercase">
                                   {ex.bodyPart || 'General'}
                                 </Text>
                               </View>
@@ -873,16 +873,16 @@ export default function ProgressScreen({ navigation }) {
 
                             <View className="mt-2 flex-row flex-wrap gap-1.5">
                               {completedSets.length === 0 ? (
-                                <Text className="text-[11px] text-[#3A7574] italic">No sets recorded.</Text>
+                                <Text className="text-[11px] text-[#9AA0A6] italic">No sets recorded.</Text>
                               ) : (
                                 completedSets.map((s, sIdx) => (
                                   <View
                                     key={sIdx}
-                                    className="rounded-xl border border-[#017374]/20 bg-[#EBF7F4] px-2.5 py-1 flex-row items-center">
-                                    <Text className="text-[10px] font-bold text-[#017374] mr-1">
+                                    className="rounded-xl border border-[#2D333B] bg-[#16191E] px-2.5 py-1 flex-row items-center">
+                                    <Text className="text-[10px] font-bold text-[#2D9CDB] mr-1">
                                       S{sIdx + 1}:
                                     </Text>
-                                    <Text className="text-[11px] font-extrabold text-[#014041]">
+                                    <Text className="text-[11px] font-extrabold text-[#E8EAED]">
                                       {s.weight || 0}kg × {s.reps || 0}
                                     </Text>
                                   </View>

@@ -176,7 +176,7 @@ const useWorkoutStore = create((set, get) => ({
       clearInterval(globalTimerInterval);
       globalTimerInterval = null;
     }
-    set({ activeSession: null, isSessionActive: false });
+    set({ activeSession: null, isSessionActive: false, currentWorkout: [] });
   },
 
   setWorkoutName: (name) => {
@@ -265,11 +265,58 @@ const useWorkoutStore = create((set, get) => ({
       }
 
       if (!savedWorkout) {
+        let localVolume = 0;
+        let completedSetsCount = 0;
+        let cardioSetsCount = 0;
+        let strengthSetsCount = 0;
+
+        (exercisesToSave || []).forEach((ex) => {
+          const isCardio =
+            ex.bodyPart?.toLowerCase() === 'cardio' ||
+            ['cardio', 'run', 'treadmill', 'cycle', 'cycling', 'rowing', 'elliptical', 'stair'].some(
+              (k) => ex.name?.toLowerCase().includes(k)
+            );
+
+          (ex.sets || []).forEach((s) => {
+            const isCompleted = s.completed === true || s.completed === undefined;
+            if (isCompleted) {
+              completedSetsCount++;
+              const w = parseFloat(s.weight) || 0;
+              const r = parseInt(s.reps, 10) || 0;
+              if (isCardio) {
+                cardioSetsCount++;
+              } else {
+                strengthSetsCount++;
+                localVolume += w * r;
+              }
+            }
+          });
+        });
+
+        const rawDurationMinutes = Math.min(180, Math.max(0, (duration || 0) / 60));
+        let effectiveMinutes = 0;
+        if (completedSetsCount === 0) {
+          effectiveMinutes = 0;
+        } else if (strengthSetsCount > 0 && cardioSetsCount === 0) {
+          effectiveMinutes = Math.min(rawDurationMinutes, Math.max(1, strengthSetsCount * 2.5));
+        } else if (cardioSetsCount > 0 && strengthSetsCount === 0) {
+          effectiveMinutes = rawDurationMinutes;
+        } else {
+          effectiveMinutes = Math.min(rawDurationMinutes, Math.max(1, strengthSetsCount * 2.5 + rawDurationMinutes * 0.5));
+        }
+
+        const met = cardioSetsCount > 0 && strengthSetsCount === 0 ? 7.5 : cardioSetsCount > 0 ? 5.5 : 4.5;
+        const baseCalories = (met * 3.5 * 70 / 200) * effectiveMinutes;
+        const volumeBonus = localVolume > 0 ? Math.min(baseCalories * 0.3, localVolume * 0.012) : 0;
+        const estCalories = Math.round(baseCalories + volumeBonus);
+
         savedWorkout = {
           id: `workout-${Date.now()}`,
           title: workoutTitle || 'Workout Session',
           workoutName: workoutTitle || 'Workout Session',
           duration,
+          caloriesBurned: estCalories,
+          totalVolume: localVolume,
           exercises: exercisesToSave,
           createdAt: new Date().toISOString(),
         };

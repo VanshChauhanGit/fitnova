@@ -5,80 +5,80 @@ export default function ExerciseDetailScreen({ route, navigation }) {
   const { exercise } = route.params;
 
   return (
-    <View className="flex-1 bg-[#EBF7F4]">
-      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 60 }}>
+    <View className="flex-1 bg-[#121417]">
+      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 60 }} showsVerticalScrollIndicator={false}>
         {/* EXERCISE IMAGE/GIF */}
         <View className="relative">
           <Image
             source={{
               uri: exercise.gifUrl,
             }}
-            className="h-96 w-full bg-[#EBF7F4]"
+            className="h-96 w-full bg-[#121417]"
             resizeMode="cover"
           />
 
           {/* OVERLAY GRADIENT */}
-          <View className="absolute inset-0 bg-black/10" />
+          <View className="absolute inset-0 bg-black/20" />
 
           {/* BACK BUTTON */}
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.goBack()}
-            className="absolute left-5 top-14 rounded-2xl border border-[#017374]/20 bg-white/90 p-3 shadow-md">
-            <Ionicons name="arrow-back" size={22} color="#014041" />
+            className="absolute left-5 top-14 rounded-2xl border border-[#2D333B] bg-[#1F2328]/90 p-3 shadow-md">
+            <Ionicons name="arrow-back" size={22} color="#E8EAED" />
           </TouchableOpacity>
         </View>
 
         {/* CONTENT */}
         <View className="px-6 pt-4">
           {/* TITLE */}
-          <Text className="mt-2 text-3xl font-black capitalize text-[#014041]">{exercise.name}</Text>
+          <Text className="mt-2 text-3xl font-black capitalize text-[#E8EAED]">{exercise.name}</Text>
 
           {/* DESCRIPTION */}
           {exercise.description && (
-            <Text className="mt-3 text-sm leading-relaxed text-[#025C5D]">{exercise.description}</Text>
+            <Text className="mt-3 text-sm leading-relaxed text-[#9AA0A6]">{exercise.description}</Text>
           )}
 
           {/* QUICK STATS GRID */}
           <View className="mt-6 flex-row flex-wrap justify-between">
             {/* TARGET */}
-            <View className="mb-4 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
-              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#017374]/15 border border-[#017374]/25">
-                <MaterialCommunityIcons name="target" size={22} color="#017374" />
+            <View className="mb-4 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
+              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#2D9CDB]/15 border border-[#2D9CDB]/25">
+                <MaterialCommunityIcons name="target" size={22} color="#2D9CDB" />
               </View>
-              <Text className="mt-3 text-xs font-semibold text-[#3A7574]">Target Muscle</Text>
-              <Text className="mt-0.5 text-base font-black capitalize text-[#014041]">{exercise.target}</Text>
+              <Text className="mt-3 text-xs font-semibold text-[#9AA0A6]">Target Muscle</Text>
+              <Text className="mt-0.5 text-base font-black capitalize text-[#E8EAED]">{exercise.target}</Text>
             </View>
 
             {/* BODY PART */}
-            <View className="mb-4 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
-              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#D8F3EB] border border-[#017374]/20">
-                <Ionicons name="body" size={22} color="#017374" />
+            <View className="mb-4 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
+              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#16191E] border border-[#2D333B]">
+                <Ionicons name="body" size={22} color="#2D9CDB" />
               </View>
-              <Text className="mt-3 text-xs font-semibold text-[#3A7574]">Body Part</Text>
-              <Text className="mt-0.5 text-base font-black capitalize text-[#014041]">
+              <Text className="mt-3 text-xs font-semibold text-[#9AA0A6]">Body Part</Text>
+              <Text className="mt-0.5 text-base font-black capitalize text-[#E8EAED]">
                 {exercise.bodyPart}
               </Text>
             </View>
 
             {/* EQUIPMENT */}
-            <View className="mb-4 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
-              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20">
-                <MaterialCommunityIcons name="dumbbell" size={22} color="#F97316" />
+            <View className="mb-4 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
+              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#F2C94C]/15 border border-[#F2C94C]/25">
+                <MaterialCommunityIcons name="dumbbell" size={22} color="#F2C94C" />
               </View>
-              <Text className="mt-3 text-xs font-semibold text-[#3A7574]">Equipment</Text>
-              <Text className="mt-0.5 text-base font-black capitalize text-[#014041]">
+              <Text className="mt-3 text-xs font-semibold text-[#9AA0A6]">Equipment</Text>
+              <Text className="mt-0.5 text-base font-black capitalize text-[#E8EAED]">
                 {exercise.equipment}
               </Text>
             </View>
 
             {/* DIFFICULTY */}
-            <View className="mb-4 w-[48%] rounded-3xl border border-[#017374]/15 bg-white p-4 shadow-sm">
-              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-purple-500/10 border border-purple-500/20">
-                <Ionicons name="barbell" size={22} color="#A855F7" />
+            <View className="mb-4 w-[48%] rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
+              <View className="h-10 w-10 items-center justify-center rounded-2xl bg-[#2D9CDB]/15 border border-[#2D9CDB]/25">
+                <Ionicons name="barbell" size={22} color="#2D9CDB" />
               </View>
-              <Text className="mt-3 text-xs font-semibold text-[#3A7574]">Difficulty</Text>
-              <Text className="mt-0.5 text-base font-black capitalize text-[#014041]">
+              <Text className="mt-3 text-xs font-semibold text-[#9AA0A6]">Difficulty</Text>
+              <Text className="mt-0.5 text-base font-black capitalize text-[#E8EAED]">
                 {exercise.difficulty || 'Intermediate'}
               </Text>
             </View>
@@ -87,11 +87,11 @@ export default function ExerciseDetailScreen({ route, navigation }) {
           {/* SECONDARY MUSCLES */}
           {exercise.secondaryMuscles && exercise.secondaryMuscles.length > 0 && (
             <View className="mt-4">
-              <Text className="mb-3 text-lg font-bold text-[#014041]">Secondary Muscles</Text>
+              <Text className="mb-3 text-lg font-bold text-[#E8EAED]">Secondary Muscles</Text>
               <View className="flex-row flex-wrap">
                 {exercise.secondaryMuscles.map((muscle, index) => (
-                  <View key={index} className="mb-2 mr-2 rounded-xl border border-[#017374]/15 bg-white px-4 py-2 shadow-sm">
-                    <Text className="text-xs font-bold capitalize text-[#017374]">{muscle}</Text>
+                  <View key={index} className="mb-2 mr-2 rounded-xl border border-[#2D333B] bg-[#1F2328] px-4 py-2 shadow-sm">
+                    <Text className="text-xs font-bold capitalize text-[#2D9CDB]">{muscle}</Text>
                   </View>
                 ))}
               </View>
@@ -101,18 +101,18 @@ export default function ExerciseDetailScreen({ route, navigation }) {
           {/* INSTRUCTIONS */}
           {exercise.instructions && exercise.instructions.length > 0 && (
             <View className="mt-6 mb-8">
-              <Text className="mb-4 text-xl font-bold text-[#014041]">Execution Steps</Text>
+              <Text className="mb-4 text-xl font-bold text-[#E8EAED]">Execution Steps</Text>
 
               {exercise.instructions.map((instruction, index) => (
-                <View key={index} className="mb-3.5 flex-row rounded-2xl border border-[#017374]/15 bg-white p-4 shadow-sm">
+                <View key={index} className="mb-3.5 flex-row rounded-2xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
                   {/* STEP NUMBER */}
-                  <View className="mr-3.5 h-7 w-7 items-center justify-center rounded-xl bg-[#017374]">
-                    <Text className="text-xs font-black text-white">{index + 1}</Text>
+                  <View className="mr-3.5 h-7 w-7 items-center justify-center rounded-xl bg-[#2D9CDB]">
+                    <Text className="text-xs font-black text-[#121417]">{index + 1}</Text>
                   </View>
 
                   {/* TEXT */}
                   <View className="flex-1">
-                    <Text className="text-sm leading-relaxed text-[#025C5D]">{instruction}</Text>
+                    <Text className="text-sm leading-relaxed text-[#9AA0A6]">{instruction}</Text>
                   </View>
                 </View>
               ))}

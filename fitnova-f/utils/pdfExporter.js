@@ -161,8 +161,8 @@ const generatePlanHTML = (plan, userName) => {
           }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #EBF7F4;
-            color: #014041;
+            background-color: #121417;
+            color: #E8EAED;
             padding: 0;
             margin: 0;
             font-size: 12px;
@@ -172,27 +172,27 @@ const generatePlanHTML = (plan, userName) => {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #017374;
+            border-bottom: 2px solid #2D9CDB;
             padding-bottom: 10px;
             margin-bottom: 14px;
           }
           .brand-title {
             font-size: 22px;
             font-weight: 900;
-            color: #017374;
+            color: #2D9CDB;
             letter-spacing: 1.5px;
           }
           .user-badge {
-            background: #FFFFFF;
-            border: 1px solid rgba(1, 115, 116, 0.2);
-            color: #025C5D;
+            background: #1F2328;
+            border: 1px solid #2D333B;
+            color: #9AA0A6;
             padding: 4px 12px;
             border-radius: 16px;
             font-size: 11px;
             font-weight: 600;
           }
           .user-badge strong {
-            color: #014041;
+            color: #E8EAED;
           }
           .plan-header {
             margin-bottom: 14px;
@@ -200,12 +200,12 @@ const generatePlanHTML = (plan, userName) => {
           .plan-title {
             font-size: 22px;
             font-weight: 800;
-            color: #014041;
+            color: #E8EAED;
             margin: 0 0 4px 0;
           }
           .plan-desc {
             font-size: 12px;
-            color: #025C5D;
+            color: #9AA0A6;
             margin: 0 0 10px 0;
           }
           .meta-bar {
@@ -214,18 +214,18 @@ const generatePlanHTML = (plan, userName) => {
             align-items: center;
           }
           .meta-pill {
-            background: rgba(1, 115, 116, 0.15);
-            border: 1px solid rgba(1, 115, 116, 0.3);
-            color: #017374;
+            background: rgba(45, 156, 219, 0.15);
+            border: 1px solid rgba(45, 156, 219, 0.3);
+            color: #2D9CDB;
             padding: 3px 10px;
             border-radius: 12px;
             font-size: 11px;
             font-weight: 700;
           }
           .meta-pill.cyan {
-            background: #D8F3EB;
-            border: 1px solid rgba(1, 115, 116, 0.3);
-            color: #017374;
+            background: rgba(242, 201, 76, 0.15);
+            border: 1px solid rgba(242, 201, 76, 0.3);
+            color: #F2C94C;
           }
           
           .days-grid {
@@ -235,16 +235,16 @@ const generatePlanHTML = (plan, userName) => {
           }
           
           .day-card {
-            background-color: #FFFFFF;
-            border: 1px solid rgba(1, 115, 116, 0.18);
+            background-color: #1F2328;
+            border: 1px solid #2D333B;
             border-radius: 12px;
             padding: 12px 14px;
             page-break-inside: avoid;
           }
           
           .day-card.rest-day {
-            background: #EBF7F4;
-            border: 1px dashed rgba(1, 115, 116, 0.3);
+            background: #16191E;
+            border: 1px dashed #2D333B;
             padding: 8px 12px;
           }
           
@@ -262,8 +262,8 @@ const generatePlanHTML = (plan, userName) => {
           }
           
           .day-number-badge {
-            background: #017374;
-            color: #FFFFFF;
+            background: #2D9CDB;
+            color: #121417;
             font-weight: 900;
             font-size: 10px;
             padding: 2px 7px;
@@ -273,7 +273,7 @@ const generatePlanHTML = (plan, userName) => {
           .day-name {
             font-size: 14px;
             font-weight: 800;
-            color: #014041;
+            color: #E8EAED;
           }
           
           .exercise-table {
@@ -283,21 +283,21 @@ const generatePlanHTML = (plan, userName) => {
           }
           
           th {
-            background-color: #EBF7F4;
-            color: #3A7574;
+            background-color: #16191E;
+            color: #9AA0A6;
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             text-align: left;
             padding: 5px 8px;
-            border-bottom: 1px solid rgba(1, 115, 116, 0.18);
+            border-bottom: 1px solid #2D333B;
           }
           
           td {
             padding: 6px 8px;
             font-size: 11px;
-            border-bottom: 1px solid rgba(1, 115, 116, 0.1);
-            color: #014041;
+            border-bottom: 1px solid #2D333B;
+            color: #E8EAED;
             vertical-align: middle;
           }
           
@@ -307,16 +307,16 @@ const generatePlanHTML = (plan, userName) => {
           
           .ex-name {
             font-weight: 700;
-            color: #014041;
+            color: #E8EAED;
           }
           .ex-sub {
             font-size: 10px;
-            color: #3A7574;
+            color: #9AA0A6;
           }
           
           .badge-cell {
             font-weight: 700;
-            color: #017374;
+            color: #2D9CDB;
           }
           .center {
             text-align: center;
@@ -326,8 +326,8 @@ const generatePlanHTML = (plan, userName) => {
             margin-top: 16px;
             text-align: center;
             font-size: 10px;
-            color: #3A7574;
-            border-top: 1px solid rgba(1, 115, 116, 0.15);
+            color: #9AA0A6;
+            border-top: 1px solid #2D333B;
             padding-top: 8px;
           }
         </style>

@@ -126,33 +126,33 @@ function SwipeableSetRow({
         style={{ transform: [{ translateX: pan }] }}
         className={`p-2.5 rounded-2xl border flex-row items-center justify-between ${
           setObj?.completed
-            ? 'border-[#017374]/35 bg-[#DDF3EE]'
-            : 'border-[#017374]/15 bg-white shadow-xs'
+            ? 'border-[#2D9CDB]/40 bg-[#162736]'
+            : 'border-[#2D333B] bg-[#16191E]'
         }`}>
         {/* IF SWIPED OPEN, OVERLAY SHOWS CANCEL DELETE & DISMISSES SWIPE ON TAP */}
         {isOpen && (
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={closeSwipe}
-            className="absolute inset-0 z-50 bg-black/15 rounded-2xl flex-row items-center justify-center px-2">
-            <View className="bg-white px-3 py-1.5 rounded-xl border border-[#017374]/30 shadow-lg flex-row items-center">
-              <Ionicons name="close-circle" size={16} color="#017374" style={{ marginRight: 4 }} />
-              <Text className="text-xs font-extrabold text-[#014041]">Cancel Delete</Text>
+            className="absolute inset-0 z-50 bg-black/40 rounded-2xl flex-row items-center justify-center px-2">
+            <View className="bg-[#1F2328] px-3 py-1.5 rounded-xl border border-[#2D333B] shadow-lg flex-row items-center">
+              <Ionicons name="close-circle" size={16} color="#2D9CDB" style={{ marginRight: 4 }} />
+              <Text className="text-xs font-extrabold text-[#E8EAED]">Cancel Delete</Text>
             </View>
           </TouchableOpacity>
         )}
 
         {/* SET NUMBER BADGE */}
-        <View className="h-8 w-8 rounded-xl bg-[#017374]/15 items-center justify-center border border-[#017374]/20 mr-1.5">
-          <Text className="text-xs font-black text-[#014041]">S{setObj?.setNum || setIdx + 1}</Text>
+        <View className="h-8 w-8 rounded-xl bg-[#2D9CDB]/15 items-center justify-center border border-[#2D9CDB]/30 mr-1.5">
+          <Text className="text-xs font-black text-[#2D9CDB]">S{setObj?.setNum || setIdx + 1}</Text>
         </View>
 
         {/* TACTILE WEIGHT STEPPER + PICKER TRIGGER CONTROL */}
-        <View className="flex-1 mx-1 flex-row items-center justify-between rounded-xl bg-[#EBF7F4]/60 border border-[#017374]/20 p-1">
+        <View className="flex-1 mx-1 flex-row items-center justify-between rounded-xl bg-[#121417] border border-[#2D333B] p-1">
           <TouchableOpacity
             onPress={() => stepWeight(exIdx, setIdx, -2.5)}
-            className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15 active:bg-[#017374]/20">
-            <Ionicons name="remove" size={14} color="#017374" />
+            className="h-7 w-7 rounded-lg bg-[#1F2328] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+            <Ionicons name="remove" size={14} color="#2D9CDB" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -161,24 +161,24 @@ function SwipeableSetRow({
               setPickerValue(String(setObj?.weight ?? '0'));
             }}
             className="flex-1 items-center px-1">
-            <Text className="text-sm font-black text-[#014041]">
+            <Text className="text-sm font-black text-[#E8EAED]">
               {setObj?.weight ?? '0'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => stepWeight(exIdx, setIdx, 2.5)}
-            className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15 active:bg-[#017374]/20">
-            <Ionicons name="add" size={14} color="#017374" />
+            className="h-7 w-7 rounded-lg bg-[#1F2328] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+            <Ionicons name="add" size={14} color="#2D9CDB" />
           </TouchableOpacity>
         </View>
 
         {/* TACTILE REPS STEPPER + PICKER TRIGGER CONTROL */}
-        <View className="flex-1 mr-1.5 flex-row items-center justify-between rounded-xl bg-[#EBF7F4]/60 border border-[#017374]/20 p-1">
+        <View className="flex-1 mr-1.5 flex-row items-center justify-between rounded-xl bg-[#121417] border border-[#2D333B] p-1">
           <TouchableOpacity
             onPress={() => stepReps(exIdx, setIdx, -1)}
-            className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15 active:bg-[#017374]/20">
-            <Ionicons name="remove" size={14} color="#017374" />
+            className="h-7 w-7 rounded-lg bg-[#1F2328] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+            <Ionicons name="remove" size={14} color="#2D9CDB" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -187,15 +187,15 @@ function SwipeableSetRow({
               setPickerValue(String(setObj?.reps ?? '10'));
             }}
             className="flex-1 items-center px-1">
-            <Text className="text-sm font-black text-[#014041]">
+            <Text className="text-sm font-black text-[#E8EAED]">
               {setObj?.reps ?? '10'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => stepReps(exIdx, setIdx, 1)}
-            className="h-7 w-7 rounded-lg bg-white items-center justify-center border border-[#017374]/15 active:bg-[#017374]/20">
-            <Ionicons name="add" size={14} color="#017374" />
+            className="h-7 w-7 rounded-lg bg-[#1F2328] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+            <Ionicons name="add" size={14} color="#2D9CDB" />
           </TouchableOpacity>
         </View>
 
@@ -204,13 +204,13 @@ function SwipeableSetRow({
           onPress={() => toggleSetCompleted(exIdx, setIdx)}
           className={`h-9 w-9 rounded-xl items-center justify-center border shadow-xs ${
             setObj?.completed
-              ? 'border-emerald-600 bg-[#017374]'
-              : 'border-[#017374]/30 bg-white'
+              ? 'border-[#2D9CDB] bg-[#2D9CDB]'
+              : 'border-[#2D333B] bg-[#1F2328]'
           }`}>
           <Ionicons
             name="checkmark"
             size={18}
-            color={setObj?.completed ? '#FFFFFF' : '#017374'}
+            color={setObj?.completed ? '#121417' : '#9AA0A6'}
           />
         </TouchableOpacity>
       </Animated.View>
@@ -223,6 +223,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
   const saveWorkout = useWorkoutStore((state) => state.saveWorkout);
   const startSession = useWorkoutStore((state) => state.startSession);
+  const clearActiveSession = useWorkoutStore((state) => state.clearActiveSession);
   const updateActiveSession = useWorkoutStore((state) => state.updateActiveSession);
   const activeSession = useWorkoutStore((state) => state.activeSession);
   const workoutHistory = useWorkoutStore((state) => state.workoutHistory);
@@ -546,10 +547,12 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
     });
 
     if (completedSetsCount === 0) {
-      Alert.alert(
-        'No Sets Logged',
-        'Please check off at least one completed set before finishing the workout.'
-      );
+      clearActiveSession();
+      if (navigation?.canGoBack && navigation.canGoBack()) {
+        navigation.goBack();
+      } else if (navigation?.navigate) {
+        navigation.navigate('Tabs');
+      }
       return;
     }
 
@@ -602,9 +605,9 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
       : null;
 
   return (
-    <View className="flex-1 bg-[#EBF7F4] pt-14">
+    <View className="flex-1 bg-[#121417] pt-14">
       {/* HEADER */}
-      <View className="flex-row items-center justify-between px-5 pb-3 border-b border-[#017374]/15">
+      <View className="flex-row items-center justify-between px-5 pb-3 border-b border-[#2D333B]">
         <TouchableOpacity
           onPress={() => {
             if (navigation?.canGoBack && navigation.canGoBack()) {
@@ -613,36 +616,27 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
               navigation.navigate('Tabs');
             }
           }}
-          className="flex-row items-center rounded-xl border border-[#017374]/20 bg-white px-3 py-2 shadow-xs">
-          <Ionicons name="arrow-back" size={18} color="#017374" />
-          {/* <Text className="ml-1 text-xs font-bold text-[#017374]">Back</Text> */}
+          className="flex-row items-center rounded-xl border border-[#2D333B] bg-[#1F2328] px-3 py-2 shadow-xs">
+          <Ionicons name="arrow-back" size={18} color="#E8EAED" />
         </TouchableOpacity>
 
         <View className="items-center flex-1 mx-2">
-          {/* <Text className="text-[10px] font-extrabold text-[#017374] uppercase tracking-wider">ACTIVE WORKOUT LOG</Text> */}
-          <Text className="text-base font-black text-[#014041]" numberOfLines={1}>
+          <Text className="text-base font-black text-[#E8EAED]" numberOfLines={1}>
             {sessionInfo?.dayTitle || 'Workout Session'}
           </Text>
         </View>
     
         <View className="flex-row items-center space-x-2">
-          {/* <TouchableOpacity
-            onPress={() => setShowAddExerciseModal(true)}
-            className="flex-row items-center rounded-xl border border-[#017374]/25 bg-[#017374]/15 px-2.5 py-2 mr-2">
-            <Ionicons name="add-circle-outline" size={16} color="#017374" />
-            <Text className="ml-1 text-xs font-bold text-[#017374]">+ Ex</Text>
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             onPress={handleFinishWorkout}
             disabled={saving}
-            className="flex-row items-center rounded-xl bg-[#017374] px-3.5 py-2 shadow-sm border border-[#017374]/20">
+            className="flex-row items-center rounded-xl bg-[#2D9CDB] px-3.5 py-2 shadow-sm border border-[#2D9CDB]">
             {saving ? (
-              <ActivityIndicator size="small" color="#FFFFFF" style={{ marginRight: 4 }} />
+              <ActivityIndicator size="small" color="#121417" style={{ marginRight: 4 }} />
             ) : (
-              <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" style={{ marginRight: 4 }} />
+              <Ionicons name="checkmark-circle" size={16} color="#121417" style={{ marginRight: 4 }} />
             )}
-            <Text className="text-xs font-black text-white">{saving ? 'Saving...' : 'Finish'}</Text>
+            <Text className="text-xs font-black text-[#121417]">{saving ? 'Saving...' : 'Finish'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -650,28 +644,28 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
       {/* TIMERS DASHBOARD BAR */}
       <View className="flex-row justify-between px-5 mt-3 mb-2">
         {/* WORKOUT TIMER */}
-        <View className="w-[48%] flex-row items-center justify-between rounded-2xl border border-[#017374]/15 bg-white p-3.5 shadow-xs">
+        <View className="w-[48%] flex-row items-center justify-between rounded-2xl border border-[#2D333B] bg-[#1F2328] p-3.5 shadow-xs">
           <View>
-            <Text className="text-[10px] font-bold text-[#3A7574] uppercase">Workout Time</Text>
-            <Text className="text-xl font-black text-[#017374] mt-0.5">{formatTime(elapsedSeconds)}</Text>
+            <Text className="text-[10px] font-bold text-[#9AA0A6] uppercase tracking-wider">Workout Time</Text>
+            <Text className="text-xl font-black text-[#2D9CDB] mt-0.5">{formatTime(elapsedSeconds)}</Text>
           </View>
-          <Ionicons name="timer-outline" size={24} color="#017374" />
+          <Ionicons name="timer-outline" size={24} color="#2D9CDB" />
         </View>
 
         {/* REST TIMER CARD */}
         <TouchableOpacity
           activeOpacity={0.85}
           onPress={() => setShowRestModal(true)}
-          className="w-[48%] flex-row items-center justify-between rounded-2xl border border-[#017374]/15 bg-white p-3.5 shadow-xs">
+          className="w-[48%] flex-row items-center justify-between rounded-2xl border border-[#2D333B] bg-[#1F2328] p-3.5 shadow-xs">
           <View className="flex-1 mr-1">
             <View className="flex-row items-center space-x-1">
-              <Text className="text-[10px] font-bold text-[#3A7574] uppercase">
+              <Text className="text-[10px] font-bold text-[#9AA0A6] uppercase tracking-wider">
                 {restActive ? 'Resting...' : `Rest (${defaultRestTarget}s)`}
               </Text>
-              <Ionicons name="pencil" size={10} color="#017374" />
+              <Ionicons name="pencil" size={10} color="#2D9CDB" />
             </View>
 
-            <Text className={`text-xl font-black mt-0.5 ${restActive ? 'text-amber-600' : 'text-[#017374]'}`}>
+            <Text className={`text-xl font-black mt-0.5 ${restActive ? 'text-[#F2C94C]' : 'text-[#2D9CDB]'}`}>
               {formatTime(restActive ? restSeconds : defaultRestTarget)}
             </Text>
           </View>
@@ -682,8 +676,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                 e?.stopPropagation?.();
                 pauseRestTimer();
               }}
-              className="rounded-xl bg-[#017374]/15 p-2 active:bg-[#017374]/30">
-              <Ionicons name="pause" size={18} color="#017374" />
+              className="rounded-xl bg-[#F2C94C]/20 p-2 active:bg-[#F2C94C]/30">
+              <Ionicons name="pause" size={18} color="#F2C94C" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -691,8 +685,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                 e?.stopPropagation?.();
                 startRestTimer(defaultRestTarget);
               }}
-              className="rounded-xl bg-[#017374] p-2 active:opacity-80 shadow-xs">
-              <Ionicons name="play" size={18} color="#FFFFFF" />
+              className="rounded-xl bg-[#2D9CDB] p-2 active:opacity-80 shadow-xs">
+              <Ionicons name="play" size={18} color="#121417" />
             </TouchableOpacity>
           )}
         </TouchableOpacity>
@@ -701,36 +695,36 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
       {/* EXERCISES & SETS LIST */}
       <ScrollView className="flex-1 px-5 pt-2" showsVerticalScrollIndicator={false}>
         {exerciseLogs.length === 0 ? (
-          <View className="my-6 rounded-3xl border border-dashed border-[#017374]/30 bg-white p-6 items-center shadow-xs">
-            <View className="rounded-2xl bg-[#017374]/15 p-4 mb-3 border border-[#017374]/20">
-              <Ionicons name="barbell-outline" size={36} color="#017374" />
+          <View className="my-6 rounded-3xl border border-dashed border-[#2D333B] bg-[#1F2328] p-6 items-center shadow-xs">
+            <View className="rounded-2xl bg-[#2D9CDB]/15 p-4 mb-3 border border-[#2D9CDB]/20">
+              <Ionicons name="barbell-outline" size={36} color="#2D9CDB" />
             </View>
-            <Text className="text-base font-black text-[#014041]">No Exercises Added Yet</Text>
-            <Text className="text-xs text-[#025C5D] text-center mt-1 mb-5 px-3">
+            <Text className="text-base font-black text-[#E8EAED]">No Exercises Added Yet</Text>
+            <Text className="text-xs text-[#9AA0A6] text-center mt-1 mb-5 px-3">
               Add exercises dynamically to this workout session to log your sets, reps, and weights!
             </Text>
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={() => setShowAddExerciseModal(true)}
-              className="flex-row items-center rounded-2xl bg-[#017374] px-5 py-3.5 shadow-md border border-[#017374]/20">
-              <Ionicons name="add-circle-outline" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
-              <Text className="text-xs font-extrabold text-white uppercase tracking-wider">+ Add Exercise to Session</Text>
+              className="flex-row items-center rounded-2xl bg-[#2D9CDB] px-5 py-3.5 shadow-md">
+              <Ionicons name="add-circle-outline" size={18} color="#121417" style={{ marginRight: 6 }} />
+              <Text className="text-xs font-black text-[#121417] uppercase tracking-wider">+ Add Exercise to Session</Text>
             </TouchableOpacity>
           </View>
         ) : (
           exerciseLogs.map((ex, exIdx) => (
             <View
               key={ex.exerciseId ? `${ex.exerciseId}-${exIdx}` : `ex-${exIdx}`}
-              className="mb-5 rounded-3xl border border-[#017374]/15 bg-white p-4">
+              className="mb-5 rounded-3xl border border-[#2D333B] bg-[#1F2328] p-4 shadow-sm">
               {/* EXERCISE HEADER */}
-              <View className="flex-row items-center justify-between border-b border-[#017374]/10 pb-3">
+              <View className="flex-row items-center justify-between border-b border-[#2D333B] pb-3">
                 <View className="flex-1 mr-2">
-                  <Text className="text-base font-black text-[#014041]">{ex.name}</Text>
+                  <Text className="text-base font-black text-[#E8EAED]">{ex.name}</Text>
                   <View className="flex-row items-center mt-1 space-x-2">
-                    <View className="rounded-md bg-[#017374]/15 px-2 py-0.5 mr-2">
-                      <Text className="text-[10px] font-bold text-[#017374] uppercase">{ex.bodyPart}</Text>
+                    <View className="rounded-md bg-[#2D9CDB]/15 px-2 py-0.5 mr-2">
+                      <Text className="text-[10px] font-bold text-[#2D9CDB] uppercase">{ex.bodyPart}</Text>
                     </View>
-                    <Text className="text-[11px] font-semibold text-[#3A7574]">
+                    <Text className="text-[11px] font-semibold text-[#9AA0A6]">
                       Target: {ex.targetReps} reps
                     </Text>
                   </View>
@@ -739,9 +733,9 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                 <View className="flex-row items-center space-x-2">
                   <TouchableOpacity
                     onPress={() => addSetToExercise(exIdx)}
-                    className="flex-row items-center rounded-xl bg-[#017374]/10 px-2.5 py-1.5 border border-[#017374]/20 mr-1.5">
-                    <Ionicons name="add" size={14} color="#017374" />
-                    <Text className="ml-0.5 text-[11px] font-bold text-[#017374]">Set</Text>
+                    className="flex-row items-center rounded-xl bg-[#2D9CDB]/15 px-2.5 py-1.5 border border-[#2D9CDB]/30 mr-1.5">
+                    <Ionicons name="add" size={14} color="#2D9CDB" />
+                    <Text className="ml-0.5 text-[11px] font-bold text-[#2D9CDB]">Set</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -754,10 +748,10 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
               {/* TABLE COLUMN HEADERS */}
               <View className="flex-row items-center justify-between px-1 pt-3 pb-1">
-                <Text className="w-8 text-[9px] font-black text-[#3A7574] text-center uppercase tracking-wider">SET</Text>
-                <Text className="flex-1 text-[9px] font-black text-[#3A7574] text-center uppercase tracking-wider">WEIGHT (KG)</Text>
-                <Text className="flex-1 text-[9px] font-black text-[#3A7574] text-center uppercase tracking-wider">REPS</Text>
-                <Text className="w-9 text-[9px] font-black text-[#3A7574] text-center uppercase tracking-wider">DONE</Text>
+                <Text className="w-8 text-[9px] font-black text-[#9AA0A6] text-center uppercase tracking-wider">SET</Text>
+                <Text className="flex-1 text-[9px] font-black text-[#9AA0A6] text-center uppercase tracking-wider">WEIGHT (KG)</Text>
+                <Text className="flex-1 text-[9px] font-black text-[#9AA0A6] text-center uppercase tracking-wider">REPS</Text>
+                <Text className="w-9 text-[9px] font-black text-[#9AA0A6] text-center uppercase tracking-wider">DONE</Text>
               </View>
 
               {/* SETS LIST WITH SWIPEABLE ROWS */}
@@ -783,56 +777,34 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => setShowAddExerciseModal(true)}
-            className="mb-5 flex-row items-center justify-center rounded-2xl border border-dashed border-[#017374]/40 bg-[#017374]/10 py-3.5">
-            <Ionicons name="add-circle-outline" size={18} color="#017374" style={{ marginRight: 6 }} />
-            <Text className="text-xs font-bold text-[#017374]">+ Add Another Exercise</Text>
+            className="mb-8 flex-row items-center justify-center rounded-2xl border border-dashed border-[#2D9CDB]/40 bg-[#2D9CDB]/10 py-3.5">
+            <Ionicons name="add-circle-outline" size={18} color="#2D9CDB" style={{ marginRight: 6 }} />
+            <Text className="text-xs font-bold text-[#2D9CDB]">+ Add Another Exercise</Text>
           </TouchableOpacity>
         )}
-
-        {/* FINISH WORKOUT CARD AT BOTTOM */}
-        {/* <View className="mt-2 mb-16 p-5 rounded-3xl border border-[#017374]/20 bg-white items-center shadow-md">
-          <Text className="text-base font-black text-[#014041]">Ready to log this workout?</Text>
-          <Text className="text-xs text-[#3A7574] text-center mt-1 mb-4">
-            Finishing will store your sets into workout history and update your overall workout stats!
-          </Text>
-
-          <TouchableOpacity
-            onPress={handleFinishWorkout}
-            disabled={saving}
-            className="w-full flex-row items-center justify-center rounded-2xl bg-[#017374] py-4 shadow-md border border-[#017374]/20">
-            {saving ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <>
-                <Ionicons name="checkmark-circle-outline" size={20} color="#FFFFFF" style={{ marginRight: 6 }} />
-                <Text className="text-sm font-black text-white uppercase tracking-wider">Save & Finish Workout</Text>
-              </>
-            )}
-          </TouchableOpacity>
-        </View> */}
       </ScrollView>
 
       {/* REST TIMER CONFIGURATION MODAL */}
       <Modal visible={showRestModal} transparent animationType="slide">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-white rounded-t-[40px] p-6 border-t border-[#017374]/20 shadow-2xl">
+        <View className="flex-1 bg-black/75 justify-end">
+          <View className="bg-[#1F2328] rounded-t-[40px] p-6 border-t border-[#2D333B] shadow-2xl">
             {/* TOP DRAG HANDLE */}
-            <View className="h-1.5 w-14 rounded-full bg-gray-300 self-center mb-4" />
+            <View className="h-1.5 w-14 rounded-full bg-[#2D333B] self-center mb-4" />
 
-            <View className="flex-row items-center justify-between pb-4 border-b border-[#017374]/10">
+            <View className="flex-row items-center justify-between pb-4 border-b border-[#2D333B]">
               <View>
-                <Text className="text-[10px] font-extrabold text-[#017374]/70 uppercase tracking-widest mb-0.5">
+                <Text className="text-[10px] font-extrabold text-[#2D9CDB] uppercase tracking-widest mb-0.5">
                   REST TIMER CONFIGURATION
                 </Text>
-                <Text className="text-xl font-black text-[#014041]">
+                <Text className="text-xl font-black text-[#E8EAED]">
                   Set Rest Duration
                 </Text>
               </View>
 
               <TouchableOpacity
                 onPress={() => setShowRestModal(false)}
-                className="rounded-full bg-[#F0F9F6] p-2.5 active:bg-[#E2F4EE]">
-                <Ionicons name="close" size={22} color="#014041" />
+                className="rounded-full bg-[#16191E] p-2.5 border border-[#2D333B]">
+                <Ionicons name="close" size={22} color="#E8EAED" />
               </TouchableOpacity>
             </View>
 
@@ -843,12 +815,12 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                   const cur = parseInt(customInputSeconds, 10) || 60;
                   setCustomInputSeconds(String(Math.max(15, cur - 15)));
                 }}
-                className="h-16 w-16 rounded-full bg-[#F0F9F6] items-center justify-center border border-[#017374]/10 active:bg-[#E2F4EE]">
-                <Ionicons name="remove" size={28} color="#017374" />
+                className="h-16 w-16 rounded-full bg-[#16191E] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+                <Ionicons name="remove" size={28} color="#2D9CDB" />
               </TouchableOpacity>
 
-              <View className="items-center justify-center min-w-[160px] py-3 px-6 rounded-full bg-[#F0F9F6] border border-[#017374]/15 shadow-inner">
-                <Text className="text-5xl font-black text-[#014041] text-center tracking-tight">
+              <View className="items-center justify-center min-w-[160px] py-3 px-6 rounded-full bg-[#16191E] border border-[#2D333B] shadow-inner">
+                <Text className="text-5xl font-black text-[#E8EAED] text-center tracking-tight">
                   {formatTime(parseInt(customInputSeconds, 10) || 60)}
                 </Text>
               </View>
@@ -858,8 +830,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                   const cur = parseInt(customInputSeconds, 10) || 60;
                   setCustomInputSeconds(String(cur + 15));
                 }}
-                className="h-16 w-16 rounded-full bg-[#F0F9F6] items-center justify-center border border-[#017374]/10 active:bg-[#E2F4EE]">
-                <Ionicons name="add" size={28} color="#017374" />
+                className="h-16 w-16 rounded-full bg-[#16191E] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+                <Ionicons name="add" size={28} color="#2D9CDB" />
               </TouchableOpacity>
             </View>
 
@@ -872,8 +844,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     const cur = parseInt(customInputSeconds, 10) || 60;
                     setCustomInputSeconds(String(Math.max(15, cur + step)));
                   }}
-                  className="px-3.5 py-2 flex-1 rounded-xl bg-[#F0F9F6] border border-[#017374]/15 active:bg-[#017374] active:border-[#017374]">
-                  <Text className="text-xs text-center font-black text-[#017374]">
+                  className="px-3.5 py-2 flex-1 rounded-xl bg-[#16191E] border border-[#2D333B] active:bg-[#2D9CDB]">
+                  <Text className="text-xs text-center font-black text-[#2D9CDB]">
                     {step > 0 ? `+${step}s` : `${step}s`}
                   </Text>
                 </TouchableOpacity>
@@ -881,7 +853,7 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
             </View>
 
             {/* PRESET PILLS GRID (3 PER ROW) */}
-            <Text className="text-[11px] font-extrabold text-[#3A7574] mb-2 uppercase tracking-widest">
+            <Text className="text-[11px] font-extrabold text-[#9AA0A6] mb-2 uppercase tracking-widest">
               Quick Rest Presets
             </Text>
             <View className="flex-row flex-wrap justify-between gap-y-2.5 mb-6">
@@ -892,11 +864,11 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     key={p.sec}
                     onPress={() => setCustomInputSeconds(String(p.sec))}
                     className={`w-[31%] py-3 rounded-full border items-center justify-center ${isSelected
-                      ? 'border-[#017374] bg-[#017374] shadow-md shadow-[#017374]/30'
-                      : 'border-[#017374]/20 bg-[#F0F9F6]'
+                      ? 'border-[#2D9CDB] bg-[#2D9CDB] shadow-md'
+                      : 'border-[#2D333B] bg-[#16191E]'
                       }`}>
                     <Text
-                      className={`text-xs font-black ${isSelected ? 'text-white' : 'text-[#014041]'
+                      className={`text-xs font-black ${isSelected ? 'text-[#121417]' : 'text-[#E8EAED]'
                         }`}>
                       {p.label}
                     </Text>
@@ -914,8 +886,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                   setShowRestModal(false);
                   Alert.alert('Default Rest Set ⏱️', `Sets will automatically start a ${sec}s rest timer.`);
                 }}
-                className="flex-1 rounded-full bg-[#F0F9F6] border border-[#017374]/25 py-3.5 items-center active:bg-[#E2F4EE]">
-                <Text className="text-xs font-black text-[#014041]">
+                className="flex-1 rounded-full bg-[#16191E] border border-[#2D333B] py-3.5 items-center active:bg-[#2D333B]">
+                <Text className="text-xs font-black text-[#E8EAED]">
                   Set Default ({customInputSeconds}s)
                 </Text>
               </TouchableOpacity>
@@ -926,9 +898,9 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                   startRestTimer(sec);
                   setShowRestModal(false);
                 }}
-                className="flex-1 rounded-full bg-[#017374] py-3.5 items-center shadow-md shadow-[#017374]/30 active:opacity-90 flex-row justify-center">
-                <Ionicons name="play" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
-                <Text className="text-xs font-black text-white uppercase tracking-wider">
+                className="flex-1 rounded-full bg-[#2D9CDB] py-3.5 items-center shadow-md active:opacity-90 flex-row justify-center">
+                <Ionicons name="play" size={16} color="#121417" style={{ marginRight: 6 }} />
+                <Text className="text-xs font-black text-[#121417] uppercase tracking-wider">
                   Start {customInputSeconds}s Timer
                 </Text>
               </TouchableOpacity>
@@ -939,42 +911,42 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
       {/* REST TIMER ALARM MODAL */}
       <Modal visible={restAlarmActive} transparent animationType="fade">
-        <View className="flex-1 bg-black/75 justify-center items-center px-5">
-          <View className="w-full bg-white rounded-3xl p-6 border-2 border-[#017374] shadow-2xl items-center">
+        <View className="flex-1 bg-black/80 justify-center items-center px-5">
+          <View className="w-full bg-[#1F2328] rounded-3xl p-6 border-2 border-[#F2C94C] shadow-2xl items-center">
             {/* ALARM ICON BADGE */}
-            <View className="h-20 w-20 rounded-full bg-[#017374]/15 items-center justify-center mb-4 border-2 border-[#017374]/30 shadow-md">
-              <Ionicons name="alarm" size={44} color="#017374" />
+            <View className="h-20 w-20 rounded-full bg-[#F2C94C]/20 items-center justify-center mb-4 border-2 border-[#F2C94C]/40 shadow-md">
+              <Ionicons name="alarm" size={44} color="#F2C94C" />
             </View>
 
-            <View className="rounded-full bg-emerald-100 px-4 py-1.5 mb-2 border border-emerald-300">
-              <Text className="text-xs font-black text-emerald-800 uppercase tracking-widest">
+            <View className="rounded-full bg-[#F2C94C]/20 px-4 py-1.5 mb-2 border border-[#F2C94C]/40">
+              <Text className="text-xs font-black text-[#F2C94C] uppercase tracking-widest">
                 🚨 REST TIME COMPLETED!
               </Text>
             </View>
 
-            <Text className="text-2xl font-black text-[#014041] text-center mb-1">
+            <Text className="text-2xl font-black text-[#E8EAED] text-center mb-1">
               Time For Your Next Set!
             </Text>
 
-            <Text className="text-sm font-semibold text-[#3A7574] text-center mb-6 px-2">
+            <Text className="text-sm font-semibold text-[#9AA0A6] text-center mb-6 px-2">
               Your recovery period is over. Get back in position and smash your next set!
             </Text>
 
             <View className="w-full flex flex-col gap-2">
               <TouchableOpacity
                 onPress={dismissRestAlarm}
-                className="w-full rounded-full bg-[#017374] py-4 items-center shadow-lg shadow-[#017374]/40 active:opacity-90 flex-row justify-center">
-                <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" style={{ marginRight: 6 }} />
-                <Text className="text-sm font-black text-white uppercase tracking-wider">
+                className="w-full rounded-full bg-[#2D9CDB] py-4 items-center shadow-lg active:opacity-90 flex-row justify-center">
+                <Ionicons name="checkmark-circle" size={20} color="#121417" style={{ marginRight: 6 }} />
+                <Text className="text-sm font-black text-[#121417] uppercase tracking-wider">
                   DISMISS & START SET
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => extendRestTimer(30)}
-                className="w-full rounded-full bg-[#F0F9F6] border border-[#017374]/30 py-3.5 items-center active:bg-[#E2F4EE] flex-row justify-center">
-                <Ionicons name="time-outline" size={18} color="#017374" style={{ marginRight: 6 }} />
-                <Text className="text-xs font-bold text-[#014041]">
+                className="w-full rounded-full bg-[#16191E] border border-[#2D333B] py-3.5 items-center active:bg-[#2D333B] flex-row justify-center">
+                <Ionicons name="time-outline" size={18} color="#2D9CDB" style={{ marginRight: 6 }} />
+                <Text className="text-xs font-bold text-[#E8EAED]">
                   +30s Extra Rest
                 </Text>
               </TouchableOpacity>
@@ -985,25 +957,25 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
       {/* QUICK PRESET PICKER MODAL FOR SET WEIGHT & REPS */}
       <Modal visible={pickerState !== null} transparent animationType="fade">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-white rounded-t-[40px] p-6 border-t border-[#017374]/20 shadow-2xl">
+        <View className="flex-1 bg-black/75 justify-end">
+          <View className="bg-[#1F2328] rounded-t-[40px] p-6 border-t border-[#2D333B] shadow-2xl">
             {/* TOP DRAG HANDLE */}
-            <View className="h-1.5 w-14 rounded-full bg-gray-300 self-center mb-4" />
+            <View className="h-1.5 w-14 rounded-full bg-[#2D333B] self-center mb-4" />
 
-            <View className="flex-row items-center justify-between pb-4 border-b border-[#017374]/10">
+            <View className="flex-row items-center justify-between pb-4 border-b border-[#2D333B]">
               <View>
-                <Text className="text-[10px] font-extrabold text-[#017374]/70 uppercase tracking-widest mb-0.5">
+                <Text className="text-[10px] font-extrabold text-[#2D9CDB] uppercase tracking-widest mb-0.5">
                   QUICK PRESET PICKER
                 </Text>
-                <Text className="text-xl font-black text-[#014041]">
+                <Text className="text-xl font-black text-[#E8EAED]">
                   Select {pickerState?.field === 'weight' ? 'Weight (kg)' : 'Reps Target'}
                 </Text>
               </View>
 
               <TouchableOpacity
                 onPress={() => setPickerState(null)}
-                className="rounded-full bg-[#F0F9F6] p-2.5 active:bg-[#E2F4EE]">
-                <Ionicons name="close" size={22} color="#014041" />
+                className="rounded-full bg-[#16191E] p-2.5 border border-[#2D333B]">
+                <Ionicons name="close" size={22} color="#E8EAED" />
               </TouchableOpacity>
             </View>
 
@@ -1019,15 +991,15 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     setPickerValue(String(Math.max(1, cur - 1)));
                   }
                 }}
-                className="h-16 w-16 rounded-full bg-[#F0F9F6] items-center justify-center border border-[#017374]/10 active:bg-[#E2F4EE]">
-                <Ionicons name="remove" size={32} color="#017374" />
+                className="h-16 w-16 rounded-full bg-[#16191E] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+                <Ionicons name="remove" size={32} color="#2D9CDB" />
               </TouchableOpacity>
 
               <View className="items-center justify-center min-w-[140px]">
-                <Text className="text-5xl font-black text-[#014041]">
+                <Text className="text-5xl font-black text-[#E8EAED]">
                   {pickerValue || '0'}
                 </Text>
-                <Text className="text-sm font-bold text-[#3A7574] mt-1 uppercase tracking-wider">
+                <Text className="text-sm font-bold text-[#9AA0A6] mt-1 uppercase tracking-wider">
                   {pickerState?.field === 'weight' ? 'Kilograms' : 'Repetitions'}
                 </Text>
               </View>
@@ -1042,13 +1014,13 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     setPickerValue(String(cur + 1));
                   }
                 }}
-                className="h-16 w-16 rounded-full bg-[#F0F9F6] items-center justify-center border border-[#017374]/10 active:bg-[#E2F4EE]">
-                <Ionicons name="add" size={32} color="#017374" />
+                className="h-16 w-16 rounded-full bg-[#16191E] items-center justify-center border border-[#2D333B] active:bg-[#2D9CDB]/20">
+                <Ionicons name="add" size={32} color="#2D9CDB" />
               </TouchableOpacity>
             </View>
 
             {/* FAST ADJUSTMENT BUTTONS */}
-            <Text className="text-[11px] font-extrabold text-[#3A7574] mb-2 uppercase tracking-widest">Fast Adjustments</Text>
+            <Text className="text-[11px] font-extrabold text-[#9AA0A6] mb-2 uppercase tracking-widest">Fast Adjustments</Text>
             <View className="flex-row gap-2 mb-5">
               {pickerState?.field === 'weight' ? (
                 <>
@@ -1057,32 +1029,32 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                       const cur = parseFloat(pickerValue) || 0;
                       setPickerValue(String(Math.max(0, Math.round((cur - 5) * 10) / 10)));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">-5 kg</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">-5 kg</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseFloat(pickerValue) || 0;
                       setPickerValue(String(Math.max(0, Math.round((cur - 2.5) * 10) / 10)));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">-2.5 kg</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">-2.5 kg</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseFloat(pickerValue) || 0;
                       setPickerValue(String(Math.round((cur + 2.5) * 10) / 10));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">+2.5 kg</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">+2.5 kg</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseFloat(pickerValue) || 0;
                       setPickerValue(String(Math.round((cur + 5) * 10) / 10));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">+5 kg</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">+5 kg</Text>
                   </TouchableOpacity>
                 </>
               ) : (
@@ -1092,39 +1064,39 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                       const cur = parseInt(pickerValue, 10) || 0;
                       setPickerValue(String(Math.max(1, cur - 2)));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">-2 Reps</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">-2 Reps</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseInt(pickerValue, 10) || 0;
                       setPickerValue(String(Math.max(1, cur - 1)));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">-1 Rep</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">-1 Rep</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseInt(pickerValue, 10) || 0;
                       setPickerValue(String(cur + 1));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">+1 Rep</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">+1 Rep</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const cur = parseInt(pickerValue, 10) || 0;
                       setPickerValue(String(cur + 2));
                     }}
-                    className="flex-1 py-3 rounded-xl border border-[#017374]/20 bg-[#F0F9F6] items-center active:bg-[#017374] active:border-[#017374]">
-                    <Text className="text-sm font-bold text-[#017374]">+2 Reps</Text>
+                    className="flex-1 py-3 rounded-xl border border-[#2D333B] bg-[#16191E] items-center active:bg-[#2D9CDB]">
+                    <Text className="text-sm font-bold text-[#2D9CDB]">+2 Reps</Text>
                   </TouchableOpacity>
                 </>
               )}
             </View>
 
             {/* PRESET PILLS */}
-            <Text className="text-[11px] font-extrabold text-[#3A7574] mb-2 uppercase tracking-widest">Common Presets</Text>
+            <Text className="text-[11px] font-extrabold text-[#9AA0A6] mb-2 uppercase tracking-widest">Common Presets</Text>
             <View className="flex-row flex-wrap gap-2 mb-6">
               {(pickerState?.field === 'weight' ? weightPresets : repsPresets).map((val) => {
                 const isSelected =
@@ -1139,11 +1111,11 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                       setPickerValue(String(val))
                     }}
                     className={`px-4 py-2.5 rounded-full border ${isSelected
-                      ? 'border-[#017374] bg-[#017374] shadow-md'
-                      : 'border-[#017374]/20 bg-[#F0F9F6]'
+                      ? 'border-[#2D9CDB] bg-[#2D9CDB] shadow-md'
+                      : 'border-[#2D333B] bg-[#16191E]'
                       }`}>
                     <Text
-                      className={`text-[13px] font-black ${isSelected ? 'text-white' : 'text-[#014041]'
+                      className={`text-[13px] font-black ${isSelected ? 'text-[#121417]' : 'text-[#E8EAED]'
                         }`}>
                       {val}
                     </Text>
@@ -1159,8 +1131,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                 }
                 setPickerState(null);
               }}
-              className="rounded-full bg-[#017374] py-4 items-center shadow-lg shadow-[#017374]/40 active:opacity-80">
-              <Text className="text-sm font-black text-white uppercase tracking-widest">CONFIRM ✓</Text>
+              className="rounded-full bg-[#2D9CDB] py-4 items-center shadow-lg active:opacity-80">
+              <Text className="text-sm font-black text-[#121417] uppercase tracking-widest">CONFIRM ✓</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1168,40 +1140,40 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
       {/* DYNAMIC ADD EXERCISE MODAL */}
       <Modal visible={showAddExerciseModal} transparent animationType="slide">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-white rounded-t-[40px] p-6 border-t border-[#017374]/20 shadow-2xl h-[80%]">
-            <View className="h-1.5 w-14 rounded-full bg-gray-300 self-center mb-4" />
+        <View className="flex-1 bg-black/75 justify-end">
+          <View className="bg-[#1F2328] rounded-t-[40px] p-6 border-t border-[#2D333B] shadow-2xl h-[80%]">
+            <View className="h-1.5 w-14 rounded-full bg-[#2D333B] self-center mb-4" />
 
-            <View className="flex-row items-center justify-between pb-3 border-b border-[#017374]/10">
+            <View className="flex-row items-center justify-between pb-3 border-b border-[#2D333B]">
               <View>
-                <Text className="text-[10px] font-extrabold text-[#017374] uppercase tracking-widest">
+                <Text className="text-[10px] font-extrabold text-[#2D9CDB] uppercase tracking-widest">
                   DYNAMIC WORKOUT BUILDER
                 </Text>
-                <Text className="text-xl font-black text-[#014041]">
+                <Text className="text-xl font-black text-[#E8EAED]">
                   Add Exercise to Session
                 </Text>
               </View>
 
               <TouchableOpacity
                 onPress={() => setShowAddExerciseModal(false)}
-                className="rounded-full bg-[#F0F9F6] p-2.5">
-                <Ionicons name="close" size={20} color="#014041" />
+                className="rounded-full bg-[#16191E] p-2.5 border border-[#2D333B]">
+                <Ionicons name="close" size={20} color="#E8EAED" />
               </TouchableOpacity>
             </View>
 
             {/* SEARCH INPUT BAR */}
-            <View className="my-3 flex-row items-center rounded-2xl border border-[#017374]/20 bg-[#EBF7F4]/50 px-3.5 py-2.5">
-              <Ionicons name="search" size={18} color="#017374" style={{ marginRight: 8 }} />
+            <View className="my-3 flex-row items-center rounded-2xl border border-[#2D333B] bg-[#16191E] px-3.5 py-2.5">
+              <Ionicons name="search" size={18} color="#2D9CDB" style={{ marginRight: 8 }} />
               <TextInput
                 value={exerciseSearchQuery}
                 onChangeText={setExerciseSearchQuery}
                 placeholder="Search exercise (Bench Press, Squat...)"
-                placeholderTextColor="#3A7574"
-                className="flex-1 text-sm font-bold text-[#014041]"
+                placeholderTextColor="#9AA0A6"
+                className="flex-1 text-sm font-bold text-[#E8EAED]"
               />
               {exerciseSearchQuery.length > 0 && (
                 <TouchableOpacity onPress={() => setExerciseSearchQuery('')}>
-                  <Ionicons name="close-circle" size={16} color="#3A7574" />
+                  <Ionicons name="close-circle" size={16} color="#9AA0A6" />
                 </TouchableOpacity>
               )}
             </View>
@@ -1215,12 +1187,12 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                     onPress={() => setSelectedMuscleFilter(cat)}
                     className={`mr-2 rounded-xl border px-3 py-1.5 ${
                       selectedMuscleFilter === cat
-                        ? 'border-[#017374] bg-[#017374]'
-                        : 'border-[#017374]/15 bg-[#EBF7F4]/60'
+                        ? 'border-[#2D9CDB] bg-[#2D9CDB]'
+                        : 'border-[#2D333B] bg-[#16191E]'
                     }`}>
                     <Text
                       className={`text-xs font-bold ${
-                        selectedMuscleFilter === cat ? 'text-white' : 'text-[#025C5D]'
+                        selectedMuscleFilter === cat ? 'text-[#121417]' : 'text-[#9AA0A6]'
                       }`}>
                       {cat}
                     </Text>
@@ -1240,36 +1212,36 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
                   key={idx}
                   activeOpacity={0.8}
                   onPress={() => handleAddExerciseToSession(ex.name, ex.bodyPart)}
-                  className="mb-2.5 flex-row items-center justify-between rounded-2xl border border-[#017374]/15 bg-[#EBF7F4]/40 p-3.5 active:bg-[#017374]/15">
+                  className="mb-2.5 flex-row items-center justify-between rounded-2xl border border-[#2D333B] bg-[#16191E] p-3.5 active:bg-[#2D9CDB]/15">
                   <View className="flex-1 mr-2">
-                    <Text className="text-sm font-bold text-[#014041]">{ex.name}</Text>
-                    <Text className="text-xs text-[#017374] font-medium">{ex.bodyPart}</Text>
+                    <Text className="text-sm font-bold text-[#E8EAED]">{ex.name}</Text>
+                    <Text className="text-xs text-[#2D9CDB] font-medium">{ex.bodyPart}</Text>
                   </View>
-                  <View className="flex-row items-center rounded-xl bg-[#017374] px-3.5 py-2 shadow-xs">
-                    <Ionicons name="add" size={16} color="#FFFFFF" style={{ marginRight: 3 }} />
-                    <Text className="text-xs font-extrabold text-white">Add</Text>
+                  <View className="flex-row items-center rounded-xl bg-[#2D9CDB] px-3.5 py-2 shadow-xs">
+                    <Ionicons name="add" size={16} color="#121417" style={{ marginRight: 3 }} />
+                    <Text className="text-xs font-black text-[#121417]">Add</Text>
                   </View>
                 </TouchableOpacity>
               ))}
 
               {/* CUSTOM EXERCISE ENTRY BOX */}
-              <View className="mt-4 p-4 rounded-2xl border border-dashed border-[#017374]/30 bg-white mb-6">
-                <Text className="text-xs font-bold text-[#014041] mb-2">Can't find your exercise? Add custom:</Text>
+              <View className="mt-4 p-4 rounded-2xl border border-dashed border-[#2D333B] bg-[#16191E] mb-6">
+                <Text className="text-xs font-bold text-[#E8EAED] mb-2">Can't find your exercise? Add custom:</Text>
                 <View className="flex-row items-center space-x-2">
                   <TextInput
                     value={customExName}
                     onChangeText={setCustomExName}
                     placeholder="Custom exercise name"
-                    placeholderTextColor="#3A7574"
-                    className="flex-1 rounded-xl border border-[#017374]/20 bg-[#EBF7F4]/40 px-3 py-2.5 text-xs font-bold text-[#014041]"
+                    placeholderTextColor="#9AA0A6"
+                    className="flex-1 rounded-xl border border-[#2D333B] bg-[#121417] px-3 py-2.5 text-xs font-bold text-[#E8EAED]"
                   />
                   <TouchableOpacity
                     onPress={() => handleAddExerciseToSession(customExName, customExBodyPart)}
                     disabled={!customExName.trim()}
                     className={`rounded-xl px-4 py-2.5 flex-row items-center ${
-                      customExName.trim() ? 'bg-[#017374]' : 'bg-[#017374]/40'
+                      customExName.trim() ? 'bg-[#2D9CDB]' : 'bg-[#2D9CDB]/40'
                     }`}>
-                    <Text className="text-xs font-bold text-white">+ Add</Text>
+                    <Text className="text-xs font-bold text-[#121417]">+ Add</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1277,8 +1249,8 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
             <TouchableOpacity
               onPress={() => setShowAddExerciseModal(false)}
-              className="mt-3 rounded-2xl border border-[#017374]/20 bg-[#EBF7F4] py-3 items-center">
-              <Text className="text-xs font-bold text-[#014041]">Close</Text>
+              className="mt-3 rounded-2xl border border-[#2D333B] bg-[#16191E] py-3 items-center">
+              <Text className="text-xs font-bold text-[#E8EAED]">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1286,11 +1258,11 @@ export default function WorkoutLoggingSessionScreen({ route, navigation }) {
 
       {/* SAVING OVERLAY MODAL */}
       <Modal transparent={true} visible={saving} animationType="fade">
-        <View className="flex-1 bg-black/60 items-center justify-center">
-          <View className="bg-white p-7 rounded-3xl items-center shadow-2xl mx-5 w-4/5 max-w-[320px] border border-[#017374]/20">
-            <ActivityIndicator size="large" color="#017374" />
-            <Text className="mt-5 text-lg font-black text-[#014041]">Saving Workout...</Text>
-            <Text className="mt-2 text-sm text-center text-[#3A7574] leading-5">
+        <View className="flex-1 bg-black/75 items-center justify-center">
+          <View className="bg-[#1F2328] p-7 rounded-3xl items-center shadow-2xl mx-5 w-4/5 max-w-[320px] border border-[#2D333B]">
+            <ActivityIndicator size="large" color="#2D9CDB" />
+            <Text className="mt-5 text-lg font-black text-[#E8EAED]">Saving Workout...</Text>
+            <Text className="mt-2 text-sm text-center text-[#9AA0A6] leading-5">
               Logging your sets and updating your progress.
             </Text>
           </View>

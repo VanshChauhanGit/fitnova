@@ -51,7 +51,7 @@ export async function requestNotificationPermissions() {
           name: 'Workout Reminders',
           importance: Notifications.AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#017374',
+          lightColor: '#2D9CDB',
         });
       } catch (chErr) {
         console.log('Android notification channel setup note:', chErr?.message);

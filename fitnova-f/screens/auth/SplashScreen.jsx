@@ -2,9 +2,9 @@ import { View, Text, ActivityIndicator, Image } from 'react-native';
 
 export default function SplashScreen() {
   return (
-    <View className="flex-1 items-center justify-center bg-[#EBF7F4] px-6">
+    <View className="flex-1 items-center justify-center bg-[#121417] px-6">
       {/* BRAND LOGO IMAGE */}
-      <View className="h-32 w-32 items-center justify-center rounded-3xl border border-[#017374]/20 bg-white shadow-2xl overflow-hidden">
+      <View className="h-36 w-36 items-center justify-center rounded-2xl border border-[#2D333B] shadow-2xl overflow-hidden">
         <Image
           source={require('../../assets/logo-icon.png')}
           className="h-full w-full rounded-2xl"
@@ -13,19 +13,19 @@ export default function SplashScreen() {
       </View>
 
       {/* APP TITLE */}
-      <Text className="mt-6 text-5xl font-black tracking-tight text-[#014041]">
-        Fit<Text className="text-[#017374]">Nova</Text>
+      <Text className="mt-6 text-5xl font-black tracking-tight text-[#E8EAED]">
+        Fit<Text className="text-[#2D9CDB]">Nova</Text>
       </Text>
 
       {/* TAGLINE */}
-      <View className="mt-3 rounded-full border border-[#017374]/20 bg-white px-4 py-1.5 shadow-sm">
-        <Text className="text-xs font-bold uppercase tracking-widest text-[#017374]">
+      <View className="mt-3 rounded-full border border-[#F2C94C]/30 bg-[#1F2328] px-4 py-1.5 shadow-sm">
+        <Text className="text-xs font-bold uppercase tracking-widest text-[#F2C94C]">
           Train Smarter • Live Better
         </Text>
       </View>
 
       {/* LOADING INDICATOR */}
-      <ActivityIndicator size="large" color="#017374" className="mt-14" />
+      <ActivityIndicator size="large" color="#2D9CDB" className="mt-14" />
     </View>
   );
 }
